@@ -1,0 +1,97 @@
+"use client"
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { supabase } from "@/lib/supabaseclient";
+import { ItemDb } from "@/app/model/model";
+import { Loader2 } from "lucide-react";
+import ProtectedRoute from "@/components/auth/protected-route";
+import { Item, ItemContent, ItemTitle, ItemDescription, ItemHeader, ItemActions, ItemFooter, ItemGroup, ItemSeparator } from "@/components/items/item-card";
+
+export default function MyItemsPage() {
+    const [items, setItems] = useState<ItemDb[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchMyItems = async () => {
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) return;
+
+                const { data, error } = await supabase
+                    .from('items')
+                    .select('*')
+                    .eq('created_by', user.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                setItems(data || []);
+            } catch (err) {
+                console.error('Error fetching my items:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMyItems();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            </div>
+        );
+    }
+
+    return (
+        <ProtectedRoute>
+            <div className="min-h-screen bg-background pt-16 px-4 pb-20">
+                <div className="max-w-2xl mx-auto">
+                    <h1 className="text-2xl font-bold mb-6">My Created Items</h1>
+
+                    {items.length === 0 ? (
+                        <div className="text-center text-muted-foreground mt-10">
+                            <p>You haven't created any items yet.</p>
+                            <Link href="/items/create" className="text-primary hover:underline mt-2 inline-block">
+                                Create your first item
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {items.map((item) => (
+                                <Link href={`/items/details?id=${item.id}`} key={item.id} className="block">
+                                    <div className="w-full border rounded-lg p-4 bg-card shadow-sm hover:shadow-md transition-shadow flex justify-between items-center">
+                                        <div className="flex items-center gap-4">
+                                            {item.image_url ? (
+                                                <img
+                                                    src={item.image_url}
+                                                    alt={item.name}
+                                                    className="w-14 h-14 rounded-lg object-cover border"
+                                                />
+                                            ) : (
+                                                <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center border text-xl">
+                                                    📦
+                                                </div>
+                                            )}
+                                            <ItemContent>
+                                                <ItemTitle>{item.name}</ItemTitle>
+                                                <ItemDescription>{item.description || "No description"}</ItemDescription>
+                                            </ItemContent>
+                                        </div>
+                                        <div className={`px-3 py-1 rounded-full text-xs font-medium ${item.status === 'borrowed'
+                                            ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200'
+                                            : 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-200'
+                                            }`}>
+                                            {item.status === 'borrowed' ? 'Borrowed' : 'In Stock'}
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </ProtectedRoute>
+    );
+}
