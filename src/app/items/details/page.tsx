@@ -70,8 +70,7 @@ function ItemDetailsContent() {
                     }
                 }
             } catch (err: any) {
-                console.error(err)
-                setError("Failed to load item. Please check the URL or try again later.")
+                setError("Ein Fehler ist aufgetreten. Bitte versuche es später erneut.")
             } finally {
                 setLoading(false)
             }
@@ -111,7 +110,7 @@ function ItemDetailsContent() {
             setItem({ ...item, status: 'borrowed', borrowed_by: user.id })
             router.refresh()
         } catch (err: any) {
-            alert(err.message)
+            alert('Aktion fehlgeschlagen. Bitte versuche es erneut.')
         } finally {
             setActionLoading(false)
         }
@@ -148,7 +147,7 @@ function ItemDetailsContent() {
             setItem({ ...item, status: 'inStock', borrowed_by: null })
             router.refresh()
         } catch (err: any) {
-            alert(err.message)
+            alert('Aktion fehlgeschlagen. Bitte versuche es erneut.')
         } finally {
             setActionLoading(false)
         }
@@ -170,8 +169,7 @@ function ItemDetailsContent() {
             router.push('/dashboard')
             router.refresh()
         } catch (err: any) {
-            console.error(err)
-            alert(err.message || "Failed to delete item")
+            alert("Fehler beim Löschen des Eintrags.")
             setActionLoading(false)
         }
     }

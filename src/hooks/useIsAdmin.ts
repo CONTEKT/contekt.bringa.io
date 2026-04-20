@@ -32,7 +32,7 @@ export function useIsAdmin() {
                     setIsAdmin(!!data)
                 }
             } catch (err) {
-                console.error('Error checking admin status:', err)
+                // Ignore error to prevent leak
                 setIsAdmin(false)
             } finally {
                 setLoading(false)

@@ -15,7 +15,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION public.set_admin_invite_code()
 RETURNS trigger AS $$
 BEGIN
-    IF NEW.invite_code IS NULL OR NEW.invite_code = 'default' OR NEW.invite_code = 'BRINGA-2024' THEN
+    IF NEW.invite_code IS NULL OR NEW.invite_code = 'default' THEN
         NEW.invite_code := public.generate_invite_code();
     END IF;
     RETURN NEW;

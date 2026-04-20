@@ -46,8 +46,7 @@ export default function AdminInviteCodePage() {
                     setNewCode(data.invite_code)
                 }
             } catch (err: any) {
-                console.error(err)
-                setError(err.message)
+                setError('Fehler beim Laden des Codes')
             } finally {
                 setLoading(false)
             }
@@ -79,8 +78,7 @@ export default function AdminInviteCodePage() {
 
             setTimeout(() => setSuccess(null), 3000)
         } catch (err: any) {
-            console.error(err)
-            setError(err.message || 'Failed to update invite code')
+            setError('Fehler beim Aktualisieren des Codes')
         } finally {
             setSaving(false)
         }

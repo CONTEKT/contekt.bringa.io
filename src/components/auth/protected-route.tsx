@@ -34,16 +34,6 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
                     .single()
 
                 if (profileError) {
-                    // If the column doesn't exist yet (migration not run), allow access
-                    if (profileError.code === 'PGRST116' || profileError.message?.includes('column') || profileError.message?.includes('profile_valid')) {
-                        console.warn("Profile validation column not found - migration may not be run yet. Allowing access.")
-                        setAuthenticated(true)
-                        setProfileValid(true)
-                        if (mounted) setLoading(false)
-                        return
-                    }
-
-                    console.error("Profile check failed", profileError)
                     router.replace("/login")
                     return
                 }
@@ -63,7 +53,6 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
                 setAuthenticated(true)
                 setProfileValid(true)
             } catch (error) {
-                console.error("Auth check failed", error)
                 if (mounted) router.replace("/login")
             } finally {
                 if (mounted) setLoading(false)

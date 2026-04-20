@@ -35,7 +35,7 @@ export default function AdminUsersPage() {
             setProfiles(profilesRes.data || [])
             setAdmins(adminsRes.data || [])
         } catch (err) {
-            console.error('Error fetching data:', err)
+            // Error handling removed to prevent leaking information
         } finally {
             setLoading(false)
         }
@@ -62,7 +62,6 @@ export default function AdminUsersPage() {
             // Refresh data
             await fetchData()
         } catch (err) {
-            console.error('Error elevating user to admin:', err)
             alert('Failed to make user admin.')
         } finally {
             setProcessingId(null)
@@ -82,7 +81,6 @@ export default function AdminUsersPage() {
             // Refresh data
             await fetchData()
         } catch (err) {
-            console.error('Error removing user from admin:', err)
             alert('Failed to remove admin privileges.')
         } finally {
             setProcessingId(null)

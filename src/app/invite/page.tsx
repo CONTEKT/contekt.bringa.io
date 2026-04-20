@@ -57,8 +57,7 @@ export default function InviteCodePage() {
             router.push('/dashboard')
             router.refresh()
         } catch (err: any) {
-            console.error(err)
-            setError(err.message || 'Something went wrong')
+            setError('Ein Fehler ist aufgetreten. Bitte versuche es später erneut.')
         } finally {
             setLoading(false)
         }

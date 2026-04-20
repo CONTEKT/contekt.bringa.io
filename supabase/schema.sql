@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS public.borrow_history (
 -- Table: admins
 CREATE TABLE IF NOT EXISTS public.admins (
     id uuid NOT NULL DEFAULT gen_random_uuid(),
-    invite_code text NOT NULL DEFAULT 'BRINGA2024'::text,
+    invite_code text NOT NULL DEFAULT gen_random_uuid()::text,
     profile_id uuid,
     created_at timestamp with time zone DEFAULT now(),
     CONSTRAINT admins_pkey PRIMARY KEY (id),
@@ -104,7 +104,7 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION public.handle_new_user() 
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$ 
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$ 
 begin 
     insert into public.profiles (id, email, display_name, avatar_url) 
     values ( 
@@ -124,14 +124,40 @@ RETURNS boolean AS $$
         (SELECT profile_valid FROM public.profiles WHERE id = auth.uid()),
         false
     );
-$$ LANGUAGE sql SECURITY DEFINER;
+$$ LANGUAGE sql SECURITY DEFINER SET search_path = public;
 
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS boolean AS $$
     SELECT EXISTS (
         SELECT 1 FROM public.admins WHERE profile_id = auth.uid()
     );
-$$ LANGUAGE sql SECURITY DEFINER;
+$$ LANGUAGE sql SECURITY DEFINER SET search_path = public;
+
+-- Verify and apply invite code (Fix K1 & K2)
+CREATE OR REPLACE FUNCTION public.verify_and_apply_invite(invite_code_input text)
+RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM public.admins WHERE invite_code = invite_code_input) THEN
+        UPDATE public.profiles 
+        SET profile_valid = true, invited_by_code = invite_code_input 
+        WHERE id = auth.uid();
+        RETURN true;
+    END IF;
+    RETURN false;
+END;
+$$;
+
+-- Prevent user from escalating profile privileges directly (Fix K1)
+CREATE OR REPLACE FUNCTION public.prevent_profile_escalation() 
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+    IF auth.role() = 'authenticated' THEN
+        NEW.profile_valid = OLD.profile_valid;
+        NEW.invited_by_code = OLD.invited_by_code;
+    END IF;
+    RETURN NEW;
+END;
+$$;
 
 -- Webhook Trigger Functions 
 -- (Implemented via pg_net to bypass need for unsupported extensions)
@@ -150,13 +176,13 @@ BEGIN
 
   PERFORM net.http_post(
     url := 'https://eolrshrgwbmfogrbjrdv.supabase.co/functions/v1/notifiy-telegram',
-    headers := '{"Content-Type": "application/json", "Authorization": "Bearer YOUR_SERVICE_ROLE_KEY"}'::jsonb,
+    headers := jsonb_build_object('Content-Type', 'application/json', 'Authorization', 'Bearer ' || COALESCE(current_setting('app.settings.telegram_bot_token', true), '')),
     body := payload
   );
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 CREATE OR REPLACE FUNCTION public.send_user_webhook()
 RETURNS trigger AS $$
@@ -173,13 +199,13 @@ BEGIN
 
   PERFORM net.http_post(
     url := 'https://eolrshrgwbmfogrbjrdv.supabase.co/functions/v1/notifiy-telegram-user',
-    headers := '{"Content-Type": "application/json", "Authorization": "Bearer YOUR_SERVICE_ROLE_KEY"}'::jsonb,
+    headers := jsonb_build_object('Content-Type', 'application/json', 'Authorization', 'Bearer ' || COALESCE(current_setting('app.settings.telegram_bot_token', true), '')),
     body := payload
   );
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- 5. INDEXES
 CREATE INDEX IF NOT EXISTS idx_profiles_profile_valid ON public.profiles(profile_valid);
@@ -213,10 +239,19 @@ CREATE POLICY "Validated users can insert history" ON public.borrow_history FOR 
 
 -- admins
 ALTER TABLE public.admins ENABLE ROW LEVEL SECURITY;
+-- Fix K2: Normal users can no longer view invite codes directly
 DROP POLICY IF EXISTS "Anyone can select invite codes for verification" ON public.admins;
-CREATE POLICY "Anyone can select invite codes for verification" ON public.admins FOR SELECT USING (auth.role() = 'authenticated');
 DROP POLICY IF EXISTS "Admins have full access to admins table" ON public.admins;
 CREATE POLICY "Admins have full access to admins table" ON public.admins FOR ALL USING (public.is_admin());
+
+-- item_sharing
+ALTER TABLE public.item_sharing ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view shared items" ON public.item_sharing;
+CREATE POLICY "Users can view shared items" ON public.item_sharing FOR SELECT USING (shared_with_user_id = auth.uid() OR public.is_admin());
+DROP POLICY IF EXISTS "Users can share own items" ON public.item_sharing;
+CREATE POLICY "Users can share own items" ON public.item_sharing FOR ALL USING (
+    EXISTS (SELECT 1 FROM public.items WHERE items.id = item_sharing.item_id AND items.created_by = auth.uid()) OR public.is_admin()
+);
 
 -- 7. TRIGGERS
 DROP TRIGGER IF EXISTS profiles_updated_at_trigger ON public.profiles;
@@ -224,6 +259,9 @@ CREATE TRIGGER profiles_updated_at_trigger BEFORE UPDATE ON public.profiles FOR 
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+DROP TRIGGER IF EXISTS tr_prevent_profile_escalation ON public.profiles;
+CREATE TRIGGER tr_prevent_profile_escalation BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.prevent_profile_escalation();
 
 -- TELEGRAM TRIGGERS
 DROP TRIGGER IF EXISTS notify_item_bot_telegram ON public.items;

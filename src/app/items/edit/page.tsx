@@ -89,7 +89,7 @@ function EditItemContent() {
 
         try {
             const compressedFile = await imageCompression(file, options)
-            const fileName = `${Math.random()}.webp`
+            const fileName = `${crypto.randomUUID()}.webp`
             const filePath = `${fileName}`
 
             const { error: uploadError } = await supabase.storage
