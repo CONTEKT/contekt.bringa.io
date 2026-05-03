@@ -38,6 +38,11 @@ yarn-error.log*
 supabase.tar.gz
 supabase_binary_backup
 
+# process output / local scratch
+stderr.txt
+stdout.txt
+tasks.yaml
+
 # vercel
 .vercel
 
