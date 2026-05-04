@@ -16,7 +16,9 @@ title: Maintenance
 
 ## Supabase Backup Scope
 
-`pnpm backup:supabase` exports configured Postgres tables to `backups/supabase/<timestamp>/`. It does not export Supabase Auth users or Storage objects. Treat those as separate backup tasks.
+`pnpm backup:supabase` exports configured Postgres tables and configured Storage buckets to `backups/supabase/<timestamp>/`. By default it backs up the public tables listed in `scripts/backup-supabase.mjs` and the `items` Storage bucket. Use `SUPABASE_BACKUP_TABLES`, `SUPABASE_BACKUP_STORAGE_BUCKETS`, `SUPABASE_BACKUP_PAGE_SIZE`, and `SUPABASE_BACKUP_STORAGE_PAGE_SIZE` for deployment-specific scope; set a list variable to `none` to skip that surface deliberately.
+
+Set `SUPABASE_BACKUP_AUTH_USERS=1` to export Supabase Auth user metadata through the Admin API to `auth-users.json`. This does not export passwords, provider secrets, or a complete Auth restore package; treat it as operator metadata for reconciliation. Keep backup directories encrypted at rest and test restore procedures before relying on them operationally.
 
 User-facing data export is separate from operator backups. It is provided through `export_my_data` and covers the authenticated user's profile, created items, borrowed items, borrow history, deletion request history, item suggestions, and item flags. Account deletion requests are operator-reviewed and do not remove Auth users or Storage objects by themselves.
 
@@ -28,5 +30,5 @@ User-facing data export is separate from operator backups. It is provided throug
 ## Current Known Gaps
 
 - Supabase MCP/service-role review is pending.
-- Storage backup/export is not implemented yet.
+- Restore drills, encrypted backup retention policy, and backup freshness UI are pending.
 - Maskable PNG icons and complete homescreen testing are pending.

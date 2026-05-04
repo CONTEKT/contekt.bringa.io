@@ -12,7 +12,7 @@ Protect privacy first. Before reading real table contents, ask the user for expl
 - Read `supabase/README.md`, `docs/supabase.md`, `docs/supabase-contract-audit.md`, `docs/maintenance.md`, and the Supabase entries in `docs/optimization-options.md`.
 - Confirm the target: production, staging, or development.
 - Confirm whether real user data may be inspected. Default: no.
-- Run or offer `pnpm backup:supabase` when `SUPABASE_SERVICE_ROLE_KEY` is available.
+- Run or offer `pnpm backup:supabase` when `SUPABASE_SERVICE_ROLE_KEY` is available; confirm whether optional Auth user metadata export is approved before setting `SUPABASE_BACKUP_AUTH_USERS=1`.
 - Prefer schema, RLS policies, functions, triggers, storage bucket settings, and anonymized counts.
 - Compare the live contract with `supabase/schema.sql`, migrations, edge functions, and client mutations before proposing changes.
 - Keep migrations and `supabase/schema.sql` aligned whenever schema, policies, triggers, functions, buckets, or RPCs change.

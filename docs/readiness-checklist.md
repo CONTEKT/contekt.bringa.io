@@ -61,10 +61,10 @@ Use this checklist before calling the generic upstream ready for a first large o
 
 ## Operations
 
-- [x] `pnpm backup:supabase` exports configured public tables with a service role key.
-- [x] Maintenance docs distinguish operator table backups from user-facing export.
+- [x] `pnpm backup:supabase` exports configured public tables and Storage buckets with a service role key.
+- [x] Maintenance docs distinguish operator table/Storage backups, optional Auth metadata export, and user-facing export.
 - [x] Data export includes profile, items, borrow history, deletion requests, suggestions, and flags.
-- [ ] Storage object backups, Auth export limits, restore drills, encrypted backup handling, and backup freshness UI are complete.
+- [ ] Restore drills, encrypted backup handling, and backup freshness UI are complete.
 - [ ] Telegram notification dedupe, mute windows, retry state, and privacy review are complete.
 
 ## Verification Before Release
@@ -85,6 +85,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [ ] `pnpm test:admin-user-items`
 - [ ] `pnpm test:admin-item-versions`
 - [ ] `pnpm test:admin-visibility-queue`
+- [ ] `pnpm test:backup-supabase`
 - [ ] `pnpm test:pwa-manifest`
 - [ ] `pnpm check:copy`
 - [ ] `pnpm check:docs-index`

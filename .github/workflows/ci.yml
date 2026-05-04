@@ -78,6 +78,9 @@ jobs:
       - name: Test admin visibility queue
         run: pnpm test:admin-visibility-queue
 
+      - name: Test Supabase backup helpers
+        run: pnpm test:backup-supabase
+
       - name: Test PWA manifest
         run: pnpm test:pwa-manifest
 

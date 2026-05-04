@@ -46,7 +46,7 @@ The deletion request route is non-destructive. It can mark requests `reviewing` 
 ## Before Production Changes
 
 1. Confirm the target Supabase project and deployment profile.
-2. Run a table backup if `SUPABASE_SERVICE_ROLE_KEY` is configured.
+2. Run a table and Storage backup if `SUPABASE_SERVICE_ROLE_KEY` is configured; explicitly decide whether optional Auth user metadata export is needed.
 3. Apply migrations in order and compare the live contract with `supabase/schema.sql`.
 4. Run `pnpm check:supabase-contract` after local schema or policy changes.
 5. Verify admin routes with the agentic browser skill using admin and non-admin accounts.
