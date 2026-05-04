@@ -23,11 +23,15 @@ Run:
 pnpm check:config
 ```
 
+This also checks that configured public content and brand asset paths point to files in `public/`.
+
 Use `.env.local` for secrets and deployment-specific values that must not be public. Service role keys never belong in JSONC config.
 
 ## Common Fork Fields
 
 - `app.name`, `app.shortName`, `branding.logoText`: visible app identity.
+- `branding.logoPath`, `branding.iconPath`, `branding.appleTouchIconPath`: public brand assets used by navigation, metadata, and the PWA manifest.
+- `branding.themeColor`, `branding.backgroundColor`: install and browser chrome colors for the generated manifest.
 - `operator.defaultOwnerLabel`: default owner label for operator-owned items.
 - `repository.url`, `repository.issuesUrl`: GitHub links shown in the app.
 - `legal.termsPath`: app route that displays terms.

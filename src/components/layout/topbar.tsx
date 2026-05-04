@@ -15,6 +15,7 @@ import { Github, LogOutIcon, UserIcon, ShieldCheck } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import Link from "next/link";
 import { ThemeToggle } from "../theme/theme-toggle"
+import { AppImage } from "@/components/ui/app-image";
 
 export default function TopBar() {
     const router = useRouter();
@@ -35,6 +36,13 @@ export default function TopBar() {
             <Menubar className="w-full h-12 px-8 border-none">
                 <div className="flex items-center justify-between w-full">
                     <Link href={appConfig.app.homeHref} className="flex items-center gap-2">
+                        <AppImage
+                            src={appConfig.branding.logoPath}
+                            alt=""
+                            width={24}
+                            height={24}
+                            className="h-6 w-6 rounded-sm"
+                        />
                         <span className="font-semibold">{appConfig.branding.logoText}</span>
                     </Link>
 

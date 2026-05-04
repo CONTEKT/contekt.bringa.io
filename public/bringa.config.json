@@ -14,6 +14,11 @@
   },
   "branding": {
     "logoText": "bringa.io",
+    "logoPath": "/icon.svg",
+    "iconPath": "/icon.svg",
+    "appleTouchIconPath": "/icon.svg",
+    "themeColor": "#ffffff",
+    "backgroundColor": "#ffffff",
     "bornAndHostedBy": "Born and hosted by bringa.io"
   },
   "operator": {

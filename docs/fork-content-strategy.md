@@ -85,6 +85,10 @@ public/brand/deployments/<deployment-slug>/logo.svg
 public/brand/deployments/<deployment-slug>/icon.svg
 ```
 
+Current source of truth: `branding.logoPath`, `branding.iconPath`, and `branding.appleTouchIconPath` in `config/bringa.config.jsonc`.
+
+`pnpm check:config` validates that configured paths point to files inside `public/`.
+
 Generated favicons and app icons should be documented as generated artifacts when automation exists.
 
 ### Secrets

@@ -103,11 +103,31 @@
       "type": "object",
       "required": [
         "logoText",
+        "logoPath",
+        "iconPath",
+        "appleTouchIconPath",
+        "themeColor",
+        "backgroundColor",
         "bornAndHostedBy"
       ],
       "additionalProperties": false,
       "properties": {
         "logoText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "logoPath": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "iconPath": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "appleTouchIconPath": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "themeColor": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "backgroundColor": {
           "$ref": "#/$defs/nonEmptyString"
         },
         "bornAndHostedBy": {

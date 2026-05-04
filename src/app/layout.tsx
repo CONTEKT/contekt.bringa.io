@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(appConfig.app.canonicalUrl),
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: "/icon.svg",
-    apple: "/icon.svg",
+    icon: appConfig.branding.iconPath,
+    apple: appConfig.branding.appleTouchIconPath,
   },
   appleWebApp: {
     capable: true,

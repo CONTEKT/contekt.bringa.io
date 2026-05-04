@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -138,6 +138,22 @@ function assertStringArray(value, pathName) {
   }
 }
 
+function assertPublicPath(value, pathName) {
+  assertString(value, pathName);
+
+  if (!value.startsWith("/")) {
+    throw new Error(`Expected ${pathName} to be an absolute public path starting with "/".`);
+  }
+
+  if (value === "/" || value.endsWith("/")) {
+    throw new Error(`Expected ${pathName} to point to a public file.`);
+  }
+
+  if (value.includes("\\") || value.split("/").includes("..")) {
+    throw new Error(`Expected ${pathName} to stay within the public directory.`);
+  }
+}
+
 function validateConfig(config) {
   assertString(config.app?.name, "app.name");
   assertString(config.app?.shortName, "app.shortName");
@@ -148,6 +164,11 @@ function validateConfig(config) {
   assertString(config.app?.canonicalUrl, "app.canonicalUrl");
   assertString(config.app?.homeHref, "app.homeHref");
   assertString(config.branding?.logoText, "branding.logoText");
+  assertPublicPath(config.branding?.logoPath, "branding.logoPath");
+  assertPublicPath(config.branding?.iconPath, "branding.iconPath");
+  assertPublicPath(config.branding?.appleTouchIconPath, "branding.appleTouchIconPath");
+  assertString(config.branding?.themeColor, "branding.themeColor");
+  assertString(config.branding?.backgroundColor, "branding.backgroundColor");
   assertString(config.branding?.bornAndHostedBy, "branding.bornAndHostedBy");
   assertString(config.operator?.organizationName, "operator.organizationName");
   assertString(config.operator?.defaultOwnerLabel, "operator.defaultOwnerLabel");
@@ -162,7 +183,7 @@ function validateConfig(config) {
   assertString(config.repository?.discussionsUrl, "repository.discussionsUrl", { allowEmpty: true });
   assertString(config.repository?.templateMode, "repository.templateMode");
   assertString(config.legal?.termsPath, "legal.termsPath");
-  assertString(config.legal?.termsContentPath, "legal.termsContentPath");
+  assertPublicPath(config.legal?.termsContentPath, "legal.termsContentPath");
   assertString(config.legal?.contentContributionLabel, "legal.contentContributionLabel");
   assertString(config.legal?.itemGiftLabel, "legal.itemGiftLabel");
   assertBoolean(config.legal?.publicDomainIntent, "legal.publicDomainIntent");
@@ -182,12 +203,40 @@ function validateConfig(config) {
   assertBoolean(config.features?.profilePages, "features.profilePages");
 }
 
+async function assertPublicFileExists(publicPath, pathName) {
+  const publicRoot = path.join(root, "public");
+  const filePath = path.resolve(publicRoot, publicPath.slice(1));
+
+  if (filePath !== publicRoot && !filePath.startsWith(`${publicRoot}${path.sep}`)) {
+    throw new Error(`Expected ${pathName} to stay within the public directory.`);
+  }
+
+  try {
+    const fileStats = await stat(filePath);
+    if (!fileStats.isFile()) {
+      throw new Error("not a file");
+    }
+  } catch {
+    throw new Error(`Expected ${pathName} to point to an existing public file: ${publicPath}`);
+  }
+}
+
+async function validateReferencedPublicFiles(config) {
+  await Promise.all([
+    assertPublicFileExists(config.branding.logoPath, "branding.logoPath"),
+    assertPublicFileExists(config.branding.iconPath, "branding.iconPath"),
+    assertPublicFileExists(config.branding.appleTouchIconPath, "branding.appleTouchIconPath"),
+    assertPublicFileExists(config.legal.termsContentPath, "legal.termsContentPath"),
+  ]);
+}
+
 async function loadConfig() {
   const source = await readFile(sourcePath, "utf8");
   const json = removeTrailingCommas(stripComments(source));
   const config = JSON.parse(json);
   delete config.$schema;
   validateConfig(config);
+  await validateReferencedPublicFiles(config);
   return `${JSON.stringify(config, null, 2)}\n`;
 }
 
