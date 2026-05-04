@@ -34,6 +34,7 @@
   },
   "legal": {
     "termsPath": "/terms",
+    "termsContentPath": "/content/default/legal/en.md",
     "contentContributionLabel": "Public-domain dedication where legally possible, fallback operator license.",
     "itemGiftLabel": "Private gift to the portal operator.",
     "publicDomainIntent": true

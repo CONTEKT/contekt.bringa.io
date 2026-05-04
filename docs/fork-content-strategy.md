@@ -64,6 +64,14 @@ content/deployments/<deployment-slug>/legal/en.md
 content/deployments/<deployment-slug>/legal/de.md
 ```
 
+Current app default:
+
+```text
+public/content/default/legal/en.md
+```
+
+`config/bringa.config.jsonc` points `legal.termsContentPath` to the public Markdown file used by the `/terms` route.
+
 Upstream should validate that required content exists, but should not require every fork to use upstream wording.
 
 ### Brand Assets

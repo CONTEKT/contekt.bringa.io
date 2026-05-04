@@ -187,6 +187,7 @@
       "type": "object",
       "required": [
         "termsPath",
+        "termsContentPath",
         "contentContributionLabel",
         "itemGiftLabel",
         "publicDomainIntent"
@@ -194,6 +195,9 @@
       "additionalProperties": false,
       "properties": {
         "termsPath": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "termsContentPath": {
           "$ref": "#/$defs/nonEmptyString"
         },
         "contentContributionLabel": {

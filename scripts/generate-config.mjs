@@ -162,6 +162,7 @@ function validateConfig(config) {
   assertString(config.repository?.discussionsUrl, "repository.discussionsUrl", { allowEmpty: true });
   assertString(config.repository?.templateMode, "repository.templateMode");
   assertString(config.legal?.termsPath, "legal.termsPath");
+  assertString(config.legal?.termsContentPath, "legal.termsContentPath");
   assertString(config.legal?.contentContributionLabel, "legal.contentContributionLabel");
   assertString(config.legal?.itemGiftLabel, "legal.itemGiftLabel");
   assertBoolean(config.legal?.publicDomainIntent, "legal.publicDomainIntent");

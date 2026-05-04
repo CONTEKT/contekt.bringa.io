@@ -2,16 +2,18 @@
 
 import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
+import { appConfig } from "@/lib/app-config"
 
 export default function TermsPage() {
     const [content, setContent] = useState("")
+    const termsContentPath = appConfig.legal.termsContentPath
 
     useEffect(() => {
-        fetch('/terms.md')
+        fetch(termsContentPath)
             .then(res => res.text())
             .then(text => setContent(text))
             .catch(err => console.error('Failed to load terms:', err))
-    }, [])
+    }, [termsContentPath])
 
     return (
         <div className="min-h-screen bg-background p-4 py-12">
