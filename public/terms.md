@@ -1,132 +1,59 @@
-# Nutzungsbedingungen & Datenschutzhinweise
+# Terms And Privacy Notes
 
-Diese Plattform ist nur für Mitglieder von **CONTEKT**.
+This upstream text is a starting point for deployments. It is not legal advice. Each operator must adapt and review it for its jurisdiction, organization, audience, providers, and data practices.
 
-Alles, was du hier zu Gegenständen und Aktivitäten hochlädst (inkl. Fotos), kann von CONTEKT für die Organisation und Dokumentation des Clubs genutzt werden.
+## 1. Operator
 
-Die folgenden Regeln gelten **nur** für die Plattform `contekt.bringa.io`, nicht für sonstige Vereinsdaten außerhalb dieser Plattform.
+This deployment is operated by the organization named in its public configuration and legal notice.
 
-## 1. Betreiber, Verantwortlicher und Geltungsbereich
+Before production use, replace this section with:
 
-**CONTEKT Technikerverein** (CONTEKT)  
-Viehmarktgasse 25  
-8020 Graz, Österreich  
-E-Mail: [office@contekt.at](mailto:office@contekt.at)
+- Legal operator name
+- Contact email
+- Privacy contact
+- Jurisdiction and required legal notice
 
-CONTEKT betreibt die interne Plattform `contekt.bringa.io` für eingeladene Mitglieder.  
-Die Plattform basiert technisch auf der Open-Source-Software „Bringa" (MIT-Lizenz), wird aber eigenverantwortlich von CONTEKT betrieben.
+## 2. Purpose
 
-## 2. Zugang und Zweck der Plattform
+The platform helps invited community members document, share, borrow, return, and maintain shared items.
 
-- Zugang nur für von CONTEKT eingeladene Personen.
-- Der Login erfolgt ausschließlich über OAuth (z.B. externe Login-Anbieter); es gibt **kein eigenes Passwort** auf der Plattform.
-- Die Plattform dient der internen Organisation, Inventarverwaltung und Dokumentation von Aktivitäten des Clubs CONTEKT.
-- Es besteht kein Anspruch auf bestimmte Funktionen, ständige Verfügbarkeit oder fehlerfreien Betrieb.
-- CONTEKT kann Zugänge bei Verstößen gegen diese Regeln sperren oder löschen.
+Access may be restricted to invited users. Operators may suspend access when required for safety, misuse prevention, legal compliance, or community governance.
 
-## 3. Inhalte von Mitgliedern & Rechteübertragung
+## 3. Contributions
 
-### Was du hochlädst
+When users add item data, descriptions, photos, or related media, the intended model is:
 
-- Du lädst nur Inhalte hoch, an denen du die notwendigen Rechte hast und die keine Gesetze oder Rechte Dritter verletzen (z.B. Urheberrechte, Persönlichkeitsrechte, Recht am eigenen Bild).
-- Wenn Personen erkennbar auf Fotos sind, hast du – soweit nötig – ihre Einwilligung.
+- The contribution is a private gift to the portal/operator for the purpose of operating and improving the platform.
+- The user intends to dedicate uploaded item descriptions and photos to the public domain where legally possible.
+- Where a full public-domain dedication is not legally possible, the user grants the operator a broad, irrevocable, royalty-free fallback license to use, host, reproduce, transform, document, moderate, preserve, and share the contribution for platform and community purposes.
 
-### Rechte an deinen Inhalten
+Users must only upload content they are allowed to contribute. Users must respect privacy, copyright, personal rights, and safety.
 
-Mit dem Erstellen oder Hochladen von Inhalten (Texte, Bilder, Dateien) auf der Plattform:
+## 4. Personal Data
 
-- **überträgst du CONTEKT unentgeltlich ein ausschließliches, zeitlich und räumlich unbeschränktes Nutzungsrecht** für Vereinszwecke.  
-  Dazu gehören insbesondere:  
-  – Speichern und Anzeigen auf der Plattform,  
-  – Nutzung für Organisation, Dokumentation, Archivierung und interne Auswertungen,  
-  – technische Bearbeitung (z.B. Skalieren, Umwandeln in andere Formate).
+The platform may process:
 
-- Soweit eine vollständige Übertragung rechtlich nicht möglich ist, **räumst du CONTEKT ein entsprechend ausschließliches, unwiderrufliches Nutzungsrecht** ein und verzichtest im rechtlich zulässigen Umfang darauf, diesem Vereinszweck im Wege zu stehen.
+- Account identifiers from the selected sign-in provider
+- Profile data entered by the user
+- Item entries and borrowing history
+- Uploaded images and metadata
+- Admin/moderation actions
+- Technical logs needed for operation and security
 
-### Verantwortung
+Personal data is processed to provide the platform, manage access, prevent misuse, support borrowing workflows, and comply with legal obligations.
 
-- Für deine Inhalte bist du selbst verantwortlich.
-- CONTEKT kann Inhalte löschen oder sperren, wenn sie gegen Gesetze oder diese Regeln verstoßen.
+## 5. Images
 
-## 4. Haftung von CONTEKT
+Uploaded item images may be compressed, transformed, displayed, moderated, or removed. Operators should define retention, deletion, export, and storage-backup policies before production use.
 
-- CONTEKT haftet für Schäden nur bei Vorsatz und grober Fahrlässigkeit.
-- Bei leichter Fahrlässigkeit haftet CONTEKT nur bei Verletzung wesentlicher Pflichten und ist dann auf den typischerweise vorhersehbaren Schaden begrenzt.
-- Zwingende Haftung (z.B. Personenschäden, Produkthaftung) bleibt unberührt.
+## 6. User Rights
 
-## 5. Welche Daten auf der Plattform verarbeitet werden
+Depending on the deployment and jurisdiction, users may have rights to access, correct, export, restrict, object to, or delete personal data. Operators must document how users can exercise those rights.
 
-Auf `contekt.bringa.io` werden insbesondere folgende personenbezogene Daten verarbeitet:
+## 7. Availability And Liability
 
-- **Stammdaten:** Name, E-Mail-Adresse, Vereinsrolle (z.B. Mitglied, Admin).
-- **Login-Daten (OAuth):** Daten, die wir vom Login-Anbieter erhalten (z.B. Name, E-Mail-Adresse, ggf. Profilbild), sowie technische Login-Informationen (Zeitpunkt, Erfolg/Fehler).
-- **Inhaltsdaten:** von dir erstellte oder hochgeladene Inhalte (Texte, Bilder, Dateien), die auch Personen zeigen oder beschreiben können.
-- **Technische Daten:** IP-Adresse, Datum/Uhrzeit der Nutzung, verwendeter Browser/OS, Fehler-Logs.
-- **Kommunikation über die Plattform:** z.B. interne Notizen, Kommentare zu Gegenständen oder Aktivitäten, soweit personenbezogen.
+The platform may change, pause, or be unavailable. Operators should define support expectations, liability limits, and maintenance procedures in their deployment-specific terms.
 
-Andere Vereinsdaten (z.B. Mitgliederlisten außerhalb der Plattform) sind **nicht Teil** dieser Regelung.
+## 8. Changes
 
-## 6. Zwecke und Rechtsgrundlagen (DSGVO)
-
-Die Daten werden auf `contekt.bringa.io` verarbeitet für:
-
-- **Betrieb der Plattform und Nutzung durch Mitglieder**  
-  (Login, Anzeigen, Erstellen und Verwalten von Inhalten)  
-  → Art. 6 Abs. 1 lit. b DSGVO (Vertrag/Mitgliedschaft)
-
-- **Interne Vereinsorganisation und Dokumentation**  
-  → Art. 6 Abs. 1 lit. b und lit. f DSGVO (berechtigtes Interesse an effizienter Vereinsverwaltung)
-
-- **IT-Sicherheit und Fehleranalyse**  
-  (Logfiles, Schutz vor Angriffen, Stabilität der Plattform)  
-  → Art. 6 Abs. 1 lit. f DSGVO
-
-Es gibt **keinen Newsletter** und keine gesonderte werbliche Nutzung der Daten über den Vereinszweck hinaus.
-
-## 7. Dienstleister (Cloudflare & Supabase) und Datenweitergabe
-
-Zur Bereitstellung der Plattform setzt CONTEKT technische Dienstleister ein:
-
-- **Cloudflare** als Hosting- und Infrastruktur-Anbieter (Bereitstellung und Absicherung der Webanwendung),
-- **Supabase** als Datenbank- und Backend-Anbieter (Speicherung und Verwaltung der Plattformdaten).
-
-Diese Dienstleister verarbeiten Daten im Auftrag von CONTEKT als **Auftragsverarbeiter** gemäß Art. 28 DSGVO. Sie erhalten nur die Daten, die für ihre Aufgaben technisch notwendig sind.
-
-Soweit Cloudflare oder Supabase Daten außerhalb der EU/des EWR verarbeiten, stellt CONTEKT sicher, dass ein angemessenes Datenschutzniveau besteht (z.B. Standardvertragsklauseln nach Art. 46 DSGVO).
-
-Eine Weitergabe an andere Dritte erfolgt nur, wenn dies gesetzlich vorgeschrieben ist oder zur Rechtsverteidigung erforderlich ist.
-
-## 8. Speicherdauer
-
-- Kontodaten und Login-Informationen: für die Dauer deiner Nutzung der Plattform und ggf. gesetzliche Aufbewahrungsfristen.
-- Log-Daten: nur so lange, wie es für Sicherheit und Fehleranalyse erforderlich ist.
-- Inhalte: solange sie für den Vereinszweck auf der Plattform benötigt werden; soweit möglich können Inhalte für Dokumentationszwecke anonymisiert werden, wenn eine Zuordnung zu Personen nicht mehr notwendig ist.
-
-## 9. Deine Rechte nach DSGVO
-
-Du hast in Bezug auf die Daten auf `contekt.bringa.io` insbesondere das Recht auf:
-
-- **Auskunft** über die dich betreffenden Daten,
-- **Berichtigung** unrichtiger Daten,
-- **Löschung** („Recht auf Vergessenwerden"),
-- **Einschränkung** der Verarbeitung,
-- **Datenübertragbarkeit**,
-- **Widerspruch** gegen bestimmte Verarbeitungen, die auf Art. 6 Abs. 1 lit. f DSGVO beruhen.
-
-Zur Ausübung deiner Rechte kannst du dich jederzeit an:
-
-> [office@contekt.at](mailto:office@contekt.at)
-
-wenden.
-
-Du hast außerdem das Recht auf Beschwerde bei der:
-
-Österreichischen Datenschutzbehörde  
-Barichgasse 40–42  
-1030 Wien  
-[https://www.dsb.gv.at](https://www.dsb.gv.at)
-
-## 10. Änderungen
-
-CONTEKT kann diese Regeln anpassen, wenn sich rechtliche Vorgaben, Technik oder die Plattform selbst ändern.  
-Die jeweils aktuelle Version ist auf `contekt.bringa.io` abrufbar.
+Operators may update these terms when legal, technical, or organizational conditions change. The current version should be available through the app.

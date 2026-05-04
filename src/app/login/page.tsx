@@ -23,13 +23,13 @@ export default function LoginPage() {
             className="mt-1"
           />
           <label htmlFor="terms" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
-            Ich akzeptiere die{" "}
+            I accept the{" "}
             <Link
               href={appConfig.legal.termsPath}
               target="_blank"
               className="text-primary hover:underline font-medium"
             >
-              Nutzungsbedingungen & Datenschutzhinweise
+              Terms and Privacy Notes
             </Link>
           </label>
         </div>

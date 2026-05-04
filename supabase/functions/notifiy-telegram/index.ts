@@ -15,7 +15,7 @@ serve(async (req) => {
 
     const BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN");
     const CHAT_ID = Deno.env.get("TELEGRAM_CHAT_ID");
-    const APP_URL = Deno.env.get("APP_URL") || "https://contekt.bringa.io";
+    const APP_URL = Deno.env.get("APP_URL") || "https://app.bringa.io";
 
     if (!BOT_TOKEN || !CHAT_ID) {
       console.error("Missing environment variables: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID");
