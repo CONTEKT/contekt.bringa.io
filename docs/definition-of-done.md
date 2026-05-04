@@ -28,6 +28,7 @@ This is the current definition of done for upstream work. It is intentionally pr
 - `pnpm test:admin-user-items` when admin user item grouping or per-user admin item review changes
 - `pnpm test:pwa-manifest` when app metadata, manifest, PWA config, or brand icon config changes
 - `pnpm test:copy` and `pnpm check:copy` when docs, agent instructions, or public source-of-truth copy changes
+- `pnpm test:docs-index` and `pnpm check:docs-index` when top-level docs are added, removed, or renamed
 - `pnpm test:static-export` and `pnpm check:static-export` when Next.js routing, config, or app architecture changes
 - `pnpm lint`
 - `pnpm exec tsc --noEmit`

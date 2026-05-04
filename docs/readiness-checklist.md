@@ -20,6 +20,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [x] Generated runtime config is checked for staleness.
 - [x] Branding, public links, media limits, legal paths, SSO display, and feature flags are config-driven.
 - [x] Forking and fork-content strategy docs describe upstream sync and tracked fork overrides.
+- [x] Docs index links every top-level docs page and is covered by `pnpm check:docs-index`.
 - [ ] Deployment content profiles for longer local copy are implemented beyond legal content paths.
 
 ## Supabase Contract
@@ -67,6 +68,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [ ] `pnpm check:config`
 - [ ] `pnpm test:config`
 - [ ] `pnpm test:copy`
+- [ ] `pnpm test:docs-index`
 - [ ] `pnpm test:admin-deletion-requests`
 - [ ] `pnpm test:admin-queue-counts`
 - [ ] `pnpm test:admin-recent-activity`
@@ -74,6 +76,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [ ] `pnpm test:admin-user-items`
 - [ ] `pnpm test:pwa-manifest`
 - [ ] `pnpm check:copy`
+- [ ] `pnpm check:docs-index`
 - [ ] `pnpm test:static-export`
 - [ ] `pnpm check:static-export`
 - [ ] `pnpm check:supabase-contract`

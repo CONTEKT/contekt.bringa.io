@@ -51,6 +51,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm install --frozen-lockfile`
 - `pnpm check:config`
 - `pnpm test:copy`
+- `pnpm test:docs-index`
 - `pnpm test:admin-deletion-requests`
 - `pnpm test:admin-queue-counts`
 - `pnpm test:admin-recent-activity`
@@ -58,6 +59,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm test:admin-user-items`
 - `pnpm test:pwa-manifest`
 - `pnpm check:copy`
+- `pnpm check:docs-index`
 - `pnpm test:static-export`
 - `pnpm check:static-export`
 - `pnpm lint`

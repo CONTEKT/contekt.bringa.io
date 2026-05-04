@@ -39,6 +39,9 @@ jobs:
       - name: Test copy checker
         run: pnpm test:copy
 
+      - name: Test docs index checker
+        run: pnpm test:docs-index
+
       - name: Test admin deletion request summary
         run: pnpm test:admin-deletion-requests
 
@@ -59,6 +62,9 @@ jobs:
 
       - name: Check English documentation copy
         run: pnpm check:copy
+
+      - name: Check docs index
+        run: pnpm check:docs-index
 
       - name: Test static export checker
         run: pnpm test:static-export
