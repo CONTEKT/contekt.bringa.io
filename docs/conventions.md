@@ -49,6 +49,8 @@ Secret-free checks should run for ordinary pull requests:
 - `pnpm check:config`
 - `pnpm test:copy`
 - `pnpm check:copy`
+- `pnpm test:static-export`
+- `pnpm check:static-export`
 - `pnpm lint`
 - `pnpm exec tsc --noEmit`
 - `pnpm build` with safe public dummy Supabase values when needed
@@ -75,6 +77,10 @@ Documentation should be compact, practical, and link to the source of truth.
 - Keep `AGENTS.md` short and navigational.
 - Develop docs in this repository so they can later publish cleanly to GitHub Pages.
 - Keep English documentation in English; `pnpm check:copy` blocks configured German organization terms in English docs/source-of-truth files.
+
+## Static Export
+
+This app uses Next.js static export. Keep `output: 'export'` and `images.unoptimized: true` in `next.config.ts`, avoid middleware, and keep any future App Router route handlers explicitly static. `pnpm check:static-export` enforces this architecture boundary.
 
 ## Hyperoptimum Practice
 

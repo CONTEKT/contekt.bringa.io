@@ -47,6 +47,12 @@ jobs:
       - name: Check English documentation copy
         run: pnpm check:copy
 
+      - name: Test static export checker
+        run: pnpm test:static-export
+
+      - name: Check static export contract
+        run: pnpm check:static-export
+
       - name: Check Supabase contract
         run: pnpm check:supabase-contract
 

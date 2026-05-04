@@ -6,6 +6,7 @@
 
 - [ ] `pnpm check:config`
 - [ ] `pnpm check:copy` when English docs/source-of-truth copy changes
+- [ ] `pnpm check:static-export` when Next.js routing, config, or app architecture changes
 - [ ] `pnpm check:supabase-contract` when Supabase-facing behavior changes
 - [ ] `pnpm exec tsc --noEmit`
 - [ ] `pnpm build` when build behavior may be affected
