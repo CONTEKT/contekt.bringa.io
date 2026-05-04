@@ -53,7 +53,8 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [x] Admin moderation route lists suggestions and flags and reviews status through RPCs.
 - [x] Admin user item views group current borrower, owner, and creator relationships for one profile.
 - [x] Admin deletion request queue lists operator-reviewed account deletion requests without destructive action.
-- [ ] Accepted-suggestion application, version restore, approved deletion execution, and notification settings are complete.
+- [x] Admin notification settings route shows Telegram, mute-window, dedupe, and seen-state planning without mutating user data.
+- [ ] Accepted-suggestion application, version restore, approved deletion execution, and notification execution are complete.
 
 ## Operations
 
@@ -69,6 +70,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [ ] `pnpm test:config`
 - [ ] `pnpm test:copy`
 - [ ] `pnpm test:docs-index`
+- [ ] `pnpm test:admin-notification-settings`
 - [ ] `pnpm test:admin-deletion-requests`
 - [ ] `pnpm test:admin-queue-counts`
 - [ ] `pnpm test:admin-recent-activity`

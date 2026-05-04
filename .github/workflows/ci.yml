@@ -42,6 +42,9 @@ jobs:
       - name: Test docs index checker
         run: pnpm test:docs-index
 
+      - name: Test admin notification settings
+        run: pnpm test:admin-notification-settings
+
       - name: Test admin deletion request summary
         run: pnpm test:admin-deletion-requests
 

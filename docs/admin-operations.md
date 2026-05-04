@@ -12,6 +12,7 @@ This page describes the current upstream admin surfaces. Keep operational detail
 - `/admin/users`: profile list, admin promotion, admin demotion, and self-demotion protection.
 - `/admin/user-items?id=<profile-id>`: admin-only item view grouped by current borrower, owner, and creator relationship for one profile.
 - `/admin/deletion-requests`: read-only operator queue for account deletion requests, linked to per-user item review.
+- `/admin/notifications`: read-only notification settings view for Telegram status, mute windows, dedupe, and admin seen-state planning.
 - `/admin/invite-code`: current admin invite code display and update flow.
 - `/admin/moderation`: item suggestions and flags, with admin review actions routed through RPCs.
 

@@ -252,6 +252,12 @@ export default function AdminDashboardPage() {
                             <p className="text-sm text-muted-foreground mt-1">Items, queues, and system readiness</p>
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
+                            <Link href="/admin/notifications">
+                                <button className="inline-flex items-center gap-2 rounded-md border bg-card px-4 py-2 text-sm font-medium shadow transition-colors hover:bg-accent">
+                                    <Bell className="h-4 w-4" />
+                                    Notifications
+                                </button>
+                            </Link>
                             <Link href="/admin/moderation">
                                 <button className="inline-flex items-center gap-2 rounded-md bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow transition-colors hover:bg-secondary/80">
                                     <Flag className="h-4 w-4" />
