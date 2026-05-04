@@ -127,12 +127,15 @@ function ItemDetailsContent() {
 
         setActionLoading(true)
         try {
-            const { error } = await supabase
-                .from('items')
-                .delete()
-                .eq('id', item.id)
+            const { data: deleted, error } = await supabase.rpc('delete_item', {
+                item_id_input: item.id,
+            })
 
             if (error) throw error
+            if (!deleted) {
+                alert("You do not have permission to delete this item.")
+                return
+            }
 
             router.push('/dashboard')
             router.refresh()

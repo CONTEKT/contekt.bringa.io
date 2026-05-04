@@ -240,6 +240,37 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.delete_item(item_id_input uuid)
+RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+DECLARE
+    item_creator uuid;
+    deleted_count integer;
+BEGIN
+    IF auth.uid() IS NULL OR NOT public.is_validated() THEN
+        RETURN false;
+    END IF;
+
+    SELECT created_by
+    INTO item_creator
+    FROM public.items
+    WHERE id = item_id_input;
+
+    IF NOT FOUND THEN
+        RETURN false;
+    END IF;
+
+    IF NOT public.is_admin() AND item_creator IS DISTINCT FROM auth.uid() THEN
+        RETURN false;
+    END IF;
+
+    DELETE FROM public.items
+    WHERE id = item_id_input;
+
+    GET DIAGNOSTICS deleted_count = ROW_COUNT;
+    RETURN deleted_count = 1;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION public.promote_admin(profile_id_input uuid)
 RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 BEGIN
@@ -415,7 +446,7 @@ CREATE POLICY "Validated users can insert items" ON public.items FOR INSERT WITH
 DROP POLICY IF EXISTS "Admins and creators can update items" ON public.items;
 CREATE POLICY "Admins and creators can update items" ON public.items FOR UPDATE USING (public.is_admin() OR created_by = auth.uid());
 DROP POLICY IF EXISTS "Admins and creators can delete items" ON public.items;
-CREATE POLICY "Admins and creators can delete items" ON public.items FOR DELETE USING (public.is_admin() OR created_by = auth.uid());
+CREATE POLICY "No direct item deletes" ON public.items FOR DELETE USING (false);
 
 -- borrow_history
 ALTER TABLE public.borrow_history ENABLE ROW LEVEL SECURITY;

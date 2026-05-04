@@ -72,12 +72,12 @@ Current UI:
 - `src/app/admin/users/page.tsx` calls `promote_admin` and `demote_admin`.
 - `src/app/admin/invite-code/page.tsx` calls `get_my_invite_code` and `set_my_invite_code`.
 - Admins can open the item edit UI for non-created items.
-- Item delete uses direct hard delete.
+- Item delete calls `delete_item`; direct item deletes are blocked by RLS.
 
 Risk:
 
 - Live projects must include the admin RPC migrations before deploying the admin role or invite-code UI changes.
-- Item delete and admin edit behavior still need lifecycle, versioning, and moderation design.
+- Item delete is still a hard delete internally and needs lifecycle, versioning, retention, and Storage cleanup design.
 
 Target:
 
@@ -189,6 +189,7 @@ Target:
 - `create_item(...)`
 - `update_item(...)`
 - `set_item_visibility(...)`
+- `delete_item(item_id uuid)`
 - `archive_or_delete_item(...)`
 - `promote_admin(profile_id uuid)`
 - `demote_admin(profile_id uuid)`
