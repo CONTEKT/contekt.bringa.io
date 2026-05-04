@@ -56,6 +56,7 @@ Secret-free checks should run for ordinary pull requests:
 - `pnpm build` with safe public dummy Supabase values when needed
 - GitHub Pages docs build for docs changes
 - `Build GitHub Pages docs` should run on every pull request so it can be used as a stable branch-protection check.
+- The docs workflow also builds on `main` and `codex/**` pushes; it deploys Pages only from `main`.
 
 Lint should be quiet. Treat new warnings as work to resolve or as explicit technical debt that belongs in `docs/optimization-options.md`.
 

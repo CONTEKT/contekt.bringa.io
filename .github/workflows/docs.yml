@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - codex/**
     paths:
       - docs/**
       - .github/workflows/docs.yml
