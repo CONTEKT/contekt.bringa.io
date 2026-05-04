@@ -103,7 +103,7 @@ Risk:
 
 Target:
 
-- Route ownership, visibility changes, accepted-suggestion application, image metadata writes, and cleanup through RPCs or Edge Functions before exposing the remaining flows in UI.
+- Route ownership, accepted-suggestion application, image metadata writes, and cleanup through RPCs or Edge Functions before exposing the remaining flows in UI.
 - Keep `item_versions` as the versioning source of truth instead of JSON-in-row.
 
 ### Moderation Queue
@@ -113,7 +113,7 @@ Current model:
 - `item_suggestions` records validated-user suggestions for content, image, visibility, owner, or other item improvements.
 - `item_flags` records validated-user item issue reports with a bounded reason set.
 - Users create both through `create_item_suggestion` and `create_item_flag`; direct browser inserts, updates, and deletes are blocked by RLS.
-- Admins inspect and transition queue status in `/admin/moderation` through `review_item_suggestion` and `review_item_flag`.
+- Admins inspect and transition queue status in `/admin/moderation` through `review_item_suggestion`, `review_item_flag`, and `set_item_visibility`.
 
 Risk:
 

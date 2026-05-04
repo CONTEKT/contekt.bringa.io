@@ -50,7 +50,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [x] Admin dashboard shows recent borrow/return activity and recent image uploads.
 - [x] Admin dashboard links config, Supabase contract, Storage contract, backups, docs, and Telegram health to source-of-truth docs.
 - [x] Admin users route supports admin promotion and demotion with self-demotion protection.
-- [x] Admin moderation route lists suggestions and flags and reviews status through RPCs.
+- [x] Admin moderation route lists pending visibility requests, suggestions, and flags, and reviews status through RPCs.
 - [x] Admin user item views group current borrower, owner, and creator relationships for one profile.
 - [x] Admin item version route lists snapshots and restores selected versions through an admin-only RPC.
 - [x] Admin deletion request queue lists operator-reviewed account deletion requests without destructive action.
@@ -78,6 +78,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [ ] `pnpm test:admin-system-health`
 - [ ] `pnpm test:admin-user-items`
 - [ ] `pnpm test:admin-item-versions`
+- [ ] `pnpm test:admin-visibility-queue`
 - [ ] `pnpm test:pwa-manifest`
 - [ ] `pnpm check:copy`
 - [ ] `pnpm check:docs-index`

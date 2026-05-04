@@ -49,6 +49,7 @@ The browser should call RPCs for these writes:
 - `review_item_suggestion`
 - `review_item_flag`
 - `restore_item_version`
+- `set_item_visibility`
 
 `record_item_version` is an internal SQL helper used by item create, update, and restore functions. Direct browser execution is revoked.
 
@@ -67,6 +68,7 @@ Borrow history reads are admin-only by default.
 - item ownership, visibility, deletion, and handoff columns;
 - prepared `item_versions` and `item_images` tables;
 - item version capture on create/update and admin restore-by-republish through RPCs;
+- admin-only item visibility changes with required reasons;
 - prepared account deletion request table;
 - prepared item suggestion and item flag tables;
 - blocked direct browser writes to item versions and item image metadata;

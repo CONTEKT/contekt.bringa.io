@@ -68,6 +68,7 @@ async function main() {
     "review_item_flag",
     "record_item_version",
     "restore_item_version",
+    "set_item_visibility",
   ];
 
   for (const functionName of requiredFunctions) {
@@ -211,6 +212,18 @@ async function main() {
 
   for (const [label, expectedSql] of requiredVersioningSql) {
     requireIncludes(schema, expectedSql, `Missing item versioning contract in supabase/schema.sql: ${label}`);
+  }
+
+  const requiredVisibilitySql = [
+    ["visibility updates require admin RPC", "CREATE OR REPLACE FUNCTION public.set_item_visibility("],
+    ["visibility updates require reasons", "IF normalized_reason IS NULL THEN"],
+    ["visibility updates append version", "SELECT public.record_item_version(item_id_input, version_reason) INTO new_version_id;"],
+    ["public item reads exclude hidden states", "visibility_state = 'visible'"],
+    ["admins can still view all items", "public.is_admin() OR"],
+  ];
+
+  for (const [label, expectedSql] of requiredVisibilitySql) {
+    requireIncludes(schema, expectedSql, `Missing item visibility contract in supabase/schema.sql: ${label}`);
   }
 
   const requiredProductPolicies = [

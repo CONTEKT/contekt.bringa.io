@@ -3,13 +3,14 @@
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { CheckCircle2, Eye, Flag, History, Inbox, Lightbulb, Loader2, Package, XCircle } from "lucide-react"
+import { CheckCircle2, Eye, EyeOff, Flag, History, Inbox, Lightbulb, Loader2, Package, XCircle } from "lucide-react"
 import ProtectedRoute from "@/components/auth/protected-route"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { supabase } from "@/lib/supabaseclient"
 import { AppImage } from "@/components/ui/app-image"
 import { Button } from "@/components/ui/button"
 import { ItemDb, ItemFlag, ItemFlagStatus, ItemSuggestion, ItemSuggestionStatus, Profile } from "@/app/model/model"
+import { buildAdminVisibilityQueue, type AdminVisibilityQueueEntry, type AdminVisibilityQueueItem } from "@/lib/admin-visibility-queue"
 
 type ModerationItem = Pick<ItemDb, "id" | "name" | "status" | "visibility_state" | "image_url">
 type ProfileSummary = Pick<Profile, "id" | "email" | "display_name" | "display_surname">
@@ -37,12 +38,15 @@ function profileName(profile: ProfileSummary | null): string {
     return name || profile.email || "Unnamed user"
 }
 
-function formatDate(value: string): string {
-    return new Date(value).toISOString().split("T")[0]
+function formatDate(value: string | null | undefined): string {
+    if (!value) return "Unknown date"
+    const date = new Date(value)
+    if (!Number.isFinite(date.getTime())) return "Unknown date"
+    return date.toISOString().split("T")[0]
 }
 
 function StatusBadge({ value }: { value: string }) {
-    const isOpen = value === "pending" || value === "reviewing"
+    const isOpen = value === "pending" || value === "reviewing" || value === "pending_visible"
     return (
         <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${isOpen ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200" : "bg-muted text-muted-foreground"}`}>
             {value.replaceAll("_", " ")}
@@ -55,16 +59,20 @@ export default function AdminModerationPage() {
     const { isAdmin, loading: adminLoading } = useIsAdmin()
     const [suggestions, setSuggestions] = useState<SuggestionQueueRow[]>([])
     const [flags, setFlags] = useState<FlagQueueRow[]>([])
+    const [visibilityItems, setVisibilityItems] = useState<AdminVisibilityQueueItem[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [actionError, setActionError] = useState<string | null>(null)
     const [processingAction, setProcessingAction] = useState<string | null>(null)
+    const [visibilityReason, setVisibilityReason] = useState("")
 
+    const visibilityQueue = useMemo(() => buildAdminVisibilityQueue(visibilityItems), [visibilityItems])
     const stats = useMemo(() => ({
         pendingSuggestions: suggestions.filter((row) => row.status === "pending").length,
         pendingFlags: flags.filter((row) => row.status === "pending").length,
-        openTotal: [...suggestions, ...flags].filter((row) => row.status === "pending" || row.status === "reviewing").length,
-    }), [flags, suggestions])
+        pendingVisibility: visibilityQueue.length,
+        openTotal: [...suggestions, ...flags].filter((row) => row.status === "pending" || row.status === "reviewing").length + visibilityQueue.length,
+    }), [flags, suggestions, visibilityQueue])
 
     useEffect(() => {
         if (!adminLoading && !isAdmin) {
@@ -77,7 +85,7 @@ export default function AdminModerationPage() {
             try {
                 setLoading(true)
                 setError(null)
-                const [suggestionsRes, flagsRes] = await Promise.all([
+                const [suggestionsRes, flagsRes, visibilityRes] = await Promise.all([
                     supabase
                         .from("item_suggestions")
                         .select(`
@@ -96,13 +104,21 @@ export default function AdminModerationPage() {
                         `)
                         .order("created_at", { ascending: false })
                         .limit(50),
+                    supabase
+                        .from("items")
+                        .select("id,name,status,visibility_state,visibility_reason,image_url,created_at")
+                        .eq("visibility_state", "pending_visible")
+                        .order("created_at", { ascending: false })
+                        .limit(50),
                 ])
 
                 if (suggestionsRes.error) throw suggestionsRes.error
                 if (flagsRes.error) throw flagsRes.error
+                if (visibilityRes.error) throw visibilityRes.error
 
                 setSuggestions((suggestionsRes.data || []) as unknown as SuggestionQueueRow[])
                 setFlags((flagsRes.data || []) as unknown as FlagQueueRow[])
+                setVisibilityItems((visibilityRes.data || []) as AdminVisibilityQueueItem[])
             } catch {
                 setError("Moderation queue is unavailable until the Supabase moderation contract is applied.")
             } finally {
@@ -165,6 +181,35 @@ export default function AdminModerationPage() {
         }
     }
 
+    const reviewVisibility = async (item: AdminVisibilityQueueEntry, visibilityState: "visible" | "admin_hidden") => {
+        const reason = visibilityReason.trim()
+        if (reason.length < 3) {
+            setActionError("Add a short visibility reason before changing this item.")
+            return
+        }
+
+        const actionId = `visibility-${item.id}-${visibilityState}`
+        setProcessingAction(actionId)
+        setActionError(null)
+        try {
+            const { data, error } = await supabase.rpc("set_item_visibility", {
+                item_id_input: item.id,
+                visibility_state_input: visibilityState,
+                reason_input: reason,
+            })
+
+            if (error) throw error
+            if (!data) throw new Error("Visibility change rejected")
+
+            setVisibilityItems((rows) => rows.filter((row) => row.id !== item.id))
+            setVisibilityReason("")
+        } catch {
+            setActionError("Could not update the item visibility.")
+        } finally {
+            setProcessingAction(null)
+        }
+    }
+
     if (adminLoading || loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -191,7 +236,7 @@ export default function AdminModerationPage() {
                         </Button>
                     </div>
 
-                    <section className="grid gap-3 sm:grid-cols-3">
+                    <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         <div className="rounded-lg border bg-card p-3">
                             <div className="flex items-center justify-between gap-2">
                                 <span className="text-xs font-medium text-muted-foreground">Open total</span>
@@ -213,6 +258,13 @@ export default function AdminModerationPage() {
                             </div>
                             <p className="mt-2 text-2xl font-semibold tabular-nums">{stats.pendingFlags}</p>
                         </div>
+                        <div className="rounded-lg border bg-card p-3">
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="text-xs font-medium text-muted-foreground">Pending visibility</span>
+                                <Eye className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                            <p className="mt-2 text-2xl font-semibold tabular-nums">{stats.pendingVisibility}</p>
+                        </div>
                     </section>
 
                     {error && (
@@ -226,6 +278,96 @@ export default function AdminModerationPage() {
                             {actionError}
                         </div>
                     )}
+
+                    <section className="rounded-lg border bg-card p-4">
+                        <label htmlFor="visibility-reason" className="text-sm font-medium">Visibility reason</label>
+                        <textarea
+                            id="visibility-reason"
+                            value={visibilityReason}
+                            onChange={(event) => setVisibilityReason(event.target.value)}
+                            rows={3}
+                            className="mt-2 min-h-24 w-full rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            placeholder="Record why this item should become visible or stay hidden."
+                        />
+                        <p className="mt-2 text-xs text-muted-foreground">Required for pending visibility actions.</p>
+                    </section>
+
+                    <section className="flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-sm font-semibold">Pending visibility</h2>
+                            <span className="text-xs text-muted-foreground">{visibilityQueue.length} records</span>
+                        </div>
+                        {visibilityQueue.length === 0 ? (
+                            <div className="rounded-lg border bg-card p-8 text-center text-sm text-muted-foreground">
+                                No pending visibility requests.
+                            </div>
+                        ) : (
+                            visibilityQueue.map((item) => (
+                                <div key={item.id} className="rounded-lg border bg-card p-4">
+                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                        <div className="flex min-w-0 gap-3">
+                                            {item.image_url ? (
+                                                <AppImage
+                                                    src={item.image_url}
+                                                    alt=""
+                                                    width={48}
+                                                    height={48}
+                                                    sizes="48px"
+                                                    className="h-12 w-12 shrink-0 rounded-md border object-cover"
+                                                />
+                                            ) : (
+                                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border bg-muted">
+                                                    <Package className="h-5 w-5 text-muted-foreground" />
+                                                </div>
+                                            )}
+                                            <div className="min-w-0">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <StatusBadge value={item.visibility_state || "pending_visible"} />
+                                                    <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                                                        {item.status === "borrowed" ? "Borrowed" : "In stock"}
+                                                    </span>
+                                                </div>
+                                                <h3 className="mt-2 truncate font-semibold">{item.nameLabel}</h3>
+                                                <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">{item.reasonLabel}</p>
+                                                <p className="mt-2 text-xs text-muted-foreground">{formatDate(item.created_at)}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-wrap gap-2 sm:max-w-64 sm:justify-end">
+                                            <Button asChild variant="outline" size="sm" className="sm:shrink-0">
+                                                <Link href={`/items/details?id=${item.id}`}>Open item</Link>
+                                            </Button>
+                                            <Button asChild variant="outline" size="sm" className="sm:shrink-0">
+                                                <Link href={`/admin/item-versions?itemId=${item.id}`}>
+                                                    <History className="h-4 w-4" />
+                                                    Versions
+                                                </Link>
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="secondary"
+                                                size="sm"
+                                                onClick={() => reviewVisibility(item, "visible")}
+                                                disabled={processingAction !== null || visibilityReason.trim().length < 3}
+                                            >
+                                                {processingAction === `visibility-${item.id}-visible` ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                                                Approve
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => reviewVisibility(item, "admin_hidden")}
+                                                disabled={processingAction !== null || visibilityReason.trim().length < 3}
+                                            >
+                                                {processingAction === `visibility-${item.id}-admin_hidden` ? <Loader2 className="h-4 w-4 animate-spin" /> : <EyeOff className="h-4 w-4" />}
+                                                Hide
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </section>
 
                     <section className="flex flex-col gap-2">
                         <div className="flex items-center justify-between">

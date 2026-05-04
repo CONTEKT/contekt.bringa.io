@@ -15,7 +15,7 @@ This page describes the current upstream admin surfaces. Keep operational detail
 - `/admin/deletion-requests`: read-only operator queue for account deletion requests, linked to per-user item review.
 - `/admin/notifications`: read-only notification settings view for Telegram status, mute windows, dedupe, and admin seen-state planning.
 - `/admin/invite-code`: current admin invite code display and update flow.
-- `/admin/moderation`: item suggestions and flags, with admin review actions routed through RPCs.
+- `/admin/moderation`: pending visibility requests, item suggestions, and flags, with admin review actions routed through RPCs.
 
 ## Review Queues
 
@@ -23,9 +23,10 @@ Moderation queue records live in Supabase:
 
 - `item_suggestions`: user suggestions for content, images, visibility, owner, or other item changes.
 - `item_flags`: user issue reports with a bounded reason set.
+- `items.visibility_state = 'pending_visible'`: item visibility requests that require an admin reason before approval or hiding.
 - `account_deletion_requests`: user account deletion requests for operator triage before any approved destructive workflow.
 
-Users create these records through `create_item_suggestion` and `create_item_flag`. Admins transition state through `review_item_suggestion` and `review_item_flag`. Direct browser inserts, updates, and deletes remain blocked by RLS.
+Users create these records through `create_item_suggestion` and `create_item_flag`. Admins transition state through `review_item_suggestion`, `review_item_flag`, and `set_item_visibility`. Direct browser inserts, updates, and deletes remain blocked by RLS.
 
 Status transitions currently record reviewer and reviewed time. They do not yet apply accepted suggestions to item records, notify users, or update Telegram seen-state.
 

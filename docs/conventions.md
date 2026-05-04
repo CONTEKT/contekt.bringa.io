@@ -59,6 +59,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm test:admin-system-health`
 - `pnpm test:admin-user-items`
 - `pnpm test:admin-item-versions`
+- `pnpm test:admin-visibility-queue`
 - `pnpm test:pwa-manifest`
 - `pnpm check:copy`
 - `pnpm check:docs-index`

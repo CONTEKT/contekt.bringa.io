@@ -19,6 +19,7 @@
     "test:admin-system-health": "node --test scripts/admin-system-health.test.mjs",
     "test:admin-user-items": "node --test scripts/admin-user-items.test.mjs",
     "test:admin-item-versions": "node --test scripts/admin-item-versions.test.mjs",
+    "test:admin-visibility-queue": "node --test scripts/admin-visibility-queue.test.mjs",
     "test:pwa-manifest": "node --test scripts/pwa-manifest.test.mjs",
     "test:static-export": "node --test scripts/check-static-export.test.mjs",
     "check:config": "node scripts/generate-config.mjs --check",
