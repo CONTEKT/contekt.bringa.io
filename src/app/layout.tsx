@@ -7,6 +7,15 @@ export const metadata: Metadata = {
   title: appConfig.app.name,
   description: appConfig.app.description,
   metadataBase: new URL(appConfig.app.canonicalUrl),
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
+  appleWebApp: {
+    capable: true,
+    title: appConfig.app.shortName,
+  },
 };
 
 export default function RootLayout({

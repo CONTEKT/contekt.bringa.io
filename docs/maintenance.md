@@ -18,4 +18,4 @@
 - Lint currently fails on existing `any`, hook, unused import, and image warnings in legacy pages.
 - Supabase MCP/service-role review is pending.
 - Storage backup/export is not implemented yet.
-- PWA manifest and full icon set are pending.
+- Maskable PNG icons and complete homescreen testing are pending.
