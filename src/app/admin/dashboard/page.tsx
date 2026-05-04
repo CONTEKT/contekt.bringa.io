@@ -5,7 +5,9 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabaseclient";
 import { ItemDb } from "@/app/model/model";
 import {
+    Archive,
     Bell,
+    BookOpen,
     Clock3,
     Database,
     EyeOff,
@@ -16,6 +18,7 @@ import {
     PackageCheck,
     ShieldCheck,
     Sparkles,
+    Settings,
     Trash2,
     Users,
 } from "lucide-react";
@@ -24,6 +27,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useRouter } from "next/navigation";
 import { AppImage } from "@/components/ui/app-image";
 import { buildAdminQueueCounts } from "@/lib/admin-queue-counts";
+import { buildAdminSystemHealthItems, type AdminSystemHealthItemKey } from "@/lib/admin-system-health";
 import { appConfig } from "@/lib/app-config";
 
 export default function AdminDashboardPage() {
@@ -80,33 +84,21 @@ export default function AdminDashboardPage() {
         { label: "Pending users", value: queueCounts.pendingUsers ?? "—", icon: Users },
     ];
 
-    const healthItems = [
-        {
-            label: "Telegram",
-            value: appConfig.features.telegramAdminNotifications ? "Configured by deployment" : "Disabled",
-            icon: Bell,
-        },
-        {
-            label: "Supabase contract",
-            value: "Checked in CI",
-            icon: Database,
-        },
-        {
-            label: "Media policy",
-            value: `${Math.round(appConfig.media.maxUploadBytes / 1024 / 1024)} MB, ${appConfig.media.acceptedImageMimeTypes.length} types`,
-            icon: ShieldCheck,
-        },
-        {
-            label: "Flags",
-            value: queueCounts.pendingFlags === null ? "Queue prepared" : `${queueCounts.pendingFlags} pending`,
-            icon: Flag,
-        },
-        {
-            label: "Deletion requests",
-            value: queueCounts.openDeletionRequests === null ? "Queue prepared" : `${queueCounts.openDeletionRequests} open`,
-            icon: Trash2,
-        },
-    ];
+    const healthItems = buildAdminSystemHealthItems({
+        repositoryUrl: appConfig.repository.url,
+        telegramAdminNotifications: appConfig.features.telegramAdminNotifications,
+        maxUploadBytes: appConfig.media.maxUploadBytes,
+        acceptedImageMimeTypes: appConfig.media.acceptedImageMimeTypes,
+    });
+
+    const healthIcons: Record<AdminSystemHealthItemKey, typeof Settings> = {
+        config: Settings,
+        supabase: Database,
+        storage: ShieldCheck,
+        backups: Archive,
+        docs: BookOpen,
+        telegram: Bell,
+    };
 
     useEffect(() => {
         // Redirect non-admins
@@ -281,16 +273,27 @@ export default function AdminDashboardPage() {
                         ))}
                     </section>
 
-                    <section className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
-                        {healthItems.map(({ label, value, icon: Icon }) => (
-                            <div key={label} className="rounded-lg border bg-card p-3">
-                                <div className="flex items-center gap-2">
-                                    <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
-                                    <span className="text-sm font-medium">{label}</span>
+                    <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                        {healthItems.map(({ key, label, value, detail, href }) => {
+                            const Icon = healthIcons[key];
+                            return (
+                                <div key={label} className="rounded-lg border bg-card p-3">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="flex min-w-0 items-center gap-2">
+                                            <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                            <span className="truncate text-sm font-medium">{label}</span>
+                                        </div>
+                                        {href && (
+                                            <a href={href} className="shrink-0 text-xs font-medium text-primary underline-offset-4 hover:underline">
+                                                Docs
+                                            </a>
+                                        )}
+                                    </div>
+                                    <p className="mt-2 text-sm font-medium">{value}</p>
+                                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{detail}</p>
                                 </div>
-                                <p className="mt-2 text-sm text-muted-foreground">{value}</p>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </section>
 
                     <section className="flex flex-col gap-2">

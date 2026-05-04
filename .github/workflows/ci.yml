@@ -45,6 +45,9 @@ jobs:
       - name: Test admin queue counts
         run: pnpm test:admin-queue-counts
 
+      - name: Test admin system health
+        run: pnpm test:admin-system-health
+
       - name: Test admin user item grouping
         run: pnpm test:admin-user-items
 
