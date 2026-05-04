@@ -1,14 +1,27 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseclient";
 import { ItemDb } from "@/app/model/model";
-import { Loader2, Package } from "lucide-react";
+import {
+    Bell,
+    Clock3,
+    Database,
+    EyeOff,
+    Flag,
+    ImageIcon,
+    Loader2,
+    Package,
+    PackageCheck,
+    ShieldCheck,
+    Users,
+} from "lucide-react";
 import ProtectedRoute from "@/components/auth/protected-route";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useRouter } from "next/navigation";
 import { AppImage } from "@/components/ui/app-image";
+import { appConfig } from "@/lib/app-config";
 
 export default function AdminDashboardPage() {
     const router = useRouter();
@@ -21,6 +34,56 @@ export default function AdminDashboardPage() {
     const [items, setItems] = useState<AdminItem[]>([]);
     const [loading, setLoading] = useState(true);
     const { isAdmin, loading: adminLoading } = useIsAdmin();
+
+    const stats = useMemo(() => {
+        const hiddenStates = new Set(["user_hidden", "admin_hidden", "deleted_user_hidden", "archived"]);
+        const hidden = items.filter((item) => hiddenStates.has(item.visibility_state || "")).length;
+        const pendingVisible = items.filter((item) => item.visibility_state === "pending_visible").length;
+        const borrowed = items.filter((item) => item.status === "borrowed").length;
+        const available = items.filter((item) => item.status === "inStock" && !hiddenStates.has(item.visibility_state || "")).length;
+        const withImages = items.filter((item) => Boolean(item.image_url)).length;
+
+        return {
+            total: items.length,
+            available,
+            borrowed,
+            hidden,
+            pendingVisible,
+            withImages,
+        };
+    }, [items]);
+
+    const statCards = [
+        { label: "Total items", value: stats.total, icon: Package },
+        { label: "Available", value: stats.available, icon: PackageCheck },
+        { label: "Borrowed", value: stats.borrowed, icon: Users },
+        { label: "Hidden", value: stats.hidden, icon: EyeOff },
+        { label: "Pending visible", value: stats.pendingVisible, icon: Clock3 },
+        { label: "With images", value: stats.withImages, icon: ImageIcon },
+    ];
+
+    const healthItems = [
+        {
+            label: "Telegram",
+            value: appConfig.features.telegramAdminNotifications ? "Configured by deployment" : "Disabled",
+            icon: Bell,
+        },
+        {
+            label: "Supabase contract",
+            value: "Checked in CI",
+            icon: Database,
+        },
+        {
+            label: "Media policy",
+            value: `${Math.round(appConfig.media.maxUploadBytes / 1024 / 1024)} MB, ${appConfig.media.acceptedImageMimeTypes.length} types`,
+            icon: ShieldCheck,
+        },
+        {
+            label: "Flags",
+            value: "Queue prepared",
+            icon: Flag,
+        },
+    ];
 
     useEffect(() => {
         // Redirect non-admins
@@ -117,12 +180,12 @@ export default function AdminDashboardPage() {
 
     return (
         <ProtectedRoute>
-            <div className="flex flex-col items-center w-full max-w-2xl mx-auto mt-4 space-y-2 pt-12 px-4 pb-24">
-                <div className="w-full mb-4">
-                    <div className="flex items-center justify-between">
+            <div className="flex w-full flex-col gap-5 px-4 pb-24 pt-16 sm:px-6 lg:px-8">
+                <div className="mx-auto flex w-full max-w-6xl flex-col gap-5">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-                            <p className="text-sm text-muted-foreground mt-1">View all items and their borrowing status</p>
+                            <p className="text-sm text-muted-foreground mt-1">Items, queues, and system readiness</p>
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
                             <Link href="/admin/users">
@@ -137,58 +200,95 @@ export default function AdminDashboardPage() {
                             </Link>
                         </div>
                     </div>
-                </div>
 
-                {items.length === 0 ? (
-                    <div className="text-center text-muted-foreground mt-10">
-                        <p>No items found in the system.</p>
-                    </div>
-                ) : (
-                    items.map((item) => (
-                        <Link href={`/items/details?id=${item.id}`} key={item.id} className="w-full">
-                            <div className="w-full border rounded-lg p-4 bg-card shadow-sm hover:shadow-md transition-shadow flex justify-between items-center">
-                                <div className="flex items-center gap-4">
-                                    {item.image_url ? (
-                                        <AppImage
-                                            src={item.image_url}
-                                            alt={item.name}
-                                            width={56}
-                                            height={56}
-                                            sizes="56px"
-                                            className="w-14 h-14 rounded-lg object-cover border"
-                                        />
-                                    ) : (
-                                        <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center border">
-                                            <Package className="h-6 w-6 text-muted-foreground" />
-                                        </div>
-                                    )}
-                                    <div>
-                                        <h3 className="font-semibold">{item.name}</h3>
-                                        <p className="text-sm text-muted-foreground">{item.description || "No description"}</p>
+                    <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+                        {statCards.map(({ label, value, icon: Icon }) => (
+                            <div key={label} className="rounded-lg border bg-card p-3">
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="text-xs font-medium text-muted-foreground">{label}</span>
+                                    <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                </div>
+                                <p className="mt-2 text-2xl font-semibold tabular-nums">{value}</p>
+                            </div>
+                        ))}
+                    </section>
 
-                                        {/* Borrower Info */}
-                                        {item.status === 'borrowed' && (
-                                            <div className="mt-1 text-xs text-amber-600 dark:text-amber-500 font-medium flex flex-col">
-                                                <span>Borrowed by: {item.borrowerName || 'Unknown'}</span>
-                                                {item.borrowedDate && (
-                                                    <span className="text-muted-foreground opacity-80">
-                                                        {new Date(item.borrowedDate).toISOString().split('T')[0]}
-                                                    </span>
+                    <section className="grid gap-3 md:grid-cols-4">
+                        {healthItems.map(({ label, value, icon: Icon }) => (
+                            <div key={label} className="rounded-lg border bg-card p-3">
+                                <div className="flex items-center gap-2">
+                                    <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                    <span className="text-sm font-medium">{label}</span>
+                                </div>
+                                <p className="mt-2 text-sm text-muted-foreground">{value}</p>
+                            </div>
+                        ))}
+                    </section>
+
+                    <section className="flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-sm font-semibold">Items</h2>
+                            <span className="text-xs text-muted-foreground">{items.length} records</span>
+                        </div>
+
+                        {items.length === 0 ? (
+                            <div className="rounded-lg border bg-card p-8 text-center text-sm text-muted-foreground">
+                                No items found in the system.
+                            </div>
+                        ) : (
+                            items.map((item) => (
+                                <Link href={`/items/details?id=${item.id}`} key={item.id} className="w-full">
+                                    <div className="flex w-full items-center justify-between gap-3 rounded-lg border bg-card p-4 transition-colors hover:bg-accent">
+                                        <div className="flex min-w-0 items-center gap-4">
+                                            {item.image_url ? (
+                                                <AppImage
+                                                    src={item.image_url}
+                                                    alt={item.name}
+                                                    width={56}
+                                                    height={56}
+                                                    sizes="56px"
+                                                    className="h-14 w-14 shrink-0 rounded-lg border object-cover"
+                                                />
+                                            ) : (
+                                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border bg-muted">
+                                                    <Package className="h-6 w-6 text-muted-foreground" />
+                                                </div>
+                                            )}
+                                            <div className="min-w-0">
+                                                <h3 className="truncate font-semibold">{item.name}</h3>
+                                                <p className="truncate text-sm text-muted-foreground">{item.description || "No description"}</p>
+
+                                                {item.status === 'borrowed' && (
+                                                    <div className="mt-1 flex flex-col text-xs font-medium text-amber-600 dark:text-amber-500">
+                                                        <span className="truncate">Borrowed by: {item.borrowerName || 'Unknown'}</span>
+                                                        {item.borrowedDate && (
+                                                            <span className="text-muted-foreground opacity-80">
+                                                                {new Date(item.borrowedDate).toISOString().split('T')[0]}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 )}
                                             </div>
-                                        )}
+                                        </div>
+                                        <div className="flex shrink-0 flex-col items-end gap-1">
+                                            <div className={`rounded-full px-3 py-1 text-xs font-medium ${item.status === 'borrowed'
+                                                ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200'
+                                                : 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-200'
+                                                }`}>
+                                                {item.status === 'borrowed' ? 'Borrowed' : 'In Stock'}
+                                            </div>
+                                            {item.visibility_state && item.visibility_state !== "visible" && (
+                                                <div className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+                                                    {item.visibility_state.replaceAll("_", " ")}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className={`px-3 py-1 rounded-full text-xs font-medium ${item.status === 'borrowed'
-                                    ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200'
-                                    : 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-200'
-                                    }`}>
-                                    {item.status === 'borrowed' ? 'Borrowed' : 'In Stock'}
-                                </div>
-                            </div>
-                        </Link>
-                    ))
-                )}
+                                </Link>
+                            ))
+                        )}
+                    </section>
+                </div>
             </div>
         </ProtectedRoute>
     );

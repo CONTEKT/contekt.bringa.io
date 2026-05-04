@@ -1,3 +1,13 @@
+export type ItemOwnerKind = "operator" | "profile" | "free_text";
+export type ItemVisibilityState =
+  | "visible"
+  | "user_hidden"
+  | "admin_hidden"
+  | "pending_visible"
+  | "deleted_user_hidden"
+  | "archived";
+export type ItemHandoffPolicy = "return_to_owner" | "direct_handoff_allowed";
+
 export interface ItemDb {
   id: string; // UUID
   borrowed_by: string | null; // UUID of the borrower
@@ -6,6 +16,16 @@ export interface ItemDb {
   status: "inStock" | "borrowed";
   image_url: string | null; // Matches DB column name
   created_by: string | null;
+  owner_kind?: ItemOwnerKind | null;
+  owner_profile_id?: string | null;
+  owner_label?: string | null;
+  visibility_state?: ItemVisibilityState | null;
+  visibility_reason?: string | null;
+  hidden_at?: string | null;
+  hidden_by?: string | null;
+  deleted_at?: string | null;
+  deleted_by?: string | null;
+  handoff_policy?: ItemHandoffPolicy | null;
 }
 
 export interface BorrowedItem extends ItemDb {
