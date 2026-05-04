@@ -10,6 +10,7 @@ This page describes the current upstream admin surfaces. Keep operational detail
 
 - `/admin/dashboard`: item counts, visibility signals, borrowed-first item list, and system-readiness placeholders.
 - `/admin/users`: profile list, admin promotion, admin demotion, and self-demotion protection.
+- `/admin/user-items?id=<profile-id>`: admin-only item view grouped by current borrower, owner, and creator relationship for one profile.
 - `/admin/invite-code`: current admin invite code display and update flow.
 - `/admin/moderation`: item suggestions and flags, with admin review actions routed through RPCs.
 
@@ -30,6 +31,7 @@ Status transitions currently record reviewer and reviewed time. They do not yet 
 - Keep queue summaries compact and avoid exporting row contents into chat or issue comments.
 - Do not inspect real user rows through Supabase tools unless the maintainer explicitly approves that access for the current task.
 - Run or offer `pnpm backup:supabase` before production database work when a service role key is available.
+- Use `/admin/user-items` for item review instead of copying user item lists into chat or external systems.
 
 ## Before Production Changes
 
@@ -46,6 +48,7 @@ Keep the roadmap in [Optimization Options](optimization-options.md) current for:
 - accepted-suggestion application;
 - item/image-specific moderation;
 - item version restore-by-republish;
+- hide/unhide reason flows from user item review;
 - Telegram dedupe, mute windows, and seen-state;
 - backup freshness and Supabase health visibility;
 - account deletion processing, Auth deletion, and Storage cleanup.

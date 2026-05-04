@@ -5,9 +5,11 @@ import ProtectedRoute from "@/components/auth/protected-route"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseclient"
-import { Loader2, Users, ShieldAlert, ShieldCheck } from "lucide-react"
+import { Loader2, Package, Users, ShieldAlert, ShieldCheck } from "lucide-react"
 import { Admin, Profile } from "@/app/model/model"
 import { AppImage } from "@/components/ui/app-image"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function AdminUsersPage() {
     const router = useRouter()
@@ -105,7 +107,7 @@ export default function AdminUsersPage() {
 
     return (
         <ProtectedRoute>
-            <div className="flex flex-col items-center w-full max-w-2xl mx-auto mt-4 space-y-2 pt-12 px-4 pb-24">
+            <div className="flex flex-col items-center w-full max-w-4xl mx-auto mt-4 space-y-2 pt-12 px-4 pb-24">
                 <div className="w-full mb-6">
                     <h1 className="text-2xl font-bold flex items-center gap-2">
                         <Users className="w-6 h-6" /> Manage Users
@@ -120,8 +122,8 @@ export default function AdminUsersPage() {
                         const isCurrentUser = currentUserId === profile.id
 
                         return (
-                            <div key={profile.id} className="border rounded-lg p-4 bg-card shadow-sm flex items-center justify-between">
-                                <div className="flex items-center gap-4">
+                            <div key={profile.id} className="border rounded-lg p-4 bg-card shadow-sm flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="flex min-w-0 items-center gap-4">
                                     {profile.avatar_url ? (
                                         <AppImage
                                             src={profile.avatar_url}
@@ -149,7 +151,13 @@ export default function AdminUsersPage() {
                                     </div>
                                 </div>
 
-                                <div>
+                                <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+                                    <Button asChild variant="outline" size="sm">
+                                        <Link href={`/admin/user-items?id=${profile.id}`}>
+                                            <Package className="h-4 w-4" />
+                                            Items
+                                        </Link>
+                                    </Button>
                                     {isUserAdmin ? (
                                         <div className="flex items-center gap-2">
                                             <div className="px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs rounded-full font-medium flex items-center gap-1">

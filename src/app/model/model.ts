@@ -14,6 +14,7 @@ export type ItemFlagStatus = "pending" | "reviewing" | "resolved" | "dismissed";
 
 export interface ItemDb {
   id: string; // UUID
+  created_at?: string | null;
   borrowed_by: string | null; // UUID of the borrower
   name: string;
   description: string | null;

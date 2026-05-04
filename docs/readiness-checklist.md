@@ -61,6 +61,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [ ] `pnpm check:config`
 - [ ] `pnpm test:config`
 - [ ] `pnpm test:copy`
+- [ ] `pnpm test:admin-user-items`
 - [ ] `pnpm check:copy`
 - [ ] `pnpm test:static-export`
 - [ ] `pnpm check:static-export`
