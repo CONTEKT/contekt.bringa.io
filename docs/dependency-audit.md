@@ -36,4 +36,12 @@ Use current package metadata and official documentation before dependency upgrad
 - UI icon library major updates need TypeScript, lint, static build, and focused browser review for imported icon surfaces.
 - Keep `pnpm-lock.yaml` and `package.json` together in the same commit.
 
-After applying the compatible updates, the reviewed `lucide-react` major update, and Node-24-aligned type update, `pnpm outdated` only lists deferred Node 25 type, ESLint, and TypeScript major-version work.
+## 2026-05-04 Deferred Major Follow-Up
+
+After applying the compatible updates, the reviewed `lucide-react` major update, and Node-24-aligned type update, `pnpm outdated` lists only deferred major-version work:
+
+| Package | Current | Latest | Decision |
+| --- | ---: | ---: | --- |
+| `@types/node` | `24.12.2` | `25.6.0` | Defer while runtime, CI, and `.node-version` intentionally stay on Node 24. |
+| `eslint` | `9.39.4` | `10.3.0` | Defer until an official migration review and focused lint-stack branch. |
+| `typescript` | `5.9.3` | `6.0.3` | Defer until an official migration review and focused compiler branch. |
