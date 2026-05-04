@@ -45,6 +45,7 @@ CI should be useful for upstream and forks.
 
 Secret-free checks should run for ordinary pull requests:
 
+- Use Node 24 locally to match CI, `package.json` `engines.node`, `.node-version`, and `@types/node`.
 - `pnpm install --frozen-lockfile`
 - `pnpm check:config`
 - `pnpm test:copy`

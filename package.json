@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.33.2",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "generate:config": "node scripts/generate-config.mjs",
     "test:config": "node --test scripts/generate-config.test.mjs",
@@ -43,7 +46,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.4",
-    "@types/node": "^20.19.39",
+    "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.39.4",
