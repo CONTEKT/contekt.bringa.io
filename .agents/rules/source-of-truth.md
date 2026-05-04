@@ -9,6 +9,6 @@
 - Fork customization guidance belongs in `docs/forking.md`.
 - Operator-specific legal text, branding, icons, and local copy should be configurable or overrideable. Do not hardcode fork-specific content in shared upstream components.
 - Agent operating rules belong in `.agents/`; keep `AGENTS.md` short.
-- Legacy `.agent/` material should be audited before use and migrated into `.agents/` when still relevant.
+- `.agents/` is the only active repository-local agent directory. Do not reintroduce `.agent/`.
 - Historical notes in `docs/prompts/` are not implementation sources. Use current `.agents/`, `docs/`, code, config, and Supabase files instead.
 - If duplication is unavoidable, name the source of truth in a nearby comment or doc note.

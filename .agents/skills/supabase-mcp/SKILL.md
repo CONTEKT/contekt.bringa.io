@@ -15,6 +15,9 @@ Protect privacy first. Before reading real table contents, ask the user for expl
 - Run or offer `pnpm backup:supabase` when `SUPABASE_SERVICE_ROLE_KEY` is available.
 - Prefer schema, RLS policies, functions, triggers, storage bucket settings, and anonymized counts.
 - Compare the live contract with `supabase/schema.sql`, migrations, edge functions, and client mutations before proposing changes.
+- Keep migrations and `supabase/schema.sql` aligned whenever schema, policies, triggers, functions, buckets, or RPCs change.
+- Include Edge Functions in the review, but edit them only when the task requires it.
+- Use official Supabase docs or Context7 before new Supabase tooling, Auth provider, custom domain, self-hosting, or MCP setup work.
 
 ## Questions To Resolve
 

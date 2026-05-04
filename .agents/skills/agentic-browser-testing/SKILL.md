@@ -7,6 +7,12 @@ description: Use when manually testing this web app through an agentic browser, 
 
 Use existing browser-agent capabilities first. Do not add Playwright or another browser package unless the user asks or the current task requires repeatable CI automation.
 
+## Tool Choice
+
+- Use the Codex in-app browser or other available agentic browser for normal route, responsive, and workflow checks.
+- Use Chrome DevTools MCP only when it is available and the task needs low-level console, network, accessibility-tree, performance, or throttling inspection.
+- If Chrome DevTools MCP requires a local debugging port, verify the connection before relying on it.
+
 ## Baseline Scenarios
 
 - Login page: terms checkbox gates OAuth buttons; terms route opens correctly; logout returns to logged-out state.
