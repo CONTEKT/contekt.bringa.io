@@ -16,10 +16,10 @@ This is the current definition of done for upstream work. It is intentionally pr
 ## Required For Code Changes
 
 - `pnpm check:config`
+- `pnpm lint`
 - `pnpm exec tsc --noEmit`
 - `pnpm build` with safe public Supabase values when build behavior may be affected
-- Focused lint for touched files when useful
-- Full lint status is reported until legacy lint issues are resolved
+- Focused lint or targeted tests when a change touches a risky subsystem
 
 ## Required For Docs And Agent Changes
 
@@ -38,6 +38,6 @@ This is the current definition of done for upstream work. It is intentionally pr
 
 ## Current Known Exceptions
 
-- Full `pnpm lint` still fails on legacy issues. New work should not add lint errors, and the cleanup remains tracked in `docs/optimization-options.md`.
+- Full `pnpm lint` passes, but warnings remain for image optimization, unused imports, and hook dependency cleanup. Treat those warnings as active maintenance work rather than new-error tolerance.
 - Supabase MCP/service-role verification is pending. Do not claim production database hardening until schema, RLS, Storage, functions, and migrations have been reviewed with approved access.
 - The initial CI workflow is secret-free and does not deploy. Deployment, Supabase backups, and remote migrations require separate trusted workflows.

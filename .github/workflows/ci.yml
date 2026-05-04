@@ -38,6 +38,9 @@ jobs:
       - name: Check generated config
         run: pnpm check:config
 
+      - name: Lint
+        run: pnpm lint
+
       - name: TypeScript
         run: pnpm exec tsc --noEmit
 

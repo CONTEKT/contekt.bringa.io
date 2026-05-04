@@ -42,11 +42,12 @@ Secret-free checks should run for ordinary pull requests:
 
 - `pnpm install --frozen-lockfile`
 - `pnpm check:config`
+- `pnpm lint`
 - `pnpm exec tsc --noEmit`
 - `pnpm build` with safe public dummy Supabase values when needed
 - docs build once GitHub Pages docs are added
 
-The initial CI workflow intentionally does not run full `pnpm lint` as a required check because legacy lint errors still exist. New work should use focused lint where practical and keep the full-lint cleanup tracked.
+Lint warnings may remain temporarily while compatibility and image-handling decisions are refined, but CI must reject new lint errors. Keep warning cleanup tracked in `docs/optimization-options.md` until it becomes boring.
 
 Secret-required work belongs only on trusted branches and environments:
 
