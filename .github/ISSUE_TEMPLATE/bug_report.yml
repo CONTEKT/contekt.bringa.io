@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a reproducible problem.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For best results, use `docs/issue-prompt-template.md` with an AI assistant before opening the issue.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List exact steps, route, role, browser, and data assumptions.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Deployment, browser/device, screenshots, logs, or related PRs.

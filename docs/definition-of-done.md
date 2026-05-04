@@ -40,3 +40,4 @@ This is the current definition of done for upstream work. It is intentionally pr
 
 - Full `pnpm lint` still fails on legacy issues. New work should not add lint errors, and the cleanup remains tracked in `docs/optimization-options.md`.
 - Supabase MCP/service-role verification is pending. Do not claim production database hardening until schema, RLS, Storage, functions, and migrations have been reviewed with approved access.
+- The initial CI workflow is secret-free and does not deploy. Deployment, Supabase backups, and remote migrations require separate trusted workflows.
