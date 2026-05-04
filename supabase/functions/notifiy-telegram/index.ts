@@ -1,8 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import { serve } from "https://deno.land/std@0.202.0/http/server.ts";
 
-console.log("Hello from Functions!")
-
 serve(async (req) => {
   try {
     const payload = await req.json();
@@ -23,7 +21,7 @@ serve(async (req) => {
     }
 
     const message =
-      `${item.name} \n\n` + 
+      `${item.name} \n\n` +
       `${APP_URL}/items/details?id=${item.id}`;
 
     const tgResponse = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {

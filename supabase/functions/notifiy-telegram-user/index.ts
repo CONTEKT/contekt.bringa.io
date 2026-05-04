@@ -1,44 +1,49 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
-
-// Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 
-console.log("Hello from Functions!")
-
 Deno.serve(async (req) => {
-  const payload = await req.json();
-  
-  const user = payload.record;
+  try {
+    const payload = await req.json();
+    const profile = payload.record;
 
-  const BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN_USER");
-  const CHAT_ID = Deno.env.get("TELEGRAM_CHAT_ID_USER");
+    if (!profile || !profile.id) {
+      console.error("Invalid payload received:", payload);
+      return new Response(JSON.stringify({ error: "Invalid payload" }), { status: 400 });
+    }
 
-  const message = 
-      `${user.display_name} ${user.display_surname}\n` + 
-      `${user.email}`;
+    const botToken = Deno.env.get("TELEGRAM_BOT_TOKEN_USER");
+    const chatId = Deno.env.get("TELEGRAM_CHAT_ID_USER");
 
-  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: CHAT_ID,
-      text: message,
-    }),
-  });
+    if (!botToken || !chatId) {
+      console.error("Missing environment variables: TELEGRAM_BOT_TOKEN_USER or TELEGRAM_CHAT_ID_USER");
+      return new Response(JSON.stringify({ error: "Server configuration error" }), { status: 500 });
+    }
 
-  return new Response("ok");
+    const displayName = [profile.display_name, profile.display_surname].filter(Boolean).join(" ").trim();
+    const message = displayName
+      ? `New profile activity: ${displayName}`
+      : "New profile activity";
+
+    const tgResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+      }),
+    });
+
+    if (!tgResponse.ok) {
+      const errorData = await tgResponse.json();
+      console.error("Telegram API error:", errorData);
+      return new Response(JSON.stringify({ error: "Telegram delivery failed" }), { status: 502 });
+    }
+
+    return new Response(JSON.stringify({ status: "ok" }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("Internal service error:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
 })
-
-/* To invoke locally:
-
-  1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
-  2. Make an HTTP request:
-
-  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/notifiy-telegram-user' \
-    --header 'Authorization: Bearer eyJhbGciOiJFUzI1NiIsImtpZCI6ImI4MTI2OWYxLTIxZDgtNGYyZS1iNzE5LWMyMjQwYTg0MGQ5MCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjIwODM2ODgyNTN9.OInBgDN3bb8Z-Y8TIMX4ZFj8ZQa1hb-cbz2fmKkgLnHbxuAS-IAbscdwfrL-S1RtLBe-NVt9bRLGQdPxZ5B9Ng' \
-    --header 'Content-Type: application/json' \
-    --data '{"name":"Functions"}'
-
-*/

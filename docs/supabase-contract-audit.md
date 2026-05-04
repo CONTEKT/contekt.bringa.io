@@ -129,22 +129,22 @@ Target:
 
 Current schema:
 
-- Webhook trigger functions contain hardcoded old Supabase Edge Function URLs.
+- Webhook trigger functions read Edge Function URLs from database settings and skip delivery when unset.
 - Function directory names use `notifiy`, which should be corrected carefully if renaming.
 
 Current functions:
 
 - Telegram notifications do not implement unseen-request throttling, admin mute windows, or privacy minimization.
-- User notifications can include email data.
+- User notifications avoid email by default and send a minimal profile activity summary.
 
 Risk:
 
-- Fresh forks inherit wrong project URLs and overly chatty notifications.
-- Telegram can receive more personal data than necessary.
+- Fresh forks must configure webhook URL settings before expecting Telegram delivery.
+- Telegram can still become overly chatty until request dedupe and mute state exist.
 
 Target:
 
-- Move project URLs/secrets into deploy-time configuration.
+- Keep project URLs/secrets in deploy-time configuration.
 - Use a notification event table or state table for dedupe, seen-state, mute windows, and retry behavior.
 - Send minimal Telegram summaries and link admins back into the app for details.
 
