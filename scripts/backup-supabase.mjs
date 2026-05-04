@@ -4,7 +4,16 @@ import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const defaultTables = ["profiles", "items", "borrow_history", "admins", "item_sharing"];
+const defaultTables = [
+  "profiles",
+  "items",
+  "item_versions",
+  "item_images",
+  "borrow_history",
+  "admins",
+  "item_sharing",
+  "account_deletion_requests",
+];
 
 async function loadEnvFile(fileName) {
   const filePath = path.join(root, fileName);

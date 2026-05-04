@@ -60,6 +60,8 @@ async function main() {
     "demote_admin",
     "get_my_invite_code",
     "set_my_invite_code",
+    "export_my_data",
+    "request_account_deletion",
   ];
 
   for (const functionName of requiredFunctions) {
@@ -118,6 +120,10 @@ async function main() {
       "item_images_item_id_fkey",
       "ALTER TABLE public.item_images ADD CONSTRAINT item_images_item_id_fkey FOREIGN KEY (item_id) REFERENCES public.items(id) ON DELETE CASCADE;",
     ],
+    [
+      "account_deletion_requests_user_id_fkey",
+      "ALTER TABLE public.account_deletion_requests ADD CONSTRAINT account_deletion_requests_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.profiles(id) ON DELETE CASCADE;",
+    ],
     ["admins_invite_code_unique", "CONSTRAINT admins_invite_code_unique UNIQUE (invite_code)"],
   ];
 
@@ -156,6 +162,15 @@ async function main() {
       "item_images one cover",
       "CREATE UNIQUE INDEX IF NOT EXISTS idx_item_images_one_cover_per_item ON public.item_images(item_id) WHERE is_cover;",
     ],
+    ["account_deletion_requests table", "CREATE TABLE IF NOT EXISTS public.account_deletion_requests ("],
+    [
+      "account_deletion_requests status",
+      "status text NOT NULL DEFAULT 'pending'::text CHECK (status = ANY (ARRAY['pending'::text, 'reviewing'::text, 'completed'::text, 'cancelled'::text]))",
+    ],
+    [
+      "one pending deletion request per user",
+      "CREATE UNIQUE INDEX IF NOT EXISTS idx_account_deletion_requests_one_pending_per_user ON public.account_deletion_requests(user_id) WHERE status = 'pending';",
+    ],
   ];
 
   for (const [label, expectedSql] of requiredProductModelSql) {
@@ -171,6 +186,11 @@ async function main() {
     "No direct item image inserts",
     "No direct item image updates",
     "No direct item image deletes",
+    "Users can view own deletion requests",
+    "Admins can view deletion requests",
+    "No direct deletion request inserts",
+    "No direct deletion request updates",
+    "No direct deletion request deletes",
   ];
 
   for (const policyName of requiredProductPolicies) {
