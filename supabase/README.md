@@ -44,6 +44,8 @@ The browser should call RPCs for these writes:
 - `set_my_invite_code`
 
 Direct browser reads still use RLS policies where appropriate. Direct browser writes to core item state should be avoided.
+Direct browser writes to `borrow_history` are also blocked; borrow history is maintained by `borrow_item` and `return_item`.
+Borrow history reads are admin-only by default.
 
 ## Before Live Review
 

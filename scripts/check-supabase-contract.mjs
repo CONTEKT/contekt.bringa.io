@@ -123,6 +123,24 @@ function requireIncludes(content, value, message) {
   }
 }
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function requirePolicyCreate(content, policyName) {
+  requireMatch(
+    content,
+    new RegExp(`CREATE\\s+POLICY\\s+"${escapeRegExp(policyName)}"`),
+    `Missing policy in supabase/schema.sql: ${policyName}`,
+  );
+}
+
+function requireNoPolicyCreate(content, policyName) {
+  if (new RegExp(`CREATE\\s+POLICY\\s+"${escapeRegExp(policyName)}"`).test(content)) {
+    throw new Error(`Forbidden legacy policy remains in supabase/schema.sql: ${policyName}`);
+  }
+}
+
 async function loadConfig() {
   const source = await readFile(configPath, "utf8");
   return JSON.parse(removeTrailingCommas(stripComments(source)));
@@ -157,11 +175,27 @@ async function main() {
     "No direct item inserts",
     "No direct item updates",
     "No direct item deletes",
+    "Admins can view history",
+    "No direct history inserts",
     "Validated users can upload item images",
   ];
 
   for (const policyName of requiredPolicies) {
-    requireIncludes(schema, policyName, `Missing policy in supabase/schema.sql: ${policyName}`);
+    requirePolicyCreate(schema, policyName);
+  }
+
+  const forbiddenPolicies = [
+    "Validated users can insert items",
+    "Admins and creators can update items",
+    "Admins and creators can delete items",
+    "Authenticated users can insert borrow history",
+    "Validated users can insert history",
+    "borrow_history_insert_authenticated",
+    "borrow_history_select_all",
+  ];
+
+  for (const policyName of forbiddenPolicies) {
+    requireNoPolicyCreate(schema, policyName);
   }
 
   requireIncludes(schema, "INSERT INTO storage.buckets", "Missing Storage bucket setup in supabase/schema.sql.");

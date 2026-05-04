@@ -54,12 +54,14 @@ Current UI:
 
 Current schema:
 
-- `items` updates are allowed only for admins or item creators.
-- `borrow_history` insert is allowed for validated users, but return updates are not clearly available to borrowers.
+- `borrow_item` and `return_item` are defined in `supabase/schema.sql`.
+- Direct `items` updates and direct `borrow_history` inserts are blocked by RLS.
+- Borrow history reads are admin-only in the consolidated schema; legacy read-all policies must be removed by migration.
 
 Risk:
 
 - Live projects must include the RPC migration before deploying the UI change.
+- Live projects with older schema-dump policies must drop all legacy direct-insert and read-all borrow-history policies.
 
 Target:
 
@@ -106,8 +108,7 @@ Target:
 
 Current UI:
 
-- Create item validates configured image MIME types and max upload bytes.
-- Edit item still accepts `image/*` and uses hardcoded compression settings.
+- Create and edit validate configured image MIME types and max upload bytes.
 - Both paths upload a single WebP to the public `items` bucket.
 
 Current schema:
