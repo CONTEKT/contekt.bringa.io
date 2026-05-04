@@ -10,26 +10,12 @@ export function useIsAdmin() {
     useEffect(() => {
         const checkAdminStatus = async () => {
             try {
-                const { data: { user } } = await supabase.auth.getUser()
-
-                if (!user) {
-                    setIsAdmin(false)
-                    setLoading(false)
-                    return
-                }
-
-                // Check if user's profile_id exists in admins table
-                const { data, error } = await supabase
-                    .from('admins')
-                    .select('id')
-                    .eq('profile_id', user.id)
-                    .single()
+                const { data, error } = await supabase.rpc('is_admin')
 
                 if (error) {
-                    // If error is "no rows", user is not admin
                     setIsAdmin(false)
                 } else {
-                    setIsAdmin(!!data)
+                    setIsAdmin(Boolean(data))
                 }
             } catch {
                 // Ignore error to prevent leak

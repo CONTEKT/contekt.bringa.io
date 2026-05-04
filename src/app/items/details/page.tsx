@@ -23,9 +23,11 @@ function ItemDetailsContent() {
     const [user, setUser] = useState<User | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [borrowHistory, setBorrowHistory] = useState<BorrowHistoryWithProfile[]>([])
-    const { isAdmin } = useIsAdmin()
+    const { isAdmin, loading: adminLoading } = useIsAdmin()
 
     useEffect(() => {
+        if (adminLoading) return
+
         const loadData = async () => {
             try {
                 const { data: { user } } = await supabase.auth.getUser()
@@ -47,28 +49,22 @@ function ItemDetailsContent() {
                 setItem(data)
 
                 // If admin, fetch last 3 borrow history records
-                if (user) {
-                    const { data: adminCheck } = await supabase
-                        .from('admins')
-                        .select('id')
-                        .eq('profile_id', user.id)
-                        .single()
+                if (isAdmin) {
+                    const { data: historyData, error: historyError } = await supabase
+                        .from('borrow_history')
+                        .select(`
+                            *,
+                            borrower:profiles!borrow_history_borrower_id_fkey(*)
+                        `)
+                        .eq('item_id', id)
+                        .order('borrowed_at', { ascending: false })
+                        .limit(3)
 
-                    if (adminCheck) {
-                        const { data: historyData, error: historyError } = await supabase
-                            .from('borrow_history')
-                            .select(`
-                                *,
-                                borrower:profiles!borrow_history_borrower_id_fkey(*)
-                            `)
-                            .eq('item_id', id)
-                            .order('borrowed_at', { ascending: false })
-                            .limit(3)
-
-                        if (!historyError && historyData) {
-                            setBorrowHistory(historyData as BorrowHistoryWithProfile[])
-                        }
+                    if (!historyError && historyData) {
+                        setBorrowHistory(historyData as BorrowHistoryWithProfile[])
                     }
+                } else {
+                    setBorrowHistory([])
                 }
             } catch {
                 setError("Ein Fehler ist aufgetreten. Bitte versuche es später erneut.")
@@ -77,7 +73,7 @@ function ItemDetailsContent() {
             }
         }
         loadData()
-    }, [id])
+    }, [adminLoading, id, isAdmin])
 
     const handleBorrow = async () => {
         if (!user || !item) return
