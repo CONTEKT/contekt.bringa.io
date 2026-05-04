@@ -52,7 +52,7 @@ This file is the living roadmap and anti-roadmap for ideas discovered by users a
 - User suggestions and flags: let users propose changes or flag non-owned items/images; admins need a focused review queue with status, history, and Telegram policy. Impact: community quality. Uncertainty/research: data model and notification dedupe need design.
 - Invite and onboarding: decide whether display name comes before invite code, and how admins approve users who lack an invite. Impact: smoother onboarding and moderation. Side effect: auth/profile routes and RPCs need alignment.
 - User data export: provide profile, item, borrow history, suggestion/flag, and image export where appropriate. Impact: trust and portability. Uncertainty/research: scope depends on legal and Supabase Auth/Storage access.
-- Settings and feedback: include repo links, issue links, and an AI-friendly issue prompt template in user settings. Impact: better open-source feedback. Side effect: link labels and issue copy should come from config/content.
+- Settings copy source: move the AI issue prompt text behind shared content/config if more settings copy is added. Impact: avoids drift between `docs/issue-prompt-template.md` and the app settings prompt.
 
 ## App Experience
 

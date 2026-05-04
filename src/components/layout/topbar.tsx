@@ -83,7 +83,7 @@ export default function TopBar() {
                                     </MenubarItem>
                                 </Link>
                                 <div className="h-px bg-muted my-1" />
-                                <Link href="/complete-profile">
+                                <Link href="/settings">
                                     <MenubarItem className="flex items-center gap-2 cursor-pointer">
                                         <span>Settings</span>
                                     </MenubarItem>
