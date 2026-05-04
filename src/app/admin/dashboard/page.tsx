@@ -23,6 +23,7 @@ import ProtectedRoute from "@/components/auth/protected-route";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useRouter } from "next/navigation";
 import { AppImage } from "@/components/ui/app-image";
+import { buildAdminQueueCounts } from "@/lib/admin-queue-counts";
 import { appConfig } from "@/lib/app-config";
 
 export default function AdminDashboardPage() {
@@ -38,10 +39,12 @@ export default function AdminDashboardPage() {
         pendingSuggestions: number | null;
         pendingFlags: number | null;
         openDeletionRequests: number | null;
+        pendingUsers: number | null;
     }>({
         pendingSuggestions: null,
         pendingFlags: null,
         openDeletionRequests: null,
+        pendingUsers: null,
     });
     const [loading, setLoading] = useState(true);
     const { isAdmin, loading: adminLoading } = useIsAdmin();
@@ -74,6 +77,7 @@ export default function AdminDashboardPage() {
         { label: "Suggestions", value: queueCounts.pendingSuggestions ?? "—", icon: Sparkles },
         { label: "Flags", value: queueCounts.pendingFlags ?? "—", icon: Flag },
         { label: "Deletion requests", value: queueCounts.openDeletionRequests ?? "—", icon: Trash2 },
+        { label: "Pending users", value: queueCounts.pendingUsers ?? "—", icon: Users },
     ];
 
     const healthItems = [
@@ -188,25 +192,28 @@ export default function AdminDashboardPage() {
     useEffect(() => {
         const fetchQueueCounts = async () => {
             try {
-                const [suggestionsRes, flagsRes, deletionRequestsRes] = await Promise.all([
+                const [suggestionsRes, flagsRes, deletionRequestsRes, profilesRes] = await Promise.all([
                     supabase.from("item_suggestions").select("id,status"),
                     supabase.from("item_flags").select("id,status"),
                     supabase.from("account_deletion_requests").select("id,status"),
+                    supabase.from("profiles").select("id,profile_valid"),
                 ]);
 
+                const counts = buildAdminQueueCounts({
+                    suggestions: suggestionsRes.data || [],
+                    flags: flagsRes.data || [],
+                    deletionRequests: deletionRequestsRes.data || [],
+                    profiles: profilesRes.data || [],
+                });
+
                 setQueueCounts({
-                    pendingSuggestions: suggestionsRes.error
-                        ? null
-                        : (suggestionsRes.data || []).filter((row) => row.status === "pending").length,
-                    pendingFlags: flagsRes.error
-                        ? null
-                        : (flagsRes.data || []).filter((row) => row.status === "pending").length,
-                    openDeletionRequests: deletionRequestsRes.error
-                        ? null
-                        : (deletionRequestsRes.data || []).filter((row) => row.status === "pending" || row.status === "reviewing").length,
+                    pendingSuggestions: suggestionsRes.error ? null : counts.pendingSuggestions,
+                    pendingFlags: flagsRes.error ? null : counts.pendingFlags,
+                    openDeletionRequests: deletionRequestsRes.error ? null : counts.openDeletionRequests,
+                    pendingUsers: profilesRes.error ? null : counts.pendingUsers,
                 });
             } catch {
-                setQueueCounts({ pendingSuggestions: null, pendingFlags: null, openDeletionRequests: null });
+                setQueueCounts({ pendingSuggestions: null, pendingFlags: null, openDeletionRequests: null, pendingUsers: null });
             }
         };
 
