@@ -3,13 +3,18 @@
 import { Suspense, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { ArrowLeft, Edit, History, Loader2, Package, ShieldAlert, UserRound } from "lucide-react"
+import { ArrowLeft, Edit, Eye, EyeOff, History, Loader2, Package, ShieldAlert, UserRound } from "lucide-react"
 import ProtectedRoute from "@/components/auth/protected-route"
 import { AppImage } from "@/components/ui/app-image"
 import { Button } from "@/components/ui/button"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { supabase } from "@/lib/supabaseclient"
-import { buildAdminUserItemGroups, type AdminUserItemGroup } from "@/lib/admin-user-items"
+import {
+    buildAdminUserItemGroups,
+    buildAdminUserItemVisibilityReview,
+    type AdminUserItemGroup,
+    type AdminUserItemVisibilityState,
+} from "@/lib/admin-user-items"
 import type { ItemDb, Profile } from "@/app/model/model"
 
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -66,6 +71,9 @@ function AdminUserItemsContent() {
     const [groups, setGroups] = useState<AdminUserItemGroup<AdminUserItem>[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [actionError, setActionError] = useState<string | null>(null)
+    const [visibilityReason, setVisibilityReason] = useState("")
+    const [processingAction, setProcessingAction] = useState<string | null>(null)
 
     const itemCount = useMemo(() => groups.reduce((total, group) => total + group.items.length, 0), [groups])
 
@@ -113,6 +121,49 @@ function AdminUserItemsContent() {
         }
     }, [adminLoading, isAdmin, profileId])
 
+    const reviewItemVisibility = async (item: AdminUserItem, visibilityState: AdminUserItemVisibilityState) => {
+        const review = buildAdminUserItemVisibilityReview({ visibilityState, reason: visibilityReason })
+        if (!review.ok) {
+            setActionError("Add a short visibility reason before changing this item.")
+            return
+        }
+
+        const actionId = `visibility-${item.id}-${visibilityState}`
+        setProcessingAction(actionId)
+        setActionError(null)
+        try {
+            const { data, error } = await supabase.rpc("set_item_visibility", {
+                item_id_input: item.id,
+                visibility_state_input: review.visibilityState,
+                reason_input: review.reason,
+            })
+
+            if (error) throw error
+            if (!data) throw new Error("Visibility change rejected")
+
+            setGroups((currentGroups) => currentGroups.map((group) => ({
+                ...group,
+                items: group.items.map((row) => (
+                    row.item.id === item.id
+                        ? {
+                            ...row,
+                            item: {
+                                ...row.item,
+                                visibility_state: review.visibilityState,
+                                visibility_reason: review.reason,
+                            },
+                        }
+                        : row
+                )),
+            })))
+            setVisibilityReason("")
+        } catch {
+            setActionError("Could not update item visibility.")
+        } finally {
+            setProcessingAction(null)
+        }
+    }
+
     if (adminLoading || loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -153,6 +204,12 @@ function AdminUserItemsContent() {
                         </div>
                     )}
 
+                    {actionError && (
+                        <div role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+                            {actionError}
+                        </div>
+                    )}
+
                     {profile && (
                         <section className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
                             <div className="rounded-lg border bg-card p-4">
@@ -184,6 +241,21 @@ function AdminUserItemsContent() {
                                 </div>
                                 <p className="mt-2 text-sm text-muted-foreground">Review ownership, visibility, and borrower state before changing items.</p>
                             </div>
+                        </section>
+                    )}
+
+                    {profile && (
+                        <section className="rounded-lg border bg-card p-4">
+                            <label htmlFor="user-item-visibility-reason" className="text-sm font-medium">Visibility reason</label>
+                            <textarea
+                                id="user-item-visibility-reason"
+                                value={visibilityReason}
+                                onChange={(event) => setVisibilityReason(event.target.value)}
+                                rows={3}
+                                className="mt-2 min-h-24 w-full rounded-md border bg-background px-3 py-2 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                placeholder="Record why this item should become visible or hidden."
+                            />
+                            <p className="mt-2 text-xs text-muted-foreground">Required for visibility actions on this page.</p>
                         </section>
                     )}
 
@@ -248,6 +320,26 @@ function AdminUserItemsContent() {
                                                         <Edit className="h-4 w-4" />
                                                         Edit
                                                     </Link>
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    variant="secondary"
+                                                    size="sm"
+                                                    onClick={() => reviewItemVisibility(item, "visible")}
+                                                    disabled={processingAction !== null || item.visibility_state === "visible" || visibilityReason.trim().length < 3}
+                                                >
+                                                    {processingAction === `visibility-${item.id}-visible` ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />}
+                                                    Make visible
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => reviewItemVisibility(item, "admin_hidden")}
+                                                    disabled={processingAction !== null || item.visibility_state === "admin_hidden" || visibilityReason.trim().length < 3}
+                                                >
+                                                    {processingAction === `visibility-${item.id}-admin_hidden` ? <Loader2 className="h-4 w-4 animate-spin" /> : <EyeOff className="h-4 w-4" />}
+                                                    Hide
                                                 </Button>
                                             </div>
                                         </div>

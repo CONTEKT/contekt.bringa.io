@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { buildAdminUserItemGroups } from "../src/lib/admin-user-items.ts";
+import { buildAdminUserItemGroups, buildAdminUserItemVisibilityReview } from "../src/lib/admin-user-items.ts";
 
 const userId = "profile-1";
 
@@ -63,4 +63,24 @@ test("sorts matching items newest first inside each group", () => {
   ], userId);
 
   assert.deepEqual(groups[0].items.map((row) => row.item.id), ["newer", "older"]);
+});
+
+test("builds visibility review actions with required reasons", () => {
+  assert.deepEqual(buildAdminUserItemVisibilityReview({
+    visibilityState: "visible",
+    reason: "  User confirmed this can be public. ",
+  }), {
+    ok: true,
+    visibilityState: "visible",
+    reason: "User confirmed this can be public.",
+  });
+
+  assert.deepEqual(buildAdminUserItemVisibilityReview({
+    visibilityState: "admin_hidden",
+    reason: "no",
+  }), {
+    ok: false,
+    visibilityState: null,
+    reason: null,
+  });
 });

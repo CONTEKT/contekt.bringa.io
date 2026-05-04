@@ -53,7 +53,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [x] Admin users route supports user validation, access revocation with self-protection, admin promotion, and admin demotion with self-demotion protection.
 - [x] Admin moderation route lists pending visibility requests, suggestions, and flags, and reviews status through RPCs with notes for final decisions.
 - [x] Admin moderation can apply content/image suggestions through an admin-only RPC with item version capture.
-- [x] Admin user item views group current borrower, owner, and creator relationships for one profile.
+- [x] Admin user item views group current borrower, owner, and creator relationships for one profile, with reasoned visibility actions through RPCs.
 - [x] Admin item version route lists snapshots and restores selected versions through an admin-only RPC.
 - [x] Admin deletion request queue triages operator-reviewed account deletion requests without destructive action.
 - [x] Admin notification settings route shows Telegram, mute-window, dedupe, and seen-state planning without mutating user data.

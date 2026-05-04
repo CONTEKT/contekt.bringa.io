@@ -114,6 +114,7 @@ Current model:
 - `item_flags` records validated-user item issue reports with a bounded reason set.
 - Users create both through `create_item_suggestion` and `create_item_flag`; direct browser inserts, updates, and deletes are blocked by RLS.
 - Admins inspect and transition queue status in `/admin/moderation` through `review_item_suggestion`, `review_item_flag`, and `set_item_visibility`.
+- Admins can also change item visibility from `/admin/user-items` through `set_item_visibility` with a required reason.
 - Admins can apply content/image suggestions through `apply_item_suggestion`, which updates explicit item fields, marks the suggestion accepted, and records a new item version.
 
 Risk:

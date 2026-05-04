@@ -1,5 +1,6 @@
 type UserItemRelationKey = "borrowed" | "owned" | "created";
 type UserItemRelationLabel = "Current borrower" | "Owner" | "Creator";
+export type AdminUserItemVisibilityState = "visible" | "admin_hidden";
 
 export type AdminUserItem = {
   id: string;
@@ -18,6 +19,12 @@ export type AdminUserItemGroup<TItem extends AdminUserItem> = {
   key: UserItemRelationKey;
   label: string;
   items: AdminUserItemRow<TItem>[];
+};
+
+export type AdminUserItemVisibilityReview = {
+  ok: boolean;
+  visibilityState: AdminUserItemVisibilityState | null;
+  reason: string | null;
 };
 
 const groupLabels: Record<UserItemRelationKey, string> = {
@@ -70,4 +77,20 @@ export function buildAdminUserItemGroups<TItem extends AdminUserItem>(
       items: (grouped.get(key) || []).sort((left, right) => createdTime(right.item) - createdTime(left.item)),
     }))
     .filter((group) => group.items.length > 0);
+}
+
+export function buildAdminUserItemVisibilityReview({
+  visibilityState,
+  reason,
+}: {
+  visibilityState: AdminUserItemVisibilityState;
+  reason: string;
+}): AdminUserItemVisibilityReview {
+  const normalizedReason = reason.trim() || null;
+
+  if (!normalizedReason || normalizedReason.length < 3) {
+    return { ok: false, visibilityState: null, reason: null };
+  }
+
+  return { ok: true, visibilityState, reason: normalizedReason };
 }
