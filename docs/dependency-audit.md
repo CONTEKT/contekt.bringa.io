@@ -23,10 +23,15 @@ Use current package metadata and official documentation before dependency upgrad
 | `eslint` | `9.39.4` | `10.3.0` | Defer; major lint stack update needs official migration review. |
 | `typescript` | `5.9.3` | `6.0.3` | Defer; major compiler update needs official migration review. |
 
+## Security Audit
+
+`pnpm audit --audit-level moderate` found a moderate PostCSS advisory through Next.js. Next.js was already current at `16.2.4`, so the repository pins a pnpm override for `postcss@8.5.14`, matching the patched version already used by Tailwind. After the override, `pnpm audit --audit-level moderate` reports no known vulnerabilities.
+
 ## Upgrade Policy
 
 - Patch and same-major updates are acceptable when they pass config, Supabase contract, lint, TypeScript, and build checks.
 - Major updates need a focused branch, current official docs or Context7 review, and a rollback plan.
+- Security overrides should be narrow, documented, and removed once upstream dependencies no longer need them.
 - Node type packages should match the runtime and CI Node version.
 - UI icon library major updates need visual/browser review for every imported icon surface.
 - Keep `pnpm-lock.yaml` and `package.json` together in the same commit.
