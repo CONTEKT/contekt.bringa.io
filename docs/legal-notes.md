@@ -1,3 +1,7 @@
+---
+title: Legal Notes
+---
+
 # Legal Notes
 
 This is not legal advice. Each deployment operator should review terms, privacy text, and imprint/contact requirements for its jurisdiction.

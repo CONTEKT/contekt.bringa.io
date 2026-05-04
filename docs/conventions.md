@@ -1,3 +1,7 @@
+---
+title: Conventions
+---
+
 # Conventions
 
 These conventions keep the upstream repository easy to review, fork, sync, and maintain.
@@ -45,7 +49,7 @@ Secret-free checks should run for ordinary pull requests:
 - `pnpm lint`
 - `pnpm exec tsc --noEmit`
 - `pnpm build` with safe public dummy Supabase values when needed
-- docs build once GitHub Pages docs are added
+- GitHub Pages docs build for docs changes
 
 Lint should be quiet. Treat new warnings as work to resolve or as explicit technical debt that belongs in `docs/optimization-options.md`.
 

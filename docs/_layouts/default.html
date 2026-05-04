@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title | default: site.title }}</title>
+    <meta name="description" content="{{ page.description | default: site.description }}">
+    <link rel="stylesheet" href="{{ '/assets/docs.css' | relative_url }}">
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="{{ '/index.html' | relative_url }}">bringa.io</a>
+        <nav aria-label="Documentation">
+          <a href="{{ '/configuration.html' | relative_url }}">Configuration</a>
+          <a href="{{ '/forking.html' | relative_url }}">Forking</a>
+          <a href="{{ '/supabase.html' | relative_url }}">Supabase</a>
+          <a href="{{ '/maintenance.html' | relative_url }}">Maintenance</a>
+          <a href="{{ '/conventions.html' | relative_url }}">Conventions</a>
+          <a href="{{ '/definition-of-done.html' | relative_url }}">Done</a>
+          <a href="{{ '/roadmap.html' | relative_url }}">Roadmap</a>
+        </nav>
+      </aside>
+      <main class="content">
+        {{ content }}
+      </main>
+    </div>
+  </body>
+</html>

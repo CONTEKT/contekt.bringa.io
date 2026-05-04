@@ -1,0 +1,15 @@
+title: bringa.io Docs
+description: Forkable sharing and borrowing app documentation.
+markdown: kramdown
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: true
+exclude:
+  - prompts/
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default

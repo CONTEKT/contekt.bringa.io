@@ -1,0 +1,27 @@
+---
+title: bringa.io Docs
+---
+
+# bringa.io Docs
+
+Forkable open source sharing and borrowing software for communities, clubs, associations, and local operators.
+
+## Start Here
+
+- [Configuration](configuration.md): public app identity, branding, links, media limits, and feature switches.
+- [Forking](forking.md): keep upstream collaboration smooth while customizing legal, brand, and operator details.
+- [Supabase](supabase.md): prepare schema, RLS, Storage, Auth, Edge Functions, backups, and privacy-aware MCP work.
+- [Maintenance](maintenance.md): recurring operations and safety checks.
+
+## Contributor Flow
+
+- [Conventions](conventions.md): Git, CI/CD, source-of-truth, and documentation rules.
+- [Definition of Done](definition-of-done.md): required verification and merge expectations.
+- [Issue Prompt Template](issue-prompt-template.md): help users and AI assistants write useful issues.
+- [Optimization Options](optimization-options.md): living roadmap and anti-roadmap.
+
+## Direction
+
+- [Roadmap](roadmap.md): product, trust, ownership, media, admin, and longer-term decentralization direction.
+- [Legal Notes](legal-notes.md): non-binding starter notes for operators and forks.
+- [Telegram Notifications](telegramBot.md): current notification behavior and follow-up areas.

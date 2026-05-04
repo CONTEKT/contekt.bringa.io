@@ -1,3 +1,7 @@
+---
+title: Forking
+---
+
 # Forking
 
 Forks should be able to customize identity, legal text, deployment settings, and operations without making upstream pull requests painful.

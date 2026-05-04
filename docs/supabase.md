@@ -1,3 +1,7 @@
+---
+title: Supabase
+---
+
 # Supabase
 
 Supabase is the current backend for Auth, Postgres, Storage, RLS, and Edge Functions.

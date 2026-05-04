@@ -1,3 +1,7 @@
+---
+title: Roadmap
+---
+
 # Roadmap
 
 Bringa starts as a focused sharing and borrowing app for communities. The long-term direction is a federated, decentralized, agent-friendly system for sharing and borrowing anything communities can responsibly manage.

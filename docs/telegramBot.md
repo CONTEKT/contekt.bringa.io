@@ -1,3 +1,7 @@
+---
+title: Telegram Notifications
+---
+
 # Telegram Notifications
 
 Telegram is currently implemented through Supabase Edge Functions and database webhooks.

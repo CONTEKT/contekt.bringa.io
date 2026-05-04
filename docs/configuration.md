@@ -1,3 +1,7 @@
+---
+title: Configuration
+---
+
 # Configuration
 
 Public deployment settings live in `config/bringa.config.jsonc`.

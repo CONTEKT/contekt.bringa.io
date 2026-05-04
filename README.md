@@ -69,7 +69,7 @@ pnpm lint
 pnpm build
 ```
 
-`pnpm lint` currently reports known legacy issues. Keep new work scoped and document unrelated failures until the lint cleanup is complete.
+`pnpm lint` should pass without warnings. Treat new warnings as work to resolve or explicitly track.
 
 ## Contributing
 

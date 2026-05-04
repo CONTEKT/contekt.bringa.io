@@ -1,3 +1,7 @@
+---
+title: Definition Of Done
+---
+
 # Definition Of Done
 
 This is the current definition of done for upstream work. It is intentionally practical: the hyperoptimum is reached through verified, coherent increments.
@@ -24,6 +28,7 @@ This is the current definition of done for upstream work. It is intentionally pr
 ## Required For Docs And Agent Changes
 
 - `git diff --check`
+- GitHub Pages docs build is expected to pass for `docs/` changes.
 - ASCII or intentional Unicode check for new durable project files
 - Links point to the current source of truth where possible
 - Docs avoid repeating long content already maintained elsewhere

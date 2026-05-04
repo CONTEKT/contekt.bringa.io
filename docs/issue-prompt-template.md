@@ -1,3 +1,7 @@
+---
+title: Issue Prompt Template
+---
+
 # Issue Prompt Template
 
 Use this with an AI assistant before opening a bug report, feature request, or feedback issue.
