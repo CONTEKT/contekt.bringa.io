@@ -16,6 +16,7 @@ export default function AdminUsersPage() {
     const [admins, setAdmins] = useState<Admin[]>([])
     const [loading, setLoading] = useState(true)
     const [processingId, setProcessingId] = useState<string | null>(null)
+    const [currentUserId, setCurrentUserId] = useState<string | null>(null)
 
     useEffect(() => {
         if (!adminLoading && !isAdmin) {
@@ -26,7 +27,8 @@ export default function AdminUsersPage() {
     const fetchData = async () => {
         try {
             setLoading(true)
-            const [profilesRes, adminsRes] = await Promise.all([
+            const [userRes, profilesRes, adminsRes] = await Promise.all([
+                supabase.auth.getUser(),
                 supabase.from('profiles').select('*').order('created_at', { ascending: false }),
                 supabase.from('admins').select('*')
             ])
@@ -34,6 +36,7 @@ export default function AdminUsersPage() {
             if (profilesRes.error) throw profilesRes.error
             if (adminsRes.error) throw adminsRes.error
 
+            setCurrentUserId(userRes.data.user?.id ?? null)
             setProfiles(profilesRes.data || [])
             setAdmins(adminsRes.data || [])
         } catch {
@@ -53,14 +56,12 @@ export default function AdminUsersPage() {
     const handleMakeAdmin = async (profileId: string) => {
         try {
             setProcessingId(profileId)
-            const { error } = await supabase
-                .from('admins')
-                .insert({
-                    profile_id: profileId,
-                    invite_code: 'default'
-                })
+            const { data: promoted, error } = await supabase.rpc('promote_admin', {
+                profile_id_input: profileId,
+            })
 
             if (error) throw error
+            if (!promoted) throw new Error('Promotion rejected')
 
             // Refresh data
             await fetchData()
@@ -74,12 +75,12 @@ export default function AdminUsersPage() {
     const handleRemoveAdmin = async (profileId: string) => {
         try {
             setProcessingId(profileId)
-            const { error } = await supabase
-                .from('admins')
-                .delete()
-                .eq('profile_id', profileId)
+            const { data: demoted, error } = await supabase.rpc('demote_admin', {
+                profile_id_input: profileId,
+            })
 
             if (error) throw error
+            if (!demoted) throw new Error('Demotion rejected')
 
             // Refresh data
             await fetchData()
@@ -116,6 +117,7 @@ export default function AdminUsersPage() {
                     {profiles.map(profile => {
                         const isUserAdmin = admins.some(a => a.profile_id === profile.id)
                         const isProcessing = processingId === profile.id
+                        const isCurrentUser = currentUserId === profile.id
 
                         return (
                             <div key={profile.id} className="border rounded-lg p-4 bg-card shadow-sm flex items-center justify-between">
@@ -155,10 +157,10 @@ export default function AdminUsersPage() {
                                             </div>
                                             <button
                                                 onClick={() => handleRemoveAdmin(profile.id)}
-                                                disabled={isProcessing}
+                                                disabled={isProcessing || isCurrentUser}
                                                 className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900 border border-red-200 dark:border-red-800 rounded-md text-xs font-medium flex items-center gap-1 disabled:opacity-50 transition-colors whitespace-nowrap"
                                             >
-                                                {isProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Revoke'}
+                                                {isProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : isCurrentUser ? 'You' : 'Revoke'}
                                             </button>
                                         </div>
                                     ) : (

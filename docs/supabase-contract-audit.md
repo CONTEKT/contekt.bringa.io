@@ -69,13 +69,14 @@ Target:
 
 Current UI:
 
-- Admin pages directly insert/delete rows in `admins`.
+- `src/app/admin/users/page.tsx` calls `promote_admin` and `demote_admin`.
 - Item delete uses direct hard delete.
 - Admin edit of non-created items is not available in the edit UI.
 
 Risk:
 
-- Direct table writes make it harder to preserve invite, role, deletion, visibility, and audit rules.
+- Live projects must include the admin RPC migration before deploying the admin role UI change.
+- Item delete and edit behavior still need lifecycle and permission design.
 
 Target:
 
