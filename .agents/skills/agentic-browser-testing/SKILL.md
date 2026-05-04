@@ -43,6 +43,13 @@ Use these as concrete routes through the app. Adapt only the account names and f
 2. Confirm borrowed items are the initial view and available/all controls remain discoverable.
 3. Return one item from details, go back to dashboard, and confirm the default view updates only when no borrowed items remain.
 
+### User Item Visibility
+
+1. Open `/items/details?id=<own-item-id>` as the creator or profile owner.
+2. Hide the item with a reason and confirm public lists no longer show it.
+3. Request visibility again with a reason and confirm the item becomes pending for admin review instead of directly visible.
+4. Open `/admin/moderation` as an admin and confirm the pending-visible item appears with the submitted reason.
+
 ### Create And Edit Image Preview
 
 1. Open `/items/create`.

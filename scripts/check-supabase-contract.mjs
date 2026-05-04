@@ -72,6 +72,7 @@ async function main() {
     "record_item_version",
     "restore_item_version",
     "set_item_visibility",
+    "request_item_visibility",
   ];
 
   for (const functionName of requiredFunctions) {
@@ -210,6 +211,7 @@ async function main() {
     ["item update version capture", "SELECT public.record_item_version(item_id_input, 'updated') INTO new_version_id;"],
     ["restore appends a republished version", "SELECT public.record_item_version(selected_item_id, restore_reason) INTO new_version_id;"],
     ["restore locks the current item", "FOR UPDATE;"],
+    ["profile owners can record item versions", "current_item.owner_profile_id IS DISTINCT FROM auth.uid()"],
     ["internal version helper is not browser-executable", "REVOKE EXECUTE ON FUNCTION public.record_item_version(uuid, text) FROM PUBLIC;"],
   ];
 
@@ -223,6 +225,12 @@ async function main() {
     ["visibility updates append version", "SELECT public.record_item_version(item_id_input, version_reason) INTO new_version_id;"],
     ["public item reads exclude hidden states", "visibility_state = 'visible'"],
     ["admins can still view all items", "public.is_admin() OR"],
+    ["user visibility request RPC", "CREATE OR REPLACE FUNCTION public.request_item_visibility("],
+    ["user visibility request only allows hide or pending review", "normalized_state <> ALL (ARRAY['user_hidden', 'pending_visible'])"],
+    ["user visibility request requires related user", "selected_created_by IS DISTINCT FROM auth.uid()\n       AND selected_owner_profile_id IS DISTINCT FROM auth.uid()"],
+    ["user visibility request records versions", "SELECT public.record_item_version(item_id_input, version_reason) INTO new_version_id;"],
+    ["user visibility request blocks anonymous execute", "REVOKE EXECUTE ON FUNCTION public.request_item_visibility(uuid, text, text) FROM PUBLIC;"],
+    ["user visibility request allows authenticated execute", "GRANT EXECUTE ON FUNCTION public.request_item_visibility(uuid, text, text) TO authenticated;"],
   ];
 
   for (const [label, expectedSql] of requiredVisibilitySql) {

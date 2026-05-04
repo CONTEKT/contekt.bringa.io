@@ -51,6 +51,7 @@ Current UI:
 
 - `src/app/items/details/page.tsx` calls `borrow_item` and `return_item`.
 - The client does not write item status or borrow history directly for borrow/return.
+- Item details call `request_item_visibility` for user hide/request-visible actions instead of writing visibility fields directly.
 
 Current schema:
 
@@ -85,7 +86,7 @@ Risk:
 
 Target:
 
-- Use RPCs for item creation, item updates, admin promotion/demotion, item visibility changes, admin edits, and deletion/archive behavior.
+- Use RPCs for item creation, item updates, admin promotion/demotion, item visibility changes, user visibility requests, admin edits, and deletion/archive behavior.
 - Keep role escalation and moderation rules out of browser-controlled table updates.
 
 ### Item Lifecycle
@@ -224,6 +225,7 @@ Target:
 - `create_item(...)`
 - `update_item(...)`
 - `set_item_visibility(...)`
+- `request_item_visibility(...)`
 - `delete_item(item_id uuid)`
 - `archive_or_delete_item(...)`
 - `set_profile_validation(profile_id uuid, profile_valid boolean)`

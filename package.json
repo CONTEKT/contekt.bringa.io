@@ -13,6 +13,7 @@
     "test:copy": "node --test scripts/check-copy.test.mjs",
     "test:docs-index": "node --test scripts/check-docs-index.test.mjs",
     "test:dashboard-query": "node --test scripts/dashboard-item-query.test.mjs",
+    "test:item-visibility-request": "node --test scripts/item-visibility-request.test.mjs",
     "test:admin-notification-settings": "node --test scripts/admin-notification-settings.test.mjs",
     "test:admin-deletion-requests": "node --test scripts/admin-deletion-requests.test.mjs",
     "test:admin-moderation-review": "node --test scripts/admin-moderation-review.test.mjs",

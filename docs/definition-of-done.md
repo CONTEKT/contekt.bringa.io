@@ -22,6 +22,7 @@ This is the current definition of done for upstream work. It is intentionally pr
 - `pnpm check:config`
 - `pnpm test:config` when config generation, config layering, or generated public config behavior changes
 - `pnpm test:dashboard-query` when dashboard item list filtering, search, or default view behavior changes
+- `pnpm test:item-visibility-request` when user-facing item visibility actions change
 - `pnpm test:admin-notification-settings` when admin notification settings or planned notification controls change
 - `pnpm test:admin-deletion-requests` when admin deletion request summaries or review queues change
 - `pnpm test:admin-moderation-review` when moderation review-note requirements change

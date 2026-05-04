@@ -45,6 +45,9 @@ jobs:
       - name: Test dashboard item query filters
         run: pnpm test:dashboard-query
 
+      - name: Test user item visibility requests
+        run: pnpm test:item-visibility-request
+
       - name: Test admin notification settings
         run: pnpm test:admin-notification-settings
 

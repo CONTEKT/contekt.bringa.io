@@ -5,12 +5,17 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabaseclient"
 import { ItemDb, BorrowHistoryWithProfile, ItemFlagReason, ItemSuggestionType } from "@/app/model/model"
 import { Button } from "@/components/ui/button"
-import { Flag, Lightbulb, Loader2 } from "lucide-react"
+import { Eye, EyeOff, Flag, Lightbulb, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { User } from "@supabase/supabase-js"
 import ProtectedRoute from "@/components/auth/protected-route"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { AppImage } from "@/components/ui/app-image"
+import {
+    buildItemVisibilityRequest,
+    itemVisibilityActionForState,
+    type ItemVisibilityAction,
+} from "@/lib/item-visibility-request"
 
 function ItemDetailsContent() {
     const router = useRouter()
@@ -29,6 +34,10 @@ function ItemDetailsContent() {
     const [moderationMessage, setModerationMessage] = useState<string | null>(null)
     const [moderationError, setModerationError] = useState<string | null>(null)
     const [moderationLoading, setModerationLoading] = useState<"suggestion" | "flag" | null>(null)
+    const [visibilityReason, setVisibilityReason] = useState("")
+    const [visibilityMessage, setVisibilityMessage] = useState<string | null>(null)
+    const [visibilityError, setVisibilityError] = useState<string | null>(null)
+    const [visibilityLoading, setVisibilityLoading] = useState(false)
     const { isAdmin, loading: adminLoading } = useIsAdmin()
 
     useEffect(() => {
@@ -207,6 +216,44 @@ function ItemDetailsContent() {
         }
     }
 
+    const submitVisibilityRequest = async (action: ItemVisibilityAction) => {
+        if (!item) return
+        const request = buildItemVisibilityRequest({
+            action,
+            currentVisibility: item.visibility_state,
+            reason: visibilityReason,
+        })
+
+        if (!request.ok) {
+            setVisibilityError("Add a short reason before changing item visibility.")
+            setVisibilityMessage(null)
+            return
+        }
+
+        setVisibilityLoading(true)
+        setVisibilityError(null)
+        setVisibilityMessage(null)
+        try {
+            const { data, error } = await supabase.rpc("request_item_visibility", {
+                item_id_input: item.id,
+                visibility_state_input: request.visibilityState,
+                reason_input: request.reason,
+            })
+
+            if (error) throw error
+            if (!data) throw new Error("Visibility request rejected")
+
+            setItem({ ...item, visibility_state: request.visibilityState, visibility_reason: request.reason })
+            setVisibilityReason("")
+            setVisibilityMessage(action === "hide" ? "Item hidden from public lists." : "Visibility request sent for admin review.")
+            router.refresh()
+        } catch {
+            setVisibilityError("Could not update item visibility right now.")
+        } finally {
+            setVisibilityLoading(false)
+        }
+    }
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -228,6 +275,8 @@ function ItemDetailsContent() {
 
     const isBorrowedByMe = item.borrowed_by === user?.id;
     const isAvailable = item.status === 'inStock';
+    const canRequestVisibility = Boolean(user && (item.created_by === user.id || item.owner_profile_id === user.id))
+    const visibilityAction = canRequestVisibility ? itemVisibilityActionForState(item.visibility_state) : null
 
     return (
         <ProtectedRoute>
@@ -258,6 +307,11 @@ function ItemDetailsContent() {
                                     }`}>
                                     {item.status === 'borrowed' ? 'Borrowed' : 'In Stock'}
                                 </span>
+                                {item.visibility_state && item.visibility_state !== "visible" && (
+                                    <span className="ml-2 inline-block rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+                                        {item.visibility_state.replaceAll("_", " ")}
+                                    </span>
+                                )}
                             </div>
                         </div>
 
@@ -367,6 +421,66 @@ function ItemDetailsContent() {
                                 >
                                     {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete Item"}
                                 </Button>
+                            )}
+
+                            {canRequestVisibility && (
+                                <div className="mt-5 border-t pt-4">
+                                    <div className="flex items-center gap-2">
+                                        {visibilityAction === "hide" ? (
+                                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                        ) : (
+                                            <Eye className="h-4 w-4 text-muted-foreground" />
+                                        )}
+                                        <h2 className="text-sm font-semibold">Item visibility</h2>
+                                    </div>
+                                    <p className="mt-1 text-sm text-muted-foreground">
+                                        Hide your item from public lists, or request admin review before making a hidden item visible again.
+                                    </p>
+
+                                    {visibilityAction ? (
+                                        <>
+                                            <label htmlFor="visibility-reason" className="sr-only">Visibility reason</label>
+                                            <textarea
+                                                id="visibility-reason"
+                                                value={visibilityReason}
+                                                onChange={(event) => setVisibilityReason(event.target.value)}
+                                                rows={3}
+                                                maxLength={500}
+                                                placeholder="Add a visibility reason for admins"
+                                                className="mt-3 flex min-h-24 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant={visibilityAction === "hide" ? "outline" : "secondary"}
+                                                className="mt-3 w-full"
+                                                onClick={() => submitVisibilityRequest(visibilityAction)}
+                                                disabled={visibilityLoading || visibilityReason.trim().length < 3}
+                                            >
+                                                {visibilityLoading ? (
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                ) : visibilityAction === "hide" ? (
+                                                    <EyeOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                                {visibilityAction === "hide" ? "Hide item" : "Request visibility"}
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <p className="mt-3 rounded-md border bg-muted p-3 text-sm text-muted-foreground">
+                                            {item.visibility_state === "pending_visible" ? "Visibility is waiting for admin review." : "Visibility changes are not available for this item state."}
+                                        </p>
+                                    )}
+
+                                    {(visibilityMessage || visibilityError) && (
+                                        <p
+                                            role={visibilityError ? "alert" : "status"}
+                                            className={`mt-3 text-sm ${visibilityError ? "text-destructive" : "text-muted-foreground"}`}
+                                        >
+                                            {visibilityError || visibilityMessage}
+                                        </p>
+                                    )}
+                                </div>
                             )}
 
                             <div className="mt-5 border-t pt-4">

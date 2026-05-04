@@ -40,7 +40,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [x] Dashboard public item lists and search filter to visible items while borrowed view stays user-scoped.
 - [x] Create/edit image flow has config-driven validation and immediate preview.
 - [x] Settings exposes repo links, issue prompt copy, JSON data export, and account deletion request.
-- [x] Item details let users suggest changes or flag issues for admin review.
+- [x] Item details let users suggest changes, flag issues, hide their own items, or request visibility for admin review.
 - [x] PWA manifest fields are generated from public app and branding config and covered by `pnpm test:pwa-manifest`.
 - [ ] Auth persistence, logout, PWA install, slow network, and long-content states have been browser-tested across target browsers.
 
@@ -72,6 +72,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [ ] `pnpm check:config`
 - [ ] `pnpm test:config`
 - [ ] `pnpm test:dashboard-query`
+- [ ] `pnpm test:item-visibility-request`
 - [ ] `pnpm test:copy`
 - [ ] `pnpm test:docs-index`
 - [ ] `pnpm test:admin-notification-settings`
