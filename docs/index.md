@@ -16,6 +16,7 @@ Forkable open source sharing and borrowing software for communities, clubs, asso
 ## Contributor Flow
 
 - [Conventions](conventions.md): Git, CI/CD, source-of-truth, and documentation rules.
+- [Repository Settings](repository-settings.md): branch protection, merge methods, branch cleanup, and Pages settings.
 - [Definition of Done](definition-of-done.md): required verification and merge expectations.
 - [Issue Prompt Template](issue-prompt-template.md): help users and AI assistants write useful issues.
 - [Optimization Options](optimization-options.md): living roadmap and anti-roadmap.

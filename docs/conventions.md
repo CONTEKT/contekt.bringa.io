@@ -15,6 +15,7 @@ These conventions keep the upstream repository easy to review, fork, sync, and m
 - Keep `main` linear and protected once CI is in place.
 - Enable GitHub's automatic deletion of head branches after pull requests are merged.
 - Merged branches are not an archive. Git history and pull requests are the archive.
+- Keep the manual GitHub settings checklist in `docs/repository-settings.md` aligned with these rules.
 
 Recommended branch names:
 
@@ -50,6 +51,7 @@ Secret-free checks should run for ordinary pull requests:
 - `pnpm exec tsc --noEmit`
 - `pnpm build` with safe public dummy Supabase values when needed
 - GitHub Pages docs build for docs changes
+- `Build GitHub Pages docs` should run on every pull request so it can be used as a stable branch-protection check.
 
 Lint should be quiet. Treat new warnings as work to resolve or as explicit technical debt that belongs in `docs/optimization-options.md`.
 

@@ -2,7 +2,7 @@
 
 Open source sharing and borrowing software for communities, clubs, and associations.
 
-[Configuration](docs/configuration.md) | [Supabase](docs/supabase.md) | [Maintenance](docs/maintenance.md) | [Roadmap](docs/roadmap.md) | [Security](SECURITY.md)
+[Configuration](docs/configuration.md) | [Supabase](docs/supabase.md) | [Repository settings](docs/repository-settings.md) | [Roadmap](docs/roadmap.md) | [Security](SECURITY.md)
 
 ## Status
 
