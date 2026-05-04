@@ -1,5 +1,7 @@
 title: bringa.io Docs
 description: Forkable sharing and borrowing app documentation.
+url: https://bringaio.github.io
+baseurl: /app.bringa.io
 markdown: kramdown
 plugins:
   - jekyll-relative-links

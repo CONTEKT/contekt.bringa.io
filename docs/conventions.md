@@ -57,6 +57,7 @@ Secret-free checks should run for ordinary pull requests:
 - GitHub Pages docs build for docs changes
 - `Build GitHub Pages docs` should run on every pull request so it can be used as a stable branch-protection check.
 - The docs workflow also builds on `main` and `codex/**` pushes; it deploys Pages only from `main`.
+- `docs/_config.yml` declares the expected project Pages `url` and `baseurl` so branch and pull-request builds can validate Jekyll output without requiring deployment access to Pages settings.
 
 Lint should be quiet. Treat new warnings as work to resolve or as explicit technical debt that belongs in `docs/optimization-options.md`.
 
