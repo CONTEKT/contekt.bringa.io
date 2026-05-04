@@ -5,6 +5,7 @@ import GitSignInButton from "@/components/auth/git-signin-button";
 import GoogleSignInButton from "@/components/auth/google-signin-button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
+import { appConfig } from "@/lib/app-config";
 
 export default function LoginPage() {
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -24,7 +25,7 @@ export default function LoginPage() {
           <label htmlFor="terms" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
             Ich akzeptiere die{" "}
             <Link
-              href="/terms.md"
+              href={appConfig.legal.termsPath}
               target="_blank"
               className="text-primary hover:underline font-medium"
             >

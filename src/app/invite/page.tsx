@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
+import { appConfig } from "@/lib/app-config"
 
 export default function InviteCodePage() {
     const router = useRouter()
@@ -67,7 +68,7 @@ export default function InviteCodePage() {
         <div className="min-h-screen flex items-center justify-center bg-background p-4">
             <div className="w-full max-w-md bg-card rounded-xl shadow-sm border p-8">
                 <div className="text-center mb-8">
-                    <h1 className="text-2xl font-bold mb-2">Welcome to Bringa!</h1>
+                    <h1 className="text-2xl font-bold mb-2">Welcome to {appConfig.app.name}</h1>
                     <p className="text-sm text-muted-foreground">
                         Please enter your invite code to access the app
                     </p>

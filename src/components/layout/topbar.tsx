@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseclient";
+import { appConfig } from "@/lib/app-config";
 import {
     Menubar,
     MenubarMenu,
@@ -10,7 +11,7 @@ import {
     MenubarContent,
     MenubarItem,
 } from "@/components/ui/menubar";
-import { LogOutIcon, UserIcon, ShieldCheck } from "lucide-react";
+import { Github, LogOutIcon, UserIcon, ShieldCheck } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import Link from "next/link";
 import { ThemeToggle } from "../theme/theme-toggle"
@@ -33,8 +34,8 @@ export default function TopBar() {
         <div className="fixed top-0 left-0 right-0 z-50 border-b bg-background">
             <Menubar className="w-full h-12 px-8 border-none">
                 <div className="flex items-center justify-between w-full">
-                    <Link href="/dashboard" className="flex items-center gap-2">
-                        <span className="font-semibold">Bringa</span>
+                    <Link href={appConfig.app.homeHref} className="flex items-center gap-2">
+                        <span className="font-semibold">{appConfig.branding.logoText}</span>
                     </Link>
 
                     <div className="flex items-center gap-2">
@@ -47,6 +48,17 @@ export default function TopBar() {
                             </Link>
                         )}
                         <ThemeToggle />
+                        {appConfig.features.githubLinkInTopbar && (
+                            <a
+                                href={appConfig.repository.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label={`${appConfig.app.name} on GitHub`}
+                                className="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent transition-colors"
+                            >
+                                <Github className="h-4 w-4" />
+                            </a>
+                        )}
                         <MenubarMenu>
                             <MenubarTrigger className="rounded-full p-1">
                                 <UserIcon className="h-5 w-5" />
@@ -68,6 +80,11 @@ export default function TopBar() {
                                         <span>Settings</span>
                                     </MenubarItem>
                                 </Link>
+                                <a href={appConfig.repository.issuesUrl} target="_blank" rel="noreferrer">
+                                    <MenubarItem className="flex items-center gap-2 cursor-pointer">
+                                        <span>Feedback & Issues</span>
+                                    </MenubarItem>
+                                </a>
                                 <div className="h-px bg-muted my-1" />
                                 <MenubarItem onSelect={handleLogout} className="flex items-center gap-2 text-destructive focus:text-destructive cursor-pointer">
                                     <LogOutIcon className="h-4 w-4" />
