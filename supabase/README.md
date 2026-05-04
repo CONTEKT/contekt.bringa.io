@@ -23,6 +23,7 @@ Do not inspect or commit real production user data while working here.
 
 ```bash
 pnpm check:config
+pnpm check:supabase-contract
 pnpm lint
 NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=dummy pnpm build
 ```

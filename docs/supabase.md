@@ -8,6 +8,7 @@ Supabase is the current backend for Auth, Postgres, Storage, RLS, and Edge Funct
 
 Before changing schema or policies, read [Supabase Contract Audit](supabase-contract-audit.md).
 The repository-level Supabase source-of-truth notes live in `supabase/README.md`.
+Run `pnpm check:supabase-contract` after changing RPCs, item write policies, or Storage bucket limits.
 
 ## Before MCP Access
 

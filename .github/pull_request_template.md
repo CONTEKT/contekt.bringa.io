@@ -5,6 +5,7 @@
 ## Verification
 
 - [ ] `pnpm check:config`
+- [ ] `pnpm check:supabase-contract` when Supabase-facing behavior changes
 - [ ] `pnpm exec tsc --noEmit`
 - [ ] `pnpm build` when build behavior may be affected
 - [ ] Focused lint or documented full-lint status when relevant
