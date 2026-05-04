@@ -11,8 +11,8 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [x] `AGENTS.md` points agents to `.agents/`.
 - [x] Agent rules cover privacy, source of truth, implementation, quality, and finishing work.
 - [x] Conventional Commits and branch cleanup expectations are documented.
-- [x] Secret-free CI checks exist for config, lint, TypeScript, build, and docs.
-- [ ] Required GitHub branch protection and Pages settings have been confirmed in the repository UI.
+- [x] Manual secret-free CI checks exist for config, lint, TypeScript, build, and docs.
+- [ ] GitHub branch protection and manual Pages deployment settings have been confirmed in the repository UI.
 
 ## Forkability
 
@@ -75,7 +75,7 @@ Use this checklist before calling the generic upstream ready for a first large o
 - [ ] `pnpm lint`
 - [ ] `pnpm exec tsc --noEmit`
 - [ ] `NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=dummy-anon-key pnpm build`
-- [ ] GitHub Pages docs build
+- [ ] Manual GitHub Pages docs build
 - [ ] Agentic browser testing for user, admin, uninvited, mobile, desktop, and PWA flows
 
 Keep unresolved items in [Optimization Options](optimization-options.md) until implementation, docs, tests, or live verification become the source of truth.

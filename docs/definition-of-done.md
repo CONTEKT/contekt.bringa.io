@@ -41,7 +41,7 @@ This is the current definition of done for upstream work. It is intentionally pr
 
 ## Required Before Merging To Main
 
-- CI passes for required secret-free checks.
+- Run the manual CI and Docs workflows when the change needs remote verification, release confidence, or docs deployment.
 - PR describes user-facing and fork-facing impact.
 - Fork customization surfaces were preserved or migration notes were added.
 - Security/privacy impact is explicitly considered.
@@ -51,4 +51,4 @@ This is the current definition of done for upstream work. It is intentionally pr
 
 - Full `pnpm lint` is expected to pass without warnings.
 - Supabase MCP/service-role verification is pending. Do not claim production database hardening until schema, RLS, Storage, functions, and migrations have been reviewed with approved access.
-- The initial CI workflow is secret-free and does not deploy. Deployment, Supabase backups, and remote migrations require separate trusted workflows.
+- The CI workflow is secret-free and manual-only. Docs deployment is also manual-only and only deploys from `main`. Supabase backups and remote migrations require separate trusted workflows.

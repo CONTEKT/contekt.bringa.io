@@ -16,27 +16,27 @@ Some GitHub settings are repository state, not code. Keep this checklist aligned
 
 ## Branch Protection
 
-Protect `main` after CI is stable.
+Protect `main` after the manual CI process is stable.
 
-Required status checks:
+Manual checks to run before important merges or releases:
 
 - `Secret-free quality checks`
 - `Build GitHub Pages docs`
 
 Recommended rules:
 
-- Require branches to be up to date before merging.
 - Require linear history.
 - Block force pushes.
 - Block branch deletion for `main`.
 - Allow administrators to bypass only when an outage or security incident requires it.
+- Do not require automatic status checks while workflows are manual-only unless maintainers explicitly commit to running them before merge.
 
 ## GitHub Pages
 
 - Set GitHub Pages source to GitHub Actions.
 - Use the `github-pages` environment.
 - Protect the `github-pages` environment if deployments should require approval.
-- Keep docs deployment secret-free.
+- Keep docs deployment secret-free and run it manually from `main` when deployment is needed.
 
 ## Forks
 

@@ -119,7 +119,7 @@ To keep upstream PRs smooth:
 
 ## CI/CD
 
-Upstream workflows should stay secret-free by default.
+Upstream workflows should stay secret-free and manual-only by default.
 
 Required shared checks:
 

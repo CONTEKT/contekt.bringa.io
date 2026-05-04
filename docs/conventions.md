@@ -41,9 +41,11 @@ When adding new text, decide whether it is a source of truth, a short summary, o
 
 ## CI/CD
 
-CI should be useful for upstream and forks.
+CI should be useful for upstream and forks without creating noise on every push.
 
-Secret-free checks should run for ordinary pull requests:
+The shared GitHub workflows are manual-only. Run them with GitHub Actions `workflow_dispatch` when a pull request, release, dependency update, or operational check needs remote verification.
+
+The manual CI workflow runs these secret-free checks:
 
 - Use Node 24 locally to match CI, `package.json` `engines.node`, `.node-version`, and `@types/node`.
 - `pnpm install --frozen-lockfile`
@@ -58,10 +60,9 @@ Secret-free checks should run for ordinary pull requests:
 - `pnpm lint`
 - `pnpm exec tsc --noEmit`
 - `pnpm build` with safe public dummy Supabase values when needed
-- GitHub Pages docs build for docs changes
-- `Build GitHub Pages docs` should run on every pull request so it can be used as a stable branch-protection check.
-- The docs workflow also builds on `main` and `codex/**` pushes; it deploys Pages only from `main`.
-- `docs/_config.yml` declares the expected project Pages `url` and `baseurl` so branch and pull-request builds can validate Jekyll output without requiring deployment access to Pages settings.
+- GitHub Pages docs build when the manual Docs workflow is run
+- The Docs workflow deploys Pages only when manually run on `main`.
+- `docs/_config.yml` declares the expected project Pages `url` and `baseurl` so manual branch builds can validate Jekyll output without requiring deployment access to Pages settings.
 
 Lint should be quiet. Treat new warnings as work to resolve or as explicit technical debt that belongs in `docs/optimization-options.md`.
 

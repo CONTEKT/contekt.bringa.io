@@ -56,12 +56,12 @@ Forks should keep their own legal documents in deployment-specific content paths
 2. Review config schema, base config, docs, migrations, and breaking changes.
 3. Rebase or merge upstream into the fork branch according to the fork's policy.
 4. Preserve fork-specific deployment config, legal text, and brand assets.
-5. Regenerate config with the fork's `BRINGA_DEPLOYMENT` and run CI.
+5. Regenerate config with the fork's `BRINGA_DEPLOYMENT` and run the manual CI workflow when remote verification is needed.
 6. Resolve conflicts explicitly; do not hide legal/config conflicts with custom merge drivers.
 
 ## CI/CD For Forks
 
-Fork CI should not require upstream secrets.
+Fork CI should not require upstream secrets. The upstream workflows are manual-only by default so fork operators can choose when remote checks run.
 
 Recommended split:
 
