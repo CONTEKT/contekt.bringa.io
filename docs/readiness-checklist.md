@@ -1,0 +1,68 @@
+---
+title: First Big Version Readiness Checklist
+---
+
+# First Big Version Readiness Checklist
+
+Use this checklist before calling the generic upstream ready for a first large open-source release. It is not a launch claim for any live deployment.
+
+## Repository Foundation
+
+- [x] `AGENTS.md` points agents to `.agents/`.
+- [x] Agent rules cover privacy, source of truth, implementation, quality, and finishing work.
+- [x] Conventional Commits and branch cleanup expectations are documented.
+- [x] Secret-free CI checks exist for config, lint, TypeScript, build, and docs.
+- [ ] Required GitHub branch protection and Pages settings have been confirmed in the repository UI.
+
+## Forkability
+
+- [x] Public configuration is layered through `config/base.config.jsonc` and `config/deployments/<slug>.jsonc`.
+- [x] Generated runtime config is checked for staleness.
+- [x] Branding, public links, media limits, legal paths, SSO display, and feature flags are config-driven.
+- [x] Forking and fork-content strategy docs describe upstream sync and tracked fork overrides.
+- [ ] Deployment content profiles for longer local copy are implemented beyond legal content paths.
+
+## Supabase Contract
+
+- [x] Consolidated `supabase/schema.sql` exists for fresh setup.
+- [x] Incremental migrations cover current prepared schema changes.
+- [x] Browser mutations for invite, item CRUD, borrow/return, admin roles, deletion request, and moderation use RPC boundaries.
+- [x] Direct writes to core item state, borrow history, item versions, item images, deletion requests, and moderation queues are blocked by RLS.
+- [x] Storage bucket MIME and size limits are checked against deployment config.
+- [ ] Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions have been reviewed with approved access.
+
+## User Experience
+
+- [x] Dashboard defaults to borrowed items only when the user has current borrowed items.
+- [x] Create/edit image flow has config-driven validation and immediate preview.
+- [x] Settings exposes repo links, issue prompt copy, JSON data export, and account deletion request.
+- [x] Item details let users suggest changes or flag issues for admin review.
+- [ ] Auth persistence, logout, PWA install, slow network, and long-content states have been browser-tested across target browsers.
+
+## Admin Experience
+
+- [x] Admin dashboard shows item counts, visibility states, media stats, and system-readiness placeholders.
+- [x] Admin users route supports admin promotion and demotion with self-demotion protection.
+- [x] Admin moderation route lists suggestions and flags and reviews status through RPCs.
+- [ ] Admin user item views, accepted-suggestion application, version restore, deletion processing, and notification settings are complete.
+
+## Operations
+
+- [x] `pnpm backup:supabase` exports configured public tables with a service role key.
+- [x] Maintenance docs distinguish operator table backups from user-facing export.
+- [x] Data export includes profile, items, borrow history, deletion requests, suggestions, and flags.
+- [ ] Storage object backups, Auth export limits, restore drills, encrypted backup handling, and backup freshness UI are complete.
+- [ ] Telegram notification dedupe, mute windows, retry state, and privacy review are complete.
+
+## Verification Before Release
+
+- [ ] `pnpm check:config`
+- [ ] `pnpm test:config`
+- [ ] `pnpm check:supabase-contract`
+- [ ] `pnpm lint`
+- [ ] `pnpm exec tsc --noEmit`
+- [ ] `NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=dummy-anon-key pnpm build`
+- [ ] GitHub Pages docs build
+- [ ] Agentic browser testing for user, admin, uninvited, mobile, desktop, and PWA flows
+
+Keep unresolved items in [Optimization Options](optimization-options.md) until implementation, docs, tests, or live verification become the source of truth.

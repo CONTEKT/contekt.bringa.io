@@ -1,0 +1,51 @@
+---
+title: Admin Operations
+---
+
+# Admin Operations
+
+This page describes the current upstream admin surfaces. Keep operational detail here short and link back to the source of truth for schema, config, and maintenance.
+
+## Current Surfaces
+
+- `/admin/dashboard`: item counts, visibility signals, borrowed-first item list, and system-readiness placeholders.
+- `/admin/users`: profile list, admin promotion, admin demotion, and self-demotion protection.
+- `/admin/invite-code`: current admin invite code display and update flow.
+- `/admin/moderation`: item suggestions and flags, with admin review actions routed through RPCs.
+
+## Review Queues
+
+Moderation queue records live in Supabase:
+
+- `item_suggestions`: user suggestions for content, images, visibility, owner, or other item changes.
+- `item_flags`: user issue reports with a bounded reason set.
+
+Users create these records through `create_item_suggestion` and `create_item_flag`. Admins transition state through `review_item_suggestion` and `review_item_flag`. Direct browser inserts, updates, and deletes remain blocked by RLS.
+
+Status transitions currently record reviewer and reviewed time. They do not yet apply accepted suggestions to item records, create item versions, notify users, or update Telegram seen-state.
+
+## Privacy Defaults
+
+- Use the app for detail review instead of sending personal data through Telegram.
+- Keep queue summaries compact and avoid exporting row contents into chat or issue comments.
+- Do not inspect real user rows through Supabase tools unless the maintainer explicitly approves that access for the current task.
+- Run or offer `pnpm backup:supabase` before production database work when a service role key is available.
+
+## Before Production Changes
+
+1. Confirm the target Supabase project and deployment profile.
+2. Run a table backup if `SUPABASE_SERVICE_ROLE_KEY` is configured.
+3. Apply migrations in order and compare the live contract with `supabase/schema.sql`.
+4. Run `pnpm check:supabase-contract` after local schema or policy changes.
+5. Verify admin routes with the agentic browser skill using admin and non-admin accounts.
+
+## Remaining Admin Work
+
+Keep the roadmap in [Optimization Options](optimization-options.md) current for:
+
+- accepted-suggestion application;
+- item/image-specific moderation;
+- item version restore-by-republish;
+- Telegram dedupe, mute windows, and seen-state;
+- backup freshness and Supabase health visibility;
+- account deletion processing, Auth deletion, and Storage cleanup.
