@@ -35,6 +35,7 @@ This is the current definition of done for upstream work. It is intentionally pr
 - `pnpm test:issue-prompt` when issue prompt content paths or rendering changes
 - `pnpm test:settings-data-actions` when settings data export filenames, account deletion request messages, or data action status presentation changes
 - `pnpm test:invite-flow` when invite code normalization, invite page messages, submit state, or pending-approval copy changes
+- `pnpm test:profile-completion` when profile completion validation, labels, placeholders, or submit state changes
 - `pnpm test:admin-notification-settings` when admin notification settings or planned notification controls change
 - `pnpm test:admin-deletion-requests` when admin deletion request summaries or review queues change
 - `pnpm test:account-deletion-cleanup` when trusted account deletion cleanup arguments, safety gates, Storage cleanup, or Auth deletion behavior changes

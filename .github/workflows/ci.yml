@@ -108,6 +108,9 @@ jobs:
       - name: Test invite flow helpers
         run: pnpm test:invite-flow
 
+      - name: Test profile completion helpers
+        run: pnpm test:profile-completion
+
       - name: Test admin notification settings
         run: pnpm test:admin-notification-settings
 

@@ -8,6 +8,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
+import {
+    buildProfileCompletionCopy,
+    buildProfileCompletionSubmitState,
+    validateProfileCompletionInput,
+} from "@/lib/profile-completion"
 
 export default function CompleteProfilePage() {
     const router = useRouter()
@@ -19,6 +24,8 @@ export default function CompleteProfilePage() {
     const [name, setName] = useState("")
     const [surname, setSurname] = useState("")
     const [error, setError] = useState<string | null>(null)
+    const copy = buildProfileCompletionCopy()
+    const submitState = buildProfileCompletionSubmitState({ saving })
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -50,9 +57,9 @@ export default function CompleteProfilePage() {
         e.preventDefault()
         if (!userId) return
 
-        // Basic validation
-        if (!name.trim() || !surname.trim()) {
-            setError("Bitte füllen Sie beide Felder aus.")
+        const validation = validateProfileCompletionInput({ name, surname })
+        if (!validation.ok) {
+            setError(validation.error)
             return
         }
 
@@ -63,8 +70,8 @@ export default function CompleteProfilePage() {
             const { error: updateError } = await supabase
                 .from('profiles')
                 .update({
-                    display_name: name.trim(),
-                    display_surname: surname.trim()
+                    display_name: validation.values.displayName,
+                    display_surname: validation.values.displaySurname
                 })
                 .eq('id', userId)
 
@@ -92,33 +99,33 @@ export default function CompleteProfilePage() {
         <div className="min-h-screen flex items-center justify-center bg-background p-4">
             <Card className="w-full max-w-md">
                 <CardHeader>
-                    <CardTitle>Profil vervollständigen</CardTitle>
+                    <CardTitle>{copy.title}</CardTitle>
                     <CardDescription>
-                        Bitte geben Sie Ihren Vor- und Nachnamen ein, um fortzufahren.
+                        {copy.description}
                     </CardDescription>
                 </CardHeader>
                 <form onSubmit={handleSubmit}>
                     <CardContent className="space-y-4">
                         {error && (
-                            <div className="text-sm text-destructive font-medium p-2 bg-destructive/10 rounded">
+                            <div className="text-sm text-destructive font-medium p-2 bg-destructive/10 rounded" role="alert">
                                 {error}
                             </div>
                         )}
                         <div className="space-y-2">
-                            <Label htmlFor="name">Vorname</Label>
+                            <Label htmlFor="name">{copy.firstNameLabel}</Label>
                             <Input
                                 id="name"
-                                placeholder="Max"
+                                placeholder={copy.firstNamePlaceholder}
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="surname">Nachname</Label>
+                            <Label htmlFor="surname">{copy.lastNameLabel}</Label>
                             <Input
                                 id="surname"
-                                placeholder="Mustermann"
+                                placeholder={copy.lastNamePlaceholder}
                                 value={surname}
                                 onChange={(e) => setSurname(e.target.value)}
                                 required
@@ -126,9 +133,9 @@ export default function CompleteProfilePage() {
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button type="submit" className="w-full" disabled={saving}>
-                            {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Speichern & Fortfahren
+                        <Button type="submit" className="w-full" disabled={submitState.disabled} aria-busy={submitState.busy}>
+                            {submitState.busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {submitState.label}
                         </Button>
                     </CardFooter>
                 </form>
