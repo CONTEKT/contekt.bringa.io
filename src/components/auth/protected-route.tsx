@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabaseclient"
 import { Loader2 } from "lucide-react"
 import TopBar from "@/components/layout/topbar"
+import { decideProtectedRoute } from "@/lib/protected-route-decision"
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const router = useRouter()
@@ -22,7 +23,8 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
                 if (!mounted) return;
 
                 if (!session) {
-                    router.replace("/login")
+                    const decision = decideProtectedRoute({ hasSession: false, profile: null })
+                    if (decision.redirectTo) router.replace(decision.redirectTo)
                     return
                 }
 
@@ -33,25 +35,18 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
                     .eq('id', session.user.id)
                     .single()
 
-                if (profileError) {
-                    router.replace("/login")
+                const decision = decideProtectedRoute({
+                    hasSession: true,
+                    profile: profile ?? null,
+                    profileError: Boolean(profileError),
+                })
+                if (decision.redirectTo) {
+                    router.replace(decision.redirectTo)
                     return
                 }
 
-                if (!profile.profile_valid) {
-                    // User hasn't entered invite code yet
-                    router.replace("/invite")
-                    return
-                }
-
-                if (!profile.display_name?.trim() || !profile.display_surname?.trim()) {
-                    // User hasn't completed their profile (name/surname)
-                    router.replace("/complete-profile")
-                    return
-                }
-
-                setAuthenticated(true)
-                setProfileValid(true)
+                setAuthenticated(decision.authenticated)
+                setProfileValid(decision.profileValid)
             } catch {
                 if (mounted) router.replace("/login")
             } finally {
