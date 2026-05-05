@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { defaultStorageBuckets, defaultTables } from "./backup-supabase.mjs";
-import { checkEnvExampleContent, parseEnvExample } from "./check-env-example.mjs";
+import { checkEnvExampleContent, checkEnvGitignoreContent, parseEnvExample } from "./check-env-example.mjs";
 
 function validEnvExampleContent(overrides = {}) {
   const values = {
@@ -72,5 +72,30 @@ test("rejects real service and notification values in the example env", () => {
   assert.throws(
     () => checkEnvExampleContent(validEnvExampleContent({ TELEGRAM_BOT_TOKEN: "123:abc" })),
     /TELEGRAM_BOT_TOKEN.*blank/,
+  );
+});
+
+test("requires gitignore to keep only the env template tracked", () => {
+  assert.doesNotThrow(() => checkEnvGitignoreContent(`
+.env
+.env.*
+!.env.example
+`));
+
+  assert.throws(
+    () => checkEnvGitignoreContent(`
+.env
+.env.*
+!.example.env
+`),
+    /!.env.example/,
+  );
+
+  assert.throws(
+    () => checkEnvGitignoreContent(`
+.env
+!.env.example
+`),
+    /.env.*/,
   );
 });
