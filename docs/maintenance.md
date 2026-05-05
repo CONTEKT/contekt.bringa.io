@@ -18,6 +18,8 @@ title: Maintenance
 
 `pnpm backup:supabase` exports configured Postgres tables and configured Storage buckets to `backups/supabase/<timestamp>/`. By default it backs up the public tables listed in `scripts/backup-supabase.mjs` and the `items` Storage bucket. Use `SUPABASE_BACKUP_TABLES`, `SUPABASE_BACKUP_STORAGE_BUCKETS`, `SUPABASE_BACKUP_PAGE_SIZE`, and `SUPABASE_BACKUP_STORAGE_PAGE_SIZE` for deployment-specific scope; set a list variable to `none` to skip that surface deliberately.
 
+Run `pnpm check:env-example` after changing backup defaults or `.env.example`. It verifies that the example backup table and Storage bucket defaults still match the backup script source of truth.
+
 Set `SUPABASE_BACKUP_AUTH_USERS=1` to export Supabase Auth user metadata through the Admin API to `auth-users.json`. This does not export passwords, provider secrets, or a complete Auth restore package; treat it as operator metadata for reconciliation. Keep backup directories encrypted at rest and test restore procedures before relying on them operationally.
 
 After `backup_runs` has been migrated, the backup script records compact run metadata in Supabase by default. The admin dashboard reads the latest admin-visible row to show backup freshness without exposing backup files or project secrets in public assets. Set `SUPABASE_BACKUP_RECORD_RUN=0` to skip this status write for a one-off run.

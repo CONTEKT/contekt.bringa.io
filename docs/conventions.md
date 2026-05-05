@@ -52,8 +52,11 @@ The manual CI workflow runs these secret-free checks:
 - Use Node 24 locally to match CI, `package.json` `engines.node`, `.node-version`, and `@types/node`.
 - `pnpm install --frozen-lockfile`
 - `pnpm check:config`
+- `pnpm test:config`
+- `pnpm test:env-example`
 - `pnpm test:copy`
 - `pnpm test:docs-index`
+- `pnpm test:github-workflows`
 - `pnpm test:dashboard-query`
 - `pnpm test:item-visibility-request`
 - `pnpm test:issue-prompt`
@@ -70,10 +73,13 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm test:backup-supabase`
 - `pnpm test:verify-backup`
 - `pnpm test:pwa-manifest`
+- `pnpm check:env-example`
 - `pnpm check:copy`
 - `pnpm check:docs-index`
+- `pnpm check:github-workflows`
 - `pnpm test:static-export`
 - `pnpm check:static-export`
+- `pnpm check:supabase-contract`
 - `pnpm lint`
 - `pnpm exec tsc --noEmit`
 - `pnpm build` with safe public dummy Supabase values when needed

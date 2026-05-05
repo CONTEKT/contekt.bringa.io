@@ -36,6 +36,9 @@ jobs:
       - name: Test config layering
         run: pnpm test:config
 
+      - name: Test env example checker
+        run: pnpm test:env-example
+
       - name: Test copy checker
         run: pnpm test:copy
 
@@ -92,6 +95,9 @@ jobs:
 
       - name: Test PWA manifest
         run: pnpm test:pwa-manifest
+
+      - name: Check env example
+        run: pnpm check:env-example
 
       - name: Check English documentation copy
         run: pnpm check:copy

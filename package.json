@@ -10,6 +10,7 @@
   "scripts": {
     "generate:config": "node scripts/generate-config.mjs",
     "test:config": "node --test scripts/generate-config.test.mjs",
+    "test:env-example": "node --test scripts/check-env-example.test.mjs",
     "test:copy": "node --test scripts/check-copy.test.mjs",
     "test:docs-index": "node --test scripts/check-docs-index.test.mjs",
     "test:dashboard-query": "node --test scripts/dashboard-item-query.test.mjs",
@@ -31,6 +32,7 @@
     "test:pwa-manifest": "node --test scripts/pwa-manifest.test.mjs",
     "test:static-export": "node --test scripts/check-static-export.test.mjs",
     "check:config": "node scripts/generate-config.mjs --check",
+    "check:env-example": "node scripts/check-env-example.mjs",
     "check:copy": "node scripts/check-copy.mjs",
     "check:docs-index": "node scripts/check-docs-index.mjs",
     "check:github-workflows": "node scripts/check-github-workflows.mjs",
