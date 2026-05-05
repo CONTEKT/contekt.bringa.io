@@ -45,7 +45,7 @@ test("resolves explicit local credentials and ignores remote production env URLs
 test("uses local status output when explicit env is absent", () => {
   const credentials = resolveLocalSupabaseCredentials({}, parseSupabaseStatusEnv(`
 SUPABASE_URL=http://127.0.0.1:54321
-SUPABASE_SERVICE_ROLE_KEY=local-service-role
+SERVICE_ROLE_KEY=local-service-role
 `));
 
   assert.deepEqual(credentials, {
