@@ -22,7 +22,7 @@ This audit maps the active goal prompt to durable repository artifacts. It is no
 | Open-source contribution surface | `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue templates, pull request template, `docs/open-source-release.md` | Covered locally |
 | Secret-free manual CI/CD | `.github/workflows/ci.yml`, `.github/workflows/pages.yml`, `docs/conventions.md`, `docs/repository-settings.md`, `pnpm check:github-workflows` | Covered |
 | In-app docs | `docs/index.md`, `public/content/generated/docs/index.json`, `/docs`, `pnpm check:docs-index` | Covered locally |
-| Supabase contract and privacy | `supabase/schema.sql`, `supabase/migrations/`, `supabase/README.md`, `docs/supabase.md`, `docs/supabase-mcp.md`, `docs/supabase-contract-audit.md`, `pnpm test:supabase-contract`, `pnpm check:supabase-contract`, `pnpm check:supabase-mcp` | Partial until live review |
+| Supabase contract and privacy | `supabase/schema.sql`, `supabase/migrations/`, `supabase/README.md`, `docs/supabase.md`, `docs/supabase-mcp.md`, `docs/supabase-contract-audit.md`, `pnpm test:supabase-contract`, `pnpm check:supabase-contract`, `pnpm check:supabase-mcp` | Partial; live MCP metadata review started |
 | Supabase development branch setup | `docs/supabase-branching.md`, `pnpm check:supabase-branching` | Blocked until approved project refs and access |
 | Product model and admin operations | `docs/admin-operations.md`, `docs/readiness-checklist.md`, `pnpm test:admin-route-gate`, `scripts/admin-system-health.test.mjs`, admin route tests in `scripts/admin-*.test.mjs` | Partial until browser and live backend evidence |
 | Auth and onboarding decision boundaries | `pnpm test:auth-redirect`, `pnpm test:protected-route`, `docs/supabase-branching.md` Auth redirect URL tasks | Partial until live Auth provider and browser persistence review |
@@ -55,7 +55,7 @@ This audit maps the active goal prompt to durable repository artifacts. It is no
 ## Remaining Blockers
 
 - GitHub branch protection and manual Pages deployment settings require repository UI or plan access. Merge method and branch cleanup settings are confirmed through the GitHub API, while GitHub Pages site creation currently returns a plan limitation for this private repository.
-- Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions review requires approved access.
+- Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions review has started through Supabase MCP metadata, but still needs full RLS/Storage/Edge review, migration/write approval, and advisor remediation evidence.
 - Live Supabase health checks, Edge Function log review, and any external error-reporting decision require approved access and policy.
 - Local app development cannot be linked to a Supabase development branch without approved project refs and branch access.
 - Auth persistence, logout, PWA install, slow network, and long-content states still need browser evidence. Connected auth and target-browser coverage remain open.

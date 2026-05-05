@@ -16,7 +16,7 @@ title: Supabase MCP Agent Setup
 
 - 2026-05-05 official Supabase MCP docs say the hosted server URL is https://mcp.supabase.com/mcp.
 - Dynamic OAuth is the default; personal access tokens are no longer required for normal MCP login.
-- Use project-scoped mode with project_ref=<project-ref> once the app-bringa-io project ref exists.
+- Use project-scoped mode with project_ref=<project-ref> once the app.bringa.io project ref exists.
 - Use read_only=true for production or any project that may contain real user data.
 - Supabase recommends development or test projects for MCP work.
 - Limit feature groups with features=database,docs for ordinary schema/RLS audits; add development, debugging, or storage only when needed.
@@ -28,8 +28,8 @@ title: Supabase MCP Agent Setup
 
 ## Target Project
 
-- Target project name: app-bringa-io.
-- Target organization: bringa.
+- Target project name: app.bringa.io.
+- Target organization: bringa-base.
 - Future fork project name: contekt-bringa-io.
 - Do not delete or pause any contekt project without a separate explicit confirmation in the active session.
 
@@ -37,7 +37,7 @@ title: Supabase MCP Agent Setup
 
 1. Verify that Supabase MCP tools are visible in the current Codex session.
 2. List organizations and projects without reading real row contents.
-3. Create app-bringa-io only after checking project capacity and cost confirmation.
+3. Use the existing \`app.bringa.io\` project when MCP lists it. If it is missing, create it only after checking project capacity and cost confirmation.
 4. Add feature groups narrowly for the task.
 5. Prefer schema, RLS policies, functions, triggers, Storage buckets, advisors, and logs over row contents.
 6. Ask before reading real user rows.
@@ -55,7 +55,7 @@ title: Supabase MCP Agent Setup
 
 ## Local Handoff
 
-- After app-bringa-io exists, record only SUPABASE_PROJECT_REF and public browser values in local operator notes.
+- After app.bringa.io exists, record only SUPABASE_PROJECT_REF and public browser values in local operator notes.
 - Put supabase.url and supabase.publishableKey in config/deployments/app.bringa.io.jsonc after RLS review.
 - Run pnpm backup:supabase only after SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY is configured and the target is confirmed.
 `;
@@ -68,7 +68,7 @@ test("requires project scoping, read-only defaults, key handling, and non-destru
   const incomplete = validRunbook
     .replace("project_ref=<project-ref>", "project ref")
     .replace("read_only=true", "read only")
-    .replace("app-bringa-io", "app")
+    .replace("app.bringa.io", "app")
     .replace("Do not delete or pause any contekt project without a separate explicit confirmation in the active session.", "")
     .replace("SUPABASE_SECRET_KEY", "SECRET_KEY")
     .replace("SUPABASE_SERVICE_ROLE_KEY", "SERVICE_KEY");
@@ -89,7 +89,7 @@ description: Use when connecting this repository to Supabase MCP, reviewing Supa
 
 Read docs/supabase-mcp.md before project setup or live review.
 Prefer project-scoped mode with project_ref=<project-ref> and read_only=true for audits.
-Use app-bringa-io as the target project name until the user changes it.
+Use app.bringa.io as the target project name until the user changes it.
 Never read real user rows without explicit approval.
 Never reveal, paste, or commit SUPABASE_SECRET_KEY, SUPABASE_SERVICE_ROLE_KEY, or sb_secret_ values.
 Do not delete or pause contekt projects without separate explicit confirmation.

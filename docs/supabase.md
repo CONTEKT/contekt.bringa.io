@@ -38,7 +38,7 @@ Hosted Supabase is the default documented path. Self-hosted Supabase is possible
 - Do not add real Supabase secret keys or service role keys to docs or commits.
 - Use `pnpm backup:supabase` only after confirming the target project.
 - Prefer schema and policy review before reading real rows.
-- Use [Supabase MCP Agent Setup](supabase-mcp.md) for project-scoped MCP, read-only audit mode, `app-bringa-io` creation, and secret-key or legacy service-role handoff.
+- Use [Supabase MCP Agent Setup](supabase-mcp.md) for project-scoped MCP, read-only audit mode, the `app.bringa.io` project, and secret-key or legacy service-role handoff.
 
 ## Live MCP Review
 

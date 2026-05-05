@@ -10,7 +10,7 @@ This runbook is for agents and maintainers who need to prepare the live `app.bri
 
 - 2026-05-05 official Supabase MCP docs say the hosted server URL is `https://mcp.supabase.com/mcp`.
 - Dynamic OAuth is the default; personal access tokens are no longer required for normal MCP login.
-- Use `project_ref=<project-ref>` once the `app-bringa-io` project ref exists. This scopes the MCP server to one project and disables account management tools.
+- Use `project_ref=<project-ref>` once the `app.bringa.io` project ref exists. This scopes the MCP server to one project and disables account management tools.
 - Use `read_only=true` for production audits or any project that may contain real user data.
 - Supabase recommends development or test projects for MCP work. If the live project must be inspected, combine project scoping, read-only mode, restricted feature groups, and the repository privacy rules below.
 - Limit feature groups with `features=database,docs` for ordinary schema/RLS audits; add `development` only when project URLs or publishable keys are needed, `debugging` only when advisors or logs are needed, and `storage` only when bucket metadata or Storage configuration must be reviewed.
@@ -29,18 +29,24 @@ Useful official references:
 
 ## Target Project
 
-- Target project name: `app-bringa-io`.
-- Target organization: `bringa`.
+- Target project name: `app.bringa.io`.
+- Target organization: `bringa-base`.
 - Future fork project name: `contekt-bringa-io`.
 - Do not delete or pause any contekt project without a separate explicit confirmation in the active session.
 
 If capacity or plan limits block a new project, first report the exact blocker and the available options. Treat deleting a paused `contekt` development project as a destructive action that requires a fresh approval naming the project ref.
 
+## Current Project Discovery
+
+The `app.bringa.io` project exists in `eu-central-1` and was `ACTIVE_HEALTHY` when first discovered through Supabase MCP on 2026-05-05. Keep project refs and public browser values in local operator notes or deployment config after review, rather than hardcoding them into shared fork docs.
+
+Initial safe metadata checks found no applied repository migrations, no deployed Edge Functions, no performance advisor lints, and one security advisor warning for public execution of `public.rls_auto_enable()` as a SECURITY DEFINER helper. Resolve advisor findings and rerun security advisors before treating the live backend as ready.
+
 ## Agent Workflow
 
 1. Verify that Supabase MCP tools are visible in the current Codex session. If `~/.codex/config.toml` was edited during the session but no Supabase tools are discoverable, start a new Codex session or restart the MCP runtime.
 2. Use unscoped MCP only for organization/project discovery and approved project setup. List organizations and projects without reading real row contents.
-3. Create app-bringa-io only after checking project capacity and cost confirmation.
+3. Use the existing `app.bringa.io` project when MCP lists it. If it is missing, create it only after checking project capacity and cost confirmation.
 4. After creation, switch to a project-scoped read-only MCP URL for ordinary schema/RLS audits:
 
    ```text
@@ -80,8 +86,8 @@ Use supabase.url and supabase.publishableKey in deployment config for browser-vi
 
 ## Local Handoff
 
-- After `app-bringa-io` exists, record only `SUPABASE_PROJECT_REF` and public browser values in local operator notes.
+- After `app.bringa.io` exists, record only `SUPABASE_PROJECT_REF` and public browser values in local operator notes.
 - Put `supabase.url` and `supabase.publishableKey` in `config/deployments/app.bringa.io.jsonc` after RLS review.
 - Run `pnpm backup:supabase` only after `SUPABASE_SECRET_KEY` or `SUPABASE_SERVICE_ROLE_KEY` is configured and the target is confirmed.
 - Run `pnpm check:supabase-contract` after schema, RLS, Storage, function, or trigger review.
-- Keep the `contekt-bringa-io` fork path in mind, but do not mix fork setup into the upstream `app-bringa-io` project.
+- Keep the `contekt-bringa-io` fork path in mind, but do not mix fork setup into the upstream `app.bringa.io` project.

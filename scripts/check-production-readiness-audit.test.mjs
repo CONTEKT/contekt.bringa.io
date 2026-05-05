@@ -47,7 +47,7 @@ function validAuditContent() {
 ## Remaining Blockers
 
 - GitHub branch protection and manual Pages deployment settings require repository UI or plan access.
-- Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions review requires approved access.
+- Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions review has started through Supabase MCP metadata, but still needs full RLS/Storage/Edge review, migration/write approval, and advisor remediation evidence.
 - Live Supabase health checks, Edge Function log review, and any external error-reporting decision require approved access and policy.
 - Local app development cannot be linked to a Supabase development branch without approved project refs and branch access.
 - Auth persistence, logout, PWA install, slow network, and long-content states still need browser evidence.
@@ -84,7 +84,7 @@ test("rejects audits that omit live Supabase blockers", () => {
   assert.throws(
     () => checkProductionReadinessAuditContent(
       validAuditContent().replace(
-        "- Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions review requires approved access.",
+        "- Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions review has started through Supabase MCP metadata, but still needs full RLS/Storage/Edge review, migration/write approval, and advisor remediation evidence.",
         "- Supabase live review remains pending.",
       ),
     ),

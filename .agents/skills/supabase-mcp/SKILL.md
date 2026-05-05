@@ -35,7 +35,7 @@ Protect privacy first. Before reading real table contents, ask the user for expl
 
 - Keep project-specific MCP credentials scoped to this repository. Prefer repo-local MCP configuration when available.
 - Prefer project-scoped mode with `project_ref=<project-ref>` and `read_only=true` for production audits.
-- Use `app-bringa-io` as the target project name until the user changes it.
+- Use `app.bringa.io` as the target project name until the user changes it.
 - Do not delete or pause contekt projects without separate explicit confirmation.
 - Use official Supabase docs or Context7 for current MCP, custom domain, self-hosting, and Auth provider setup details.
 - Never reveal, paste, or commit `SUPABASE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, or `sb_secret_` values. Document variable names only.
