@@ -11,6 +11,7 @@ import { AppImage } from "@/components/ui/app-image"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { buildAdminProfileValidationAction, profileDisplayName } from "@/lib/admin-profile-validation"
+import { buildAdminRouteGate } from "@/lib/admin-route-gate"
 
 export default function AdminUsersPage() {
     const router = useRouter()
@@ -20,12 +21,13 @@ export default function AdminUsersPage() {
     const [loading, setLoading] = useState(true)
     const [processingId, setProcessingId] = useState<string | null>(null)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+    const adminGate = buildAdminRouteGate({ adminLoading, isAdmin, contentLoading: loading })
 
     useEffect(() => {
-        if (!adminLoading && !isAdmin) {
-            router.push('/dashboard')
+        if (adminGate.redirectTo) {
+            router.push(adminGate.redirectTo)
         }
-    }, [isAdmin, adminLoading, router])
+    }, [adminGate.redirectTo, router])
 
     const fetchData = async () => {
         try {
@@ -113,7 +115,7 @@ export default function AdminUsersPage() {
         }
     }
 
-    if (adminLoading || loading) {
+    if (adminGate.showLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -121,7 +123,7 @@ export default function AdminUsersPage() {
         )
     }
 
-    if (!isAdmin) {
+    if (!adminGate.render) {
         return null
     }
 

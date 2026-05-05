@@ -7,6 +7,7 @@ import { CheckCircle2, Eye, EyeOff, Flag, History, Inbox, Lightbulb, Loader2, Pa
 import ProtectedRoute from "@/components/auth/protected-route"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { supabase } from "@/lib/supabaseclient"
+import { buildAdminRouteGate } from "@/lib/admin-route-gate"
 import { AppImage } from "@/components/ui/app-image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -75,6 +76,7 @@ export default function AdminModerationPage() {
     const [processingAction, setProcessingAction] = useState<string | null>(null)
     const [visibilityReason, setVisibilityReason] = useState("")
     const [reviewNote, setReviewNote] = useState("")
+    const adminGate = buildAdminRouteGate({ adminLoading, isAdmin, contentLoading: loading })
 
     const visibilityQueue = useMemo(() => buildAdminVisibilityQueue(visibilityItems), [visibilityItems])
     const stats = useMemo(() => ({
@@ -89,10 +91,10 @@ export default function AdminModerationPage() {
     )
 
     useEffect(() => {
-        if (!adminLoading && !isAdmin) {
-            router.push("/dashboard")
+        if (adminGate.redirectTo) {
+            router.push(adminGate.redirectTo)
         }
-    }, [adminLoading, isAdmin, router])
+    }, [adminGate.redirectTo, router])
 
     useEffect(() => {
         const fetchModeration = async () => {
@@ -410,7 +412,7 @@ export default function AdminModerationPage() {
         }
     }
 
-    if (adminLoading || loading) {
+    if (adminGate.showLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -418,7 +420,7 @@ export default function AdminModerationPage() {
         )
     }
 
-    if (!isAdmin) {
+    if (!adminGate.render) {
         return null
     }
 

@@ -15,6 +15,7 @@ import {
     type AdminNotificationMute,
     type AdminNotificationSectionKey,
 } from "@/lib/admin-notification-settings"
+import { buildAdminRouteGate } from "@/lib/admin-route-gate"
 
 const sectionIcons: Record<AdminNotificationSectionKey, typeof Bell> = {
     telegram: Bell,
@@ -38,6 +39,7 @@ export default function AdminNotificationsPage() {
     const { isAdmin, loading: adminLoading } = useIsAdmin()
     const [notificationEvents, setNotificationEvents] = useState<AdminNotificationEvent[] | undefined>(undefined)
     const [notificationMutes, setNotificationMutes] = useState<AdminNotificationMute[] | undefined>(undefined)
+    const adminGate = buildAdminRouteGate({ adminLoading, isAdmin })
     const settings = buildAdminNotificationSettings({
         telegramAdminNotifications: appConfig.features.telegramAdminNotifications,
         notificationEvents,
@@ -45,10 +47,10 @@ export default function AdminNotificationsPage() {
     })
 
     useEffect(() => {
-        if (!adminLoading && !isAdmin) {
-            router.push("/dashboard")
+        if (adminGate.redirectTo) {
+            router.push(adminGate.redirectTo)
         }
-    }, [adminLoading, isAdmin, router])
+    }, [adminGate.redirectTo, router])
 
     useEffect(() => {
         const fetchNotificationState = async () => {
@@ -79,7 +81,7 @@ export default function AdminNotificationsPage() {
         }
     }, [isAdmin])
 
-    if (adminLoading) {
+    if (adminGate.showLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -87,7 +89,7 @@ export default function AdminNotificationsPage() {
         )
     }
 
-    if (!isAdmin) {
+    if (!adminGate.render) {
         return null
     }
 

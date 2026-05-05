@@ -9,6 +9,7 @@ import { AppImage } from "@/components/ui/app-image"
 import { Button } from "@/components/ui/button"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { buildAdminItemVersionTimeline, summarizeAdminItemVersions, type AdminItemVersion, type AdminItemVersionTimelineEntry } from "@/lib/admin-item-versions"
+import { buildAdminRouteGate } from "@/lib/admin-route-gate"
 import { supabase } from "@/lib/supabaseclient"
 import type { ItemDb } from "@/app/model/model"
 
@@ -132,15 +133,16 @@ function AdminItemVersionsContent() {
     const [actionMessage, setActionMessage] = useState<string | null>(null)
     const [restoreReason, setRestoreReason] = useState("")
     const [processingId, setProcessingId] = useState<string | null>(null)
+    const adminGate = buildAdminRouteGate({ adminLoading, isAdmin, contentLoading: loading })
 
     const timeline = useMemo(() => buildAdminItemVersionTimeline(versions), [versions])
     const summary = useMemo(() => summarizeAdminItemVersions(versions), [versions])
 
     useEffect(() => {
-        if (!adminLoading && !isAdmin) {
-            router.push("/dashboard")
+        if (adminGate.redirectTo) {
+            router.push(adminGate.redirectTo)
         }
-    }, [adminLoading, isAdmin, router])
+    }, [adminGate.redirectTo, router])
 
     const fetchVersions = useCallback(async () => {
         if (!itemId || !uuidPattern.test(itemId)) {
@@ -218,7 +220,7 @@ function AdminItemVersionsContent() {
         }
     }
 
-    if (adminLoading || loading) {
+    if (adminGate.showLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -226,7 +228,7 @@ function AdminItemVersionsContent() {
         )
     }
 
-    if (!isAdmin) {
+    if (!adminGate.render) {
         return null
     }
 

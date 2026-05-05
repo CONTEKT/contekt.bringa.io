@@ -32,6 +32,7 @@ import { buildAdminRecentActivity, type AdminRecentActivity } from "@/lib/admin-
 import { buildAdminQueueCounts } from "@/lib/admin-queue-counts";
 import { buildAdminSystemHealthItems, type AdminBackupRun, type AdminSystemHealthItemKey } from "@/lib/admin-system-health";
 import { appConfig } from "@/lib/app-config";
+import { buildAdminRouteGate } from "@/lib/admin-route-gate";
 
 export default function AdminDashboardPage() {
     const router = useRouter();
@@ -57,6 +58,7 @@ export default function AdminDashboardPage() {
     });
     const [loading, setLoading] = useState(true);
     const { isAdmin, loading: adminLoading } = useIsAdmin();
+    const adminGate = buildAdminRouteGate({ adminLoading, isAdmin, contentLoading: loading });
 
     const stats = useMemo(() => {
         const hiddenStates = new Set(["user_hidden", "admin_hidden", "deleted_user_hidden", "archived"]);
@@ -110,11 +112,10 @@ export default function AdminDashboardPage() {
     const formatDate = (value: string) => new Date(value).toISOString().split("T")[0];
 
     useEffect(() => {
-        // Redirect non-admins
-        if (!adminLoading && !isAdmin) {
-            router.push('/dashboard');
+        if (adminGate.redirectTo) {
+            router.push(adminGate.redirectTo);
         }
-    }, [isAdmin, adminLoading, router]);
+    }, [adminGate.redirectTo, router]);
 
     useEffect(() => {
         const fetchAllItems = async () => {
@@ -255,7 +256,7 @@ export default function AdminDashboardPage() {
         }
     }, [isAdmin]);
 
-    if (adminLoading || loading) {
+    if (adminGate.showLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -263,8 +264,8 @@ export default function AdminDashboardPage() {
         );
     }
 
-    if (!isAdmin) {
-        return null; // Will redirect
+    if (!adminGate.render) {
+        return null;
     }
 
     return (

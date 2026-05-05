@@ -9,6 +9,7 @@ import { AppImage } from "@/components/ui/app-image"
 import { Button } from "@/components/ui/button"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { supabase } from "@/lib/supabaseclient"
+import { buildAdminRouteGate } from "@/lib/admin-route-gate"
 import {
     buildDeletionRequestReview,
     buildDeletionRequestExecution,
@@ -92,12 +93,13 @@ export default function AdminDeletionRequestsPage() {
     const [actionMessage, setActionMessage] = useState<string | null>(null)
     const [reviewNote, setReviewNote] = useState("")
     const [processingId, setProcessingId] = useState<string | null>(null)
+    const adminGate = buildAdminRouteGate({ adminLoading, isAdmin, contentLoading: loading })
 
     useEffect(() => {
-        if (!adminLoading && !isAdmin) {
-            router.push("/dashboard")
+        if (adminGate.redirectTo) {
+            router.push(adminGate.redirectTo)
         }
-    }, [adminLoading, isAdmin, router])
+    }, [adminGate.redirectTo, router])
 
     useEffect(() => {
         const fetchDeletionRequests = async () => {
@@ -207,7 +209,7 @@ export default function AdminDeletionRequestsPage() {
         }
     }
 
-    if (adminLoading || loading) {
+    if (adminGate.showLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -215,7 +217,7 @@ export default function AdminDeletionRequestsPage() {
         )
     }
 
-    if (!isAdmin) {
+    if (!adminGate.render) {
         return null
     }
 

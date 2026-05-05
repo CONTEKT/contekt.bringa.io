@@ -27,7 +27,7 @@ This audit maps the active goal prompt to durable repository artifacts. It is no
 | GitHub Pages docs | `docs/index.md`, `docs/_layouts/default.html`, `docs/_config.yml`, `pnpm check:docs-index` | Covered locally |
 | Supabase contract and privacy | `supabase/schema.sql`, `supabase/migrations/`, `supabase/README.md`, `docs/supabase.md`, `docs/supabase-contract-audit.md`, `pnpm test:supabase-contract`, `pnpm check:supabase-contract` | Partial until live review |
 | Supabase development branch setup | `docs/supabase-branching.md`, `pnpm check:supabase-branching` | Blocked until approved project refs and access |
-| Product model and admin operations | `docs/admin-operations.md`, `docs/readiness-checklist.md`, `scripts/admin-system-health.test.mjs`, admin route tests in `scripts/admin-*.test.mjs` | Partial until browser and live backend evidence |
+| Product model and admin operations | `docs/admin-operations.md`, `docs/readiness-checklist.md`, `pnpm test:admin-route-gate`, `scripts/admin-system-health.test.mjs`, admin route tests in `scripts/admin-*.test.mjs` | Partial until browser and live backend evidence |
 | Auth and onboarding decision boundaries | `pnpm test:auth-redirect`, `pnpm test:protected-route`, `docs/supabase-branching.md` Auth redirect URL tasks | Partial until live Auth provider and browser persistence review |
 | Media upload and Storage contract | `src/lib/media.ts`, create/edit item routes, `supabase/schema.sql`, `pnpm check:supabase-contract` | Partial until live Storage bucket review |
 | Browser, accessibility, and PWA QA | `docs/browser-testing.md`, `.agents/skills/agentic-browser-testing/SKILL.md`, `pnpm test:pwa-manifest` | Blocked until browser evidence |

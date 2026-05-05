@@ -12,6 +12,7 @@
     "test:config": "node --test scripts/generate-config.test.mjs",
     "test:auth-redirect": "node --test scripts/auth-redirect.test.mjs",
     "test:app-config": "node --test scripts/app-config.test.mjs",
+    "test:admin-route-gate": "node --test scripts/admin-route-gate.test.mjs",
     "test:media-policy": "node --test scripts/media-policy.test.mjs",
     "test:protected-route": "node --test scripts/protected-route-decision.test.mjs",
     "test:env-example": "node --test scripts/check-env-example.test.mjs",

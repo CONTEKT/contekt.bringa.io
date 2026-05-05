@@ -10,6 +10,7 @@ import { Loader2, Copy, Check } from "lucide-react"
 import ProtectedRoute from "@/components/auth/protected-route"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import Link from "next/link"
+import { buildAdminRouteGate } from "@/lib/admin-route-gate"
 
 export default function AdminInviteCodePage() {
     const router = useRouter()
@@ -21,12 +22,13 @@ export default function AdminInviteCodePage() {
     const [copied, setCopied] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
+    const adminGate = buildAdminRouteGate({ adminLoading, isAdmin, contentLoading: loading })
 
     useEffect(() => {
-        if (!adminLoading && !isAdmin) {
-            router.push('/dashboard')
+        if (adminGate.redirectTo) {
+            router.push(adminGate.redirectTo)
         }
-    }, [isAdmin, adminLoading, router])
+    }, [adminGate.redirectTo, router])
 
     useEffect(() => {
         const fetchInviteCode = async () => {
@@ -94,7 +96,7 @@ export default function AdminInviteCodePage() {
         setNewCode(code)
     }
 
-    if (adminLoading || loading) {
+    if (adminGate.showLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -102,7 +104,7 @@ export default function AdminInviteCodePage() {
         )
     }
 
-    if (!isAdmin) {
+    if (!adminGate.render) {
         return null
     }
 

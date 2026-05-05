@@ -71,6 +71,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm test:config`
 - `pnpm test:auth-redirect`
 - `pnpm test:app-config`
+- `pnpm test:admin-route-gate`
 - `pnpm test:media-policy`
 - `pnpm test:protected-route`
 - `pnpm test:env-example`

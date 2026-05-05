@@ -42,6 +42,9 @@ jobs:
       - name: Test app config helpers
         run: pnpm test:app-config
 
+      - name: Test admin route gate
+        run: pnpm test:admin-route-gate
+
       - name: Test media policy helpers
         run: pnpm test:media-policy
 

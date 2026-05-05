@@ -39,6 +39,7 @@ const requiredPhrases = [
   "`docs/admin-operations.md`",
   "`pnpm test:auth-redirect`",
   "`pnpm test:protected-route`",
+  "`pnpm test:admin-route-gate`",
   "`docs/browser-testing.md`",
   "`.agents/skills/agentic-browser-testing/SKILL.md`",
   "`docs/restore-drills.md`",
