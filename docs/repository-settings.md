@@ -8,7 +8,7 @@ Some GitHub settings are repository state, not code. Keep this checklist aligned
 
 ## Current Repository State
 
-As of 2026-05-05, GitHub API checks confirmed that rebase merging is enabled, merge commits and squash merges are disabled, pull request branch updates are allowed, and merged head branches are deleted automatically. Branch protection still needs repository UI or plan access while the repository is private. Creating the GitHub Pages site with `build_type=workflow` currently returns `422 Your current plan does not support GitHub Pages for this repository`; enable Pages after the repository visibility or plan decision, then run the first manual Pages workflow from `main` or an intentional `deploy/<slug>` branch.
+As of 2026-05-05, GitHub API checks confirmed that rebase merging is enabled, merge commits and squash merges are disabled, pull request branch updates are allowed, and merged head branches are deleted automatically. The repository description and topics are configured for open-source discovery. Private forking is currently blocked by organization policy: attempting to set `allow_forking=true` returned `422 This organization does not allow private repository forking`. Branch protection still needs repository UI or plan access while the repository is private. Creating the GitHub Pages site with `build_type=workflow` currently returns `422 Your current plan does not support GitHub Pages for this repository`; enable Pages after the repository visibility or plan decision, then run the first manual Pages workflow from `main` or an intentional `deploy/<slug>` branch.
 
 ## Pull Requests
 
@@ -70,3 +70,5 @@ OAuth providers still need their provider-side callback URL configured to the Su
 ## Forks
 
 Fork operators can keep these workflows without upstream secrets. Deployment-specific app hosting, Supabase secrets, custom domains, and legal text belong in fork-owned repository settings, environment variables, and config files. Use a long-lived `deploy/<slug>` branch when a fork wants generated deployment artifacts and local operator changes to stay separate from clean upstream pull request branches.
+
+Before the public release, confirm that the repository is public or that the organization allows private forks. Forkability is a release requirement; it cannot be proven while `allow_forking` stays blocked by private-repository organization policy.

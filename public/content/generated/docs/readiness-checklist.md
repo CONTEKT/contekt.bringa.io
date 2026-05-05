@@ -13,9 +13,11 @@ For the prompt-to-artifact evidence map and the remaining blockers that prevent 
 - [x] Manual secret-free CI checks exist for config, lint, TypeScript, build, and docs.
 - [x] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue templates, and the pull request template exist.
 - [x] GitHub merge settings prefer rebase merges, disable merge and squash merges, allow pull request branch updates, and delete merged head branches automatically.
+- [x] GitHub repository description and topics are configured for open-source discovery.
+- [ ] Repository visibility or organization policy allows forks.
 - [ ] GitHub branch protection and manual Pages deployment settings have been confirmed in the repository UI.
 
-As of 2026-05-05, GitHub API checks confirm the merge settings above. The repository is private, `has_pages` is `false`, the Pages endpoint returns 404, creating a Pages site with `build_type=workflow` returns `422 Your current plan does not support GitHub Pages for this repository`, and the branch-protection endpoint returns 403 unless the repository is public or on a plan that supports branch protection for private repositories. Confirm the remaining repository-setting item after the visibility or plan decision is made.
+As of 2026-05-05, GitHub API checks confirm the merge settings above. The repository is private, `has_pages` is `false`, the Pages endpoint returns 404, creating a Pages site with `build_type=workflow` returns `422 Your current plan does not support GitHub Pages for this repository`, setting `allow_forking=true` returns `422 This organization does not allow private repository forking`, and the branch-protection endpoint returns 403 unless the repository is public or on a plan that supports branch protection for private repositories. Confirm the remaining repository-setting items after the visibility, plan, or organization-policy decision is made.
 
 ## Forkability
 

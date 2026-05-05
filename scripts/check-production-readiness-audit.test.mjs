@@ -46,7 +46,7 @@ function validAuditContent() {
 
 ## Remaining Blockers
 
-- GitHub branch protection and manual Pages deployment settings require repository UI or plan access.
+- GitHub branch protection, forkability, and manual Pages deployment settings require repository UI, organization policy, visibility, or plan access. GitHub Pages site creation and private-repository fork enabling currently return plan or organization-policy limitations.
 - Live Supabase schema, RLS, functions, triggers, Storage, Edge Functions, advisor remediation, Storage bucket metadata, and an empty-baseline backup have approved evidence.
 - Live Supabase health checks beyond schema/key/API smoke tests and any external error-reporting decision require final operator policy. Supabase Edge Function logs were checked on 2026-05-05 and had no invocations in the last 24 hours; recheck them after Telegram delivery is configured.
 - Local app development cannot be linked to a Supabase development branch until Supabase MCP branch access stops returning the current permission-validation error or an alternate branch workflow is selected.
