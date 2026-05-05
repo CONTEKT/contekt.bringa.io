@@ -39,6 +39,9 @@ jobs:
       - name: Test env example checker
         run: pnpm test:env-example
 
+      - name: Test agent source-of-truth checker
+        run: pnpm test:agents
+
       - name: Test copy checker
         run: pnpm test:copy
 
@@ -104,6 +107,9 @@ jobs:
 
       - name: Check env example
         run: pnpm check:env-example
+
+      - name: Check agent source of truth
+        run: pnpm check:agents
 
       - name: Check English documentation copy
         run: pnpm check:copy

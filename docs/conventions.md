@@ -54,6 +54,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm check:config`
 - `pnpm test:config`
 - `pnpm test:env-example`
+- `pnpm test:agents`
 - `pnpm test:copy`
 - `pnpm test:docs-index`
 - `pnpm test:browser-testing`
@@ -76,6 +77,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm test:verify-backup`
 - `pnpm test:pwa-manifest`
 - `pnpm check:env-example`
+- `pnpm check:agents`
 - `pnpm check:copy`
 - `pnpm check:docs-index`
 - `pnpm check:browser-testing`
