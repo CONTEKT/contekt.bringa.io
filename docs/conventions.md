@@ -145,6 +145,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm test:static-export`
 - `pnpm check:static-export`
 - `pnpm check:supabase-contract`
+- `pnpm check:edge-functions`
 - `pnpm lint`
 - `pnpm exec tsc --noEmit`
 - `pnpm build`
