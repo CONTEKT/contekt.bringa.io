@@ -45,6 +45,8 @@ CI should be useful for upstream and forks without creating noise on every push.
 
 The shared GitHub workflows are manual-only. Run them with GitHub Actions `workflow_dispatch` when a pull request, release, dependency update, or operational check needs remote verification.
 
+`pnpm check:github-workflows` verifies every workflow in `.github/workflows/` keeps `workflow_dispatch` and does not add automatic triggers such as `push` or `pull_request`.
+
 The manual CI workflow runs these secret-free checks:
 
 - Use Node 24 locally to match CI, `package.json` `engines.node`, `.node-version`, and `@types/node`.

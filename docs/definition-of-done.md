@@ -39,6 +39,7 @@ This is the current definition of done for upstream work. It is intentionally pr
 - `pnpm test:pwa-manifest` when app metadata, manifest, PWA config, or brand icon config changes
 - `pnpm test:copy` and `pnpm check:copy` when docs, agent instructions, or public source-of-truth copy changes
 - `pnpm test:docs-index` and `pnpm check:docs-index` when top-level docs are added, removed, renamed, or linked in GitHub Pages navigation
+- `pnpm test:github-workflows` and `pnpm check:github-workflows` when GitHub workflow files or CI/CD docs change
 - `pnpm test:static-export` and `pnpm check:static-export` when Next.js routing, config, or app architecture changes
 - `pnpm lint`
 - `pnpm exec tsc --noEmit`
@@ -65,4 +66,4 @@ This is the current definition of done for upstream work. It is intentionally pr
 
 - Full `pnpm lint` is expected to pass without warnings.
 - Supabase MCP/service-role verification is pending. Do not claim production database hardening until schema, RLS, Storage, functions, and migrations have been reviewed with approved access.
-- The CI workflow is secret-free and manual-only. Docs deployment is also manual-only and only deploys from `main`. Supabase backups and remote migrations require separate trusted workflows.
+- The CI workflow is secret-free and manual-only. `pnpm check:github-workflows` guards that workflow files keep `workflow_dispatch` and avoid automatic triggers. Docs deployment is also manual-only and only deploys from `main`. Supabase backups and remote migrations require separate trusted workflows.

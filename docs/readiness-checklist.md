@@ -80,6 +80,7 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [ ] `pnpm test:dashboard-query`
 - [ ] `pnpm test:item-visibility-request`
 - [ ] `pnpm test:issue-prompt`
+- [ ] `pnpm test:github-workflows`
 - [ ] `pnpm test:copy`
 - [ ] `pnpm test:docs-index`
 - [ ] `pnpm test:admin-notification-settings`
@@ -97,6 +98,7 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [ ] `pnpm test:pwa-manifest`
 - [ ] `pnpm check:copy`
 - [ ] `pnpm check:docs-index`
+- [ ] `pnpm check:github-workflows`
 - [ ] `pnpm test:static-export`
 - [ ] `pnpm check:static-export`
 - [ ] `pnpm check:supabase-contract`
