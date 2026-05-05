@@ -19,7 +19,7 @@ Fast path: fork it, configure it, use it.
 3. Create a deployment profile instead of copying the upstream profile by hand:
 
 ```bash
-pnpm create:deployment -- share.example.org --owner your-github-owner --repo your-fork
+pnpm setup:operator
 ```
 
 Then edit:

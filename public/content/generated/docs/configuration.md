@@ -24,6 +24,12 @@ BRINGA_DEPLOYMENT=example-community pnpm generate:config
 To create a new fork profile before generating config:
 
 ```bash
+pnpm setup:operator
+```
+
+For non-interactive use:
+
+```bash
 pnpm create:deployment -- share.example.org --owner your-github-owner --repo your-fork
 ```
 

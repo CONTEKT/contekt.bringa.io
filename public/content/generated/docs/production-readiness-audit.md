@@ -18,7 +18,7 @@ This audit maps the active goal prompt to durable repository artifacts. It is no
 | Source of truth and hyperoptimum | `docs/hyperoptimum.md`, `docs/optimization-options.md`, `.agents/rules/source-of-truth.md` | Covered |
 | Naming conventions and developer experience | `docs/conventions.md`, `pnpm test:naming-conventions`, `pnpm check:naming-conventions` | Covered |
 | Agent rules, skills, and workflows | `AGENTS.md`, `.agents/workflows/session-start.md`, `.agents/workflows/goal-mode-preflight.md`, `.agents/workflows/quality-loop.md`, `.agents/skills/*/SKILL.md`, `pnpm check:agents` | Covered |
-| Forkability and configuration | `config/base.config.jsonc`, `config/deployments/app.bringa.io.jsonc`, `config/bringa.config.schema.json`, `scripts/create-deployment-profile.mjs`, `docs/configuration.md`, `docs/forking.md`, `docs/fork-content-strategy.md`, `pnpm test:create-deployment`, `pnpm check:config` | Covered |
+| Forkability and configuration | `config/base.config.jsonc`, `config/deployments/app.bringa.io.jsonc`, `config/bringa.config.schema.json`, `scripts/create-deployment-profile.mjs`, `scripts/setup-operator.mjs`, `docs/configuration.md`, `docs/forking.md`, `docs/fork-content-strategy.md`, `pnpm test:create-deployment`, `pnpm test:operator-setup`, `pnpm check:config` | Covered |
 | Open-source contribution surface | `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue templates, pull request template, `docs/open-source-release.md` | Covered locally |
 | Secret-free manual CI/CD | `.github/workflows/ci.yml`, `.github/workflows/pages.yml`, `docs/conventions.md`, `docs/repository-settings.md`, `pnpm check:github-workflows` | Covered |
 | In-app docs | `docs/index.md`, `public/content/generated/docs/index.json`, `/docs`, `pnpm check:docs-index` | Covered locally |
@@ -54,11 +54,11 @@ This audit maps the active goal prompt to durable repository artifacts. It is no
 
 ## Remaining Blockers
 
-- GitHub branch protection and manual Pages deployment settings require repository UI or plan access.
+- GitHub branch protection and manual Pages deployment settings require repository UI or plan access. Merge method and branch cleanup settings are confirmed through the GitHub API.
 - Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions review requires approved access.
 - Live Supabase health checks, Edge Function log review, and any external error-reporting decision require approved access and policy.
 - Local app development cannot be linked to a Supabase development branch without approved project refs and branch access.
-- Connected auth persistence, logout, PWA install, slow network, and target-browser states still need browser evidence.
+- Auth persistence, logout, PWA install, slow network, and long-content states still need browser evidence. Connected auth and target-browser coverage remain open.
 - Trusted account deletion cleanup still needs approved rehearsal or production run with backup/export evidence and operator retention policy.
 - Live restore drills and encrypted backup handling still need approved access and policy.
 

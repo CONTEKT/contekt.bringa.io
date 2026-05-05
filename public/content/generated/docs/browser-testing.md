@@ -60,6 +60,13 @@ When the browser supports installation, install or simulate installed mode and t
 - `/admin/dashboard`: local demo admin route rendered counts, source-of-truth links, recent activity, and item list.
 - `/items/create`: form labels, image drop zone, and primary action rendered in local demo mode.
 
+2026-05-05 static export preview after `pnpm build` with `out/` served locally:
+
+- `/login`: anonymous production login rendered without a live Supabase server; OAuth buttons stayed gated until terms acceptance.
+- `/docs` and `/docs?doc=configuration`: generated in-app docs rendered from the static export, including the operator setup and public Supabase config guidance.
+- `/manifest.webmanifest`: generated app name, icons, colors, and start URL were readable from the static export.
+- `/dashboard`: direct anonymous access redirected back to `/login`; local demo data intentionally stayed unavailable in the production export.
+
 Remaining release evidence still needs connected Supabase auth persistence, logout, PWA install behavior, slow-network review, target-browser coverage, and approved live/staging data boundaries.
 
 ## Reporting

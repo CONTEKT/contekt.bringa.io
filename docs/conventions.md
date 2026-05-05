@@ -81,6 +81,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm check:config`
 - `pnpm test:config`
 - `pnpm test:create-deployment`
+- `pnpm test:operator-setup`
 - `pnpm test:auth-redirect`
 - `pnpm test:app-config`
 - `pnpm test:admin-route-gate`

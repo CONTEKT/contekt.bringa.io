@@ -6,6 +6,10 @@ title: Repository Settings
 
 Some GitHub settings are repository state, not code. Keep this checklist aligned with `docs/conventions.md` and review it after major workflow changes.
 
+## Current Repository State
+
+As of 2026-05-05, GitHub API checks confirmed that rebase merging is enabled, merge commits and squash merges are disabled, pull request branch updates are allowed, and merged head branches are deleted automatically. Branch protection still needs repository UI or plan access while the repository is private. GitHub Pages still needs the repository UI source set to GitHub Actions and a first manual Pages workflow run from `main` or an intentional `deploy/<slug>` branch.
+
 ## Pull Requests
 
 - Enable rebase merging.

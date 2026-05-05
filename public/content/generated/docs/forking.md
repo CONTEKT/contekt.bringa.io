@@ -27,6 +27,12 @@ Deployment-specific content lives in `content/deployments/<fork-slug>/` and is g
 To create a fork profile, use the generator first:
 
 ```bash
+pnpm setup:operator
+```
+
+For non-interactive use:
+
+```bash
 pnpm create:deployment -- share.example.org --owner your-github-owner --repo your-fork
 ```
 
@@ -41,14 +47,15 @@ Then:
 To publish a fork on GitHub Pages:
 
 1. Choose a deployment slug, usually the app domain such as `share.example.org`.
-2. Scaffold the profile with `pnpm create:deployment -- <slug>`, then set `app.canonicalUrl`, repository links, public Supabase values, legal content, and brand assets in that deployment profile.
-3. Decide where the fork deploys from:
+2. Scaffold the profile with `pnpm setup:operator`, or use `pnpm create:deployment -- <slug>` for non-interactive setup.
+3. Review `app.canonicalUrl`, repository links, public Supabase values, legal content, and brand assets in that deployment profile.
+4. Decide where the fork deploys from:
    - use the fork's `main` when local deployment config is meant to live there;
    - use `deploy/<slug>` when the fork wants a long-lived operator branch and cleaner upstream-sync branches.
-4. Configure the repository's Pages source as GitHub Actions.
-5. Point a subdomain CNAME to `<github-owner>.github.io`.
-6. Add the matching Site URL and redirect URLs in Supabase Auth settings.
-7. Run the manual **Pages** workflow from `main` or `deploy/<slug>`.
+5. Configure the repository's Pages source as GitHub Actions.
+6. Point a subdomain CNAME to `<github-owner>.github.io`.
+7. Add the matching Site URL and redirect URLs in Supabase Auth settings.
+8. Run the manual **Pages** workflow from `main` or `deploy/<slug>`.
 
 ## What Forks Commonly Customize
 

@@ -10,8 +10,10 @@
   "scripts": {
     "generate:config": "node scripts/generate-config.mjs",
     "create:deployment": "node scripts/create-deployment-profile.mjs",
+    "setup:operator": "node scripts/setup-operator.mjs",
     "test:config": "node --test scripts/generate-config.test.mjs",
     "test:create-deployment": "node --test scripts/create-deployment-profile.test.mjs",
+    "test:operator-setup": "node --test scripts/setup-operator.test.mjs",
     "test:auth-redirect": "node --test scripts/auth-redirect.test.mjs",
     "test:app-config": "node --test scripts/app-config.test.mjs",
     "test:admin-route-gate": "node --test scripts/admin-route-gate.test.mjs",

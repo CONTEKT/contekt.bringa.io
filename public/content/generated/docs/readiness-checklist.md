@@ -12,9 +12,10 @@ For the prompt-to-artifact evidence map and the remaining blockers that prevent 
 - [x] Source, script, route, config, Supabase, branch, and commit naming conventions are documented and checked.
 - [x] Manual secret-free CI checks exist for config, lint, TypeScript, build, and docs.
 - [x] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue templates, and the pull request template exist.
+- [x] GitHub merge settings prefer rebase merges, disable merge and squash merges, allow pull request branch updates, and delete merged head branches automatically.
 - [ ] GitHub branch protection and manual Pages deployment settings have been confirmed in the repository UI.
 
-As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` is `false`, the Pages endpoint returns 404, and the branch-protection endpoint returns 403 unless the repository is public or on a plan that supports branch protection for private repositories. Confirm this item in the GitHub UI after the visibility or plan decision is made.
+As of 2026-05-05, GitHub API checks confirm the merge settings above. The repository is private, `has_pages` is `false`, the Pages endpoint returns 404, and the branch-protection endpoint returns 403 unless the repository is public or on a plan that supports branch protection for private repositories. Confirm the remaining UI-only item after the visibility or plan decision is made.
 
 ## Forkability
 
@@ -25,6 +26,7 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [x] Docs index and generated in-app docs artifacts cover every top-level docs page and are checked by `pnpm check:docs-index`.
 - [x] Deployment content profiles generate legal, onboarding, help, and issue copy from `content/default` plus deployment overrides.
 - [x] Fork deployment profiles can be scaffolded with `pnpm create:deployment -- <slug>` and are covered by `pnpm test:create-deployment`.
+- [x] Fork operators have an interactive `pnpm setup:operator` first-run helper covered by `pnpm test:operator-setup`.
 
 ## Supabase Contract
 
@@ -85,6 +87,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 - [ ] `pnpm check:config`
 - [ ] `pnpm test:config`
 - [ ] `pnpm test:create-deployment`
+- [ ] `pnpm test:operator-setup`
 - [ ] `pnpm test:auth-redirect`
 - [ ] `pnpm test:app-config`
 - [ ] `pnpm test:admin-route-gate`

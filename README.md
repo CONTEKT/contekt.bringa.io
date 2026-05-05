@@ -15,7 +15,7 @@ Bringa is meant to be easy to operate for your own community:
 
 ```bash
 pnpm install
-pnpm create:deployment -- share.example.org --owner your-github-owner --repo your-fork
+pnpm setup:operator
 BRINGA_DEPLOYMENT=share.example.org pnpm generate:config
 BRINGA_DEPLOYMENT=share.example.org pnpm check:config
 ```
@@ -60,6 +60,8 @@ Set `BRINGA_DEPLOYMENT=<profile-slug>` to generate a fork profile. The upstream 
 To scaffold a fork deployment profile:
 
 ```bash
+pnpm setup:operator
+# or, non-interactively:
 pnpm create:deployment -- share.example.org --owner your-github-owner --repo your-fork
 BRINGA_DEPLOYMENT=share.example.org pnpm generate:config
 ```

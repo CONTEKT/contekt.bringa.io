@@ -36,6 +36,9 @@ jobs:
       - name: Test deployment profile generator
         run: pnpm test:create-deployment
 
+      - name: Test operator setup helper
+        run: pnpm test:operator-setup
+
       - name: Test auth redirect helpers
         run: pnpm test:auth-redirect
 

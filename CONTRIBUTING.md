@@ -34,7 +34,7 @@ Read:
 Forks should customize public app identity through deployment profiles:
 
 ```bash
-pnpm create:deployment -- share.example.org --owner your-github-owner --repo your-fork
+pnpm setup:operator
 BRINGA_DEPLOYMENT=share.example.org pnpm generate:config
 ```
 
