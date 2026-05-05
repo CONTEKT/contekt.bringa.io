@@ -31,6 +31,16 @@ test("extracts pnpm commands from markdown code spans", () => {
   ]);
 });
 
+test("ignores wildcard pnpm command families in markdown code spans", () => {
+  const commands = extractMarkdownPnpmCommands(`
+- Pair new checkers with a \`pnpm check:*\` script.
+- Add \`pnpm test:*\` when behavior is non-trivial.
+- Keep concrete commands such as \`pnpm check:config\`.
+`);
+
+  assert.deepEqual([...commands], ["pnpm check:config"]);
+});
+
 test("accepts aligned release checklist sources", () => {
   assert.doesNotThrow(() => checkReleaseChecklist({
     packageJson: JSON.stringify({

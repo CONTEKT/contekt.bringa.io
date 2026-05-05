@@ -60,7 +60,10 @@ export function extractMarkdownPnpmCommands(content) {
   let match;
 
   while ((match = pattern.exec(content)) !== null) {
-    commands.add(match[1].trim());
+    const command = match[1].trim();
+    if (!command.includes("*")) {
+      commands.add(command);
+    }
   }
 
   return commands;
