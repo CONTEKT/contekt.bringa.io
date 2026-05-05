@@ -26,6 +26,7 @@ Forkable open source sharing and borrowing software for communities, clubs, asso
 - [Repository Settings](repository-settings.md): branch protection, merge methods, branch cleanup, and Pages settings.
 - [Definition of Done](definition-of-done.md): required verification and merge expectations.
 - [First Big Version Readiness Checklist](readiness-checklist.md): release-readiness status across repo, forkability, Supabase, UX, admin, and operations.
+- [Production Readiness Audit](production-readiness-audit.md): prompt-to-artifact evidence map and remaining completion blockers.
 - [Dependency Audit](dependency-audit.md): current package metadata checks and upgrade policy.
 - [Issue Prompt Template](issue-prompt-template.md): help users and AI assistants write useful issues.
 - [Optimization Options](optimization-options.md): living roadmap and anti-roadmap.

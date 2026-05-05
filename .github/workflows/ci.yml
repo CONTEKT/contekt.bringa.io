@@ -60,6 +60,9 @@ jobs:
       - name: Test restore drill runbook checker
         run: pnpm test:restore-drills
 
+      - name: Test production readiness audit checker
+        run: pnpm test:production-readiness-audit
+
       - name: Test release checklist checker
         run: pnpm test:release-checklist
 
@@ -140,6 +143,9 @@ jobs:
 
       - name: Check restore drill runbook
         run: pnpm check:restore-drills
+
+      - name: Check production readiness audit
+        run: pnpm check:production-readiness-audit
 
       - name: Check release checklist
         run: pnpm check:release-checklist

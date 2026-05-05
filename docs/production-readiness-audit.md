@@ -1,0 +1,64 @@
+---
+title: Production Readiness Audit
+---
+
+# Production Readiness Audit
+
+This audit maps the active goal prompt to durable repository artifacts. It is not a release announcement and does not replace the operational checks in [First Big Version Readiness Checklist](readiness-checklist.md).
+
+## Objective And Scope
+
+- Generic upstream `app.bringa.io`, not a deployment fork.
+- Bring the repository toward a first large production-ready open-source foundation.
+- No real Supabase row contents or real user data may be inspected without explicit approval.
+- Hyperoptimum covers maintainability, scalability, extensibility, testability, consistency, reusability, accessibility, performance, reliability, security, observability, and developer experience.
+- Local work can make the repo app-, docs-, contract-, and operations-ready, but it cannot prove live backend, browser, repository-settings, or retention readiness without approved access and evidence.
+
+## Prompt-To-Artifact Checklist
+
+| Prompt requirement | Evidence | Status |
+| --- | --- | --- |
+| Read `temp/20260504-prompt.md` and `temp/goal-mode-hyperoptimum-production-readiness-plan.md` | This audit maps those temp prompts to durable docs, code, scripts, and blockers. | Covered |
+| Source of truth and hyperoptimum | `docs/hyperoptimum.md`, `docs/optimization-options.md`, `.agents/rules/source-of-truth.md` | Covered |
+| Agent rules, skills, and workflows | `AGENTS.md`, `.agents/workflows/session-start.md`, `.agents/workflows/goal-mode-preflight.md`, `.agents/workflows/quality-loop.md`, `.agents/skills/*/SKILL.md`, `pnpm check:agents` | Covered |
+| Forkability and configuration | `config/base.config.jsonc`, `config/deployments/app.bringa.io.jsonc`, `config/bringa.config.schema.json`, `docs/configuration.md`, `docs/forking.md`, `docs/fork-content-strategy.md`, `pnpm check:config` | Covered |
+| Secret-free manual CI/CD | `.github/workflows/ci.yml`, `.github/workflows/docs.yml`, `docs/conventions.md`, `docs/repository-settings.md`, `pnpm check:github-workflows` | Covered |
+| GitHub Pages docs | `docs/index.md`, `docs/_layouts/default.html`, `docs/_config.yml`, `pnpm check:docs-index` | Covered locally |
+| Supabase contract and privacy | `supabase/schema.sql`, `supabase/migrations/`, `supabase/README.md`, `docs/supabase.md`, `docs/supabase-contract-audit.md`, `pnpm check:supabase-contract` | Partial until live review |
+| Supabase development branch setup | `docs/supabase-branching.md`, `pnpm check:supabase-branching` | Blocked until approved project refs and access |
+| Product model and admin operations | `docs/admin-operations.md`, `docs/readiness-checklist.md`, `scripts/admin-system-health.test.mjs`, admin route tests in `scripts/admin-*.test.mjs` | Partial until browser and live backend evidence |
+| Media upload and Storage contract | `src/lib/media.ts`, create/edit item routes, `supabase/schema.sql`, `pnpm check:supabase-contract` | Partial until live Storage bucket review |
+| Browser, accessibility, and PWA QA | `docs/browser-testing.md`, `.agents/skills/agentic-browser-testing/SKILL.md`, `pnpm test:pwa-manifest` | Blocked until browser evidence |
+| Backups, restore, and deletion cleanup | `scripts/backup-supabase.mjs`, `scripts/verify-supabase-backup.mjs`, `scripts/cleanup-account-deletion.mjs`, `docs/maintenance.md`, `docs/restore-drills.md`, `pnpm test:account-deletion-cleanup`, `pnpm check:restore-drills` | Partial until live rehearsal and retention policy |
+| Dependency and tooling currency | `package.json`, `pnpm-lock.yaml`, `docs/dependency-audit.md`, `pnpm outdated` | Partial; major upgrades intentionally deferred |
+| German organization wording removed from English docs | `pnpm check:copy` and direct `rg` check | Covered |
+
+## Evidence Sources
+
+- `docs/readiness-checklist.md`
+- `docs/definition-of-done.md`
+- `docs/optimization-options.md`
+- `docs/conventions.md`
+- `docs/browser-testing.md`
+- `docs/supabase-branching.md`
+- `docs/restore-drills.md`
+- `supabase/README.md`
+- `.agents/`
+- `.github/workflows/`
+- `package.json`
+- `scripts/`
+
+## Remaining Blockers
+
+- GitHub branch protection and manual Pages deployment settings require repository UI or plan access.
+- Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions review requires approved access.
+- Local app development cannot be linked to a Supabase development branch without approved project refs and branch access.
+- Auth persistence, logout, PWA install, slow network, and long-content states still need browser evidence.
+- Trusted account deletion cleanup still needs approved rehearsal or production run with backup/export evidence and operator retention policy.
+- Live restore drills and encrypted backup handling still need approved access and policy.
+
+## Completion Rule
+
+Do not mark the active goal complete until every blocker is either resolved with evidence or explicitly descoped by the user.
+
+Before completion, rerun the release verification list in [First Big Version Readiness Checklist](readiness-checklist.md), inspect the relevant artifacts named above, and verify that no proxy signal is being treated as proof for a requirement it does not cover.

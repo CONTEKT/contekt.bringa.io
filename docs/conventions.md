@@ -61,6 +61,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm test:browser-testing`
 - `pnpm test:supabase-branching`
 - `pnpm test:restore-drills`
+- `pnpm test:production-readiness-audit`
 - `pnpm test:release-checklist`
 - `pnpm test:github-workflows`
 - `pnpm test:dashboard-query`
@@ -88,6 +89,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm check:browser-testing`
 - `pnpm check:supabase-branching`
 - `pnpm check:restore-drills`
+- `pnpm check:production-readiness-audit`
 - `pnpm check:release-checklist`
 - `pnpm check:github-workflows`
 - `pnpm test:static-export`

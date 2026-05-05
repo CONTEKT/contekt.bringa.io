@@ -46,6 +46,7 @@ This is the current definition of done for upstream work. It is intentionally pr
 - `pnpm test:browser-testing` and `pnpm check:browser-testing` when browser testing docs, browser scenarios, role coverage, or browser-testing skills change
 - `pnpm test:supabase-branching` and `pnpm check:supabase-branching` when Supabase branching setup, branch privacy, migration dry-run, or development-branch docs change
 - `pnpm test:restore-drills` and `pnpm check:restore-drills` when backup restore drill, encrypted retention, or recovery evidence docs change
+- `pnpm test:production-readiness-audit` and `pnpm check:production-readiness-audit` when prompt-to-artifact evidence, release blockers, or goal-completion criteria change
 - `pnpm test:release-checklist` and `pnpm check:release-checklist` when package scripts, manual CI, release checklist, or CI/CD docs change
 - `pnpm test:github-workflows` and `pnpm check:github-workflows` when GitHub workflow files or CI/CD docs change
 - `pnpm test:static-export` and `pnpm check:static-export` when Next.js routing, config, or app architecture changes

@@ -6,6 +6,8 @@ title: First Big Version Readiness Checklist
 
 Use this checklist before calling the generic upstream ready for a first large open-source release. It is not a launch claim for any live deployment.
 
+For the prompt-to-artifact evidence map and the remaining blockers that prevent `/goal` completion, see [Production Readiness Audit](production-readiness-audit.md).
+
 ## Repository Foundation
 
 - [x] `AGENTS.md` points agents to `.agents/`.
@@ -94,6 +96,7 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [ ] `pnpm test:browser-testing`
 - [ ] `pnpm test:supabase-branching`
 - [ ] `pnpm test:restore-drills`
+- [ ] `pnpm test:production-readiness-audit`
 - [ ] `pnpm test:release-checklist`
 - [ ] `pnpm test:admin-notification-settings`
 - [ ] `pnpm test:admin-deletion-requests`
@@ -114,6 +117,7 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [ ] `pnpm check:browser-testing`
 - [ ] `pnpm check:supabase-branching`
 - [ ] `pnpm check:restore-drills`
+- [ ] `pnpm check:production-readiness-audit`
 - [ ] `pnpm check:release-checklist`
 - [ ] `pnpm check:github-workflows`
 - [ ] `pnpm test:static-export`
