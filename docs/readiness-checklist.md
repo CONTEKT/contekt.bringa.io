@@ -32,7 +32,7 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [x] Browser mutations for invite, item CRUD, borrow/return, admin roles, deletion request, and moderation use RPC boundaries.
 - [x] Direct writes to core item state, borrow history, item versions, item images, deletion requests, and moderation queues are blocked by RLS.
 - [x] Storage bucket MIME and size limits are checked against deployment config.
-- [x] Supabase development-branch transition tasks are documented.
+- [x] Supabase development-branch transition tasks are documented and checked.
 - [ ] Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions have been reviewed with approved access.
 - [ ] Local app development is linked to a Supabase development branch from production.
 
@@ -90,6 +90,7 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [ ] `pnpm test:copy`
 - [ ] `pnpm test:docs-index`
 - [ ] `pnpm test:browser-testing`
+- [ ] `pnpm test:supabase-branching`
 - [ ] `pnpm test:release-checklist`
 - [ ] `pnpm test:admin-notification-settings`
 - [ ] `pnpm test:admin-deletion-requests`
@@ -107,6 +108,7 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [ ] `pnpm check:copy`
 - [ ] `pnpm check:docs-index`
 - [ ] `pnpm check:browser-testing`
+- [ ] `pnpm check:supabase-branching`
 - [ ] `pnpm check:release-checklist`
 - [ ] `pnpm check:github-workflows`
 - [ ] `pnpm test:static-export`
