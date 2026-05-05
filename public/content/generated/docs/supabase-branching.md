@@ -65,7 +65,7 @@ Supabase Branching is not the default development path for free-account-oriented
 
    ```bash
    pnpm exec supabase start
-   pnpm seed:local-supabase
+   pnpm setup:local-supabase --seed
    BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
    ```
 

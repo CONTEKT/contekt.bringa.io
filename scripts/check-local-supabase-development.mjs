@@ -17,6 +17,7 @@ const requiredDocsPhrases = [
   "Do not create a separate `app.bringa.io_dev` project by default",
   "pnpm exec supabase start",
   "pnpm exec supabase status -o env",
+  "pnpm setup:local-supabase",
   "BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev",
   "pnpm seed:local-supabase",
   "The script only accepts localhost Supabase URLs.",
@@ -28,7 +29,7 @@ const requiredDocsPhrases = [
 
 const requiredReadmePhrases = [
   "Local Supabase Development",
-  "pnpm seed:local-supabase",
+  "pnpm setup:local-supabase",
   "Use the local Supabase stack as the default backend path for schema, RLS, RPC, Auth, Storage, and Edge Function work.",
 ];
 
@@ -39,7 +40,7 @@ const requiredSupabasePhrases = [
 
 const requiredForkingPhrases = [
   "For free-account-oriented forks, prefer the local Supabase CLI stack over Supabase Branching or a second hosted dev project.",
-  "pnpm seed:local-supabase",
+  "pnpm setup:local-supabase",
 ];
 
 const requiredBranchingPhrases = [
@@ -84,6 +85,9 @@ export function checkLocalSupabaseDevelopmentContent({
   const scripts = JSON.parse(packageJson).scripts || {};
   if (!scripts["seed:local-supabase"]) {
     throw new Error("package.json is missing script: seed:local-supabase");
+  }
+  if (!scripts["setup:local-supabase"]) {
+    throw new Error("package.json is missing script: setup:local-supabase");
   }
 }
 

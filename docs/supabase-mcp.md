@@ -70,7 +70,7 @@ Supabase MCP OAuth is the preferred agent path for hosted projects. For normal d
 
 ```bash
 pnpm exec supabase start
-pnpm seed:local-supabase
+pnpm setup:local-supabase --seed
 ```
 
 When optional MCP branch tooling fails, maintainers can use the repo-local CLI after `pnpm install`:

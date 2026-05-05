@@ -37,14 +37,24 @@ Use `pnpm exec supabase ...`; do not require a global Supabase binary.
 ```bash
 pnpm install
 pnpm exec supabase start
-pnpm exec supabase status -o env
+pnpm setup:local-supabase
 ```
 
 The local Supabase Studio usually opens at `http://127.0.0.1:54323`, and the local API usually runs at `http://127.0.0.1:54321`.
 
 Never expose the local Supabase stack publicly. If you are on an untrusted network, bind the Docker network to localhost as described in the official Supabase local development docs.
 
+`pnpm setup:local-supabase` reads `pnpm exec supabase status -o env`, writes only the local public API URL and publishable key to ignored `config/local.config.jsonc`, and sets `development.localDemoMode` to `false`. It refuses remote Supabase URLs and refuses secret or service-role keys.
+
+Use one command when you also want deterministic local data:
+
+```bash
+pnpm setup:local-supabase --seed
+```
+
 ## Point The App At Local Supabase
+
+The setup helper creates this file automatically. Create or edit it manually only when you need a custom local override.
 
 Create `config/local.config.jsonc`; it is ignored by Git:
 

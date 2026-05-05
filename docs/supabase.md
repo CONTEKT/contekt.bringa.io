@@ -40,8 +40,7 @@ For contributors and free-account-oriented forks, use the repo-local Supabase CL
 
 ```bash
 pnpm exec supabase start
-pnpm seed:local-supabase
-pnpm exec supabase status -o env
+pnpm setup:local-supabase --seed
 BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
 ```
 

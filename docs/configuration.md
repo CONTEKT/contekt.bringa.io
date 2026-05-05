@@ -88,8 +88,7 @@ Production builds ignore local demo mode in code. Keep it documented as a develo
 
 ```bash
 pnpm exec supabase start
-pnpm seed:local-supabase
-pnpm exec supabase status -o env
+pnpm setup:local-supabase --seed
 BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
 ```
 

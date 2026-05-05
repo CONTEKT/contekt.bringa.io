@@ -19,6 +19,7 @@ Do not create a separate \`app.bringa.io_dev\` project by default.
 
 \`pnpm exec supabase start\`
 \`pnpm exec supabase status -o env\`
+\`pnpm setup:local-supabase\`
 \`BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev\`
 \`pnpm seed:local-supabase\`
 The script only accepts localhost Supabase URLs.
@@ -31,7 +32,7 @@ What Local Supabase Does Not Prove
 const validReadme = `
 [Local Supabase Development](docs/local-supabase-development.md)
 Use the local Supabase stack as the default backend path for schema, RLS, RPC, Auth, Storage, and Edge Function work.
-\`pnpm seed:local-supabase\`
+\`pnpm setup:local-supabase\`
 `;
 
 const validSupabase = `
@@ -41,7 +42,7 @@ Supabase Branching is optional for paid remote preview, staging, or QA workflows
 
 const validForking = `
 For free-account-oriented forks, prefer the local Supabase CLI stack over Supabase Branching or a second hosted dev project.
-\`pnpm seed:local-supabase\`
+\`pnpm setup:local-supabase\`
 `;
 
 const validBranching = `
@@ -50,6 +51,7 @@ Supabase Branching is not the default development path for free-account-oriented
 
 const validPackageJson = JSON.stringify({
   scripts: {
+    "setup:local-supabase": "node scripts/setup-local-supabase.mjs",
     "seed:local-supabase": "node scripts/seed-local-supabase.mjs",
   },
 });
@@ -90,5 +92,23 @@ test("requires the seed script package command", () => {
       packageJson: JSON.stringify({ scripts: {} }),
     }),
     /seed:local-supabase/,
+  );
+});
+
+test("requires the local setup package command", () => {
+  assert.throws(
+    () => checkLocalSupabaseDevelopmentContent({
+      localSupabaseMarkdown: validLocalSupabaseMarkdown,
+      readmeMarkdown: validReadme,
+      supabaseMarkdown: validSupabase,
+      forkingMarkdown: validForking,
+      branchingMarkdown: validBranching,
+      packageJson: JSON.stringify({
+        scripts: {
+          "seed:local-supabase": "node scripts/seed-local-supabase.mjs",
+        },
+      }),
+    }),
+    /setup:local-supabase/,
   );
 });

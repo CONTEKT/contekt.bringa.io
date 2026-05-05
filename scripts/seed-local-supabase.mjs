@@ -59,7 +59,7 @@ export const localSeedItems = [
   },
 ];
 
-function normalizeEnvValue(value) {
+export function normalizeEnvValue(value) {
   return String(value || "").trim().replace(/^["']|["']$/g, "");
 }
 
