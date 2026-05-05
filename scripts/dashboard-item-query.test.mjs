@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  buildDashboardEmptyMessage,
   buildDashboardInitialViewState,
   buildDashboardItemFilters,
   buildDashboardViewControlState,
@@ -34,6 +35,13 @@ test("marks only the active dashboard view control as pressed", () => {
     ariaPressed: false,
     variant: "secondary",
   });
+});
+
+test("builds empty dashboard messages from search and view state", () => {
+  assert.equal(buildDashboardEmptyMessage({ query: " drill ", view: "available" }), "No items match your search.");
+  assert.equal(buildDashboardEmptyMessage({ query: "", view: "borrowed" }), "You haven't borrowed any items right now.");
+  assert.equal(buildDashboardEmptyMessage({ query: "", view: "available" }), "No items are currently available.");
+  assert.equal(buildDashboardEmptyMessage({ query: "", view: "all" }), "No items found.");
 });
 
 test("shows visible available items by default", () => {

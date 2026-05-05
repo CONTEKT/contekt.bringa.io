@@ -13,6 +13,7 @@ import ProtectedRoute from "@/components/auth/protected-route";
 import { Package } from "lucide-react";
 import { AppImage } from "@/components/ui/app-image";
 import {
+    buildDashboardEmptyMessage,
     buildDashboardInitialViewState,
     buildDashboardItemFilters,
     buildDashboardViewControlState,
@@ -119,13 +120,7 @@ export default function DashboardPage() {
         setIsDragging(false);
     };
 
-    const emptyMessage = query
-        ? "No items match your search."
-        : view === "borrowed"
-            ? "You haven't borrowed any items right now."
-            : view === "available"
-                ? "No items are currently available."
-                : "No items found.";
+    const emptyMessage = buildDashboardEmptyMessage({ query, view });
 
     return (
         <ProtectedRoute>

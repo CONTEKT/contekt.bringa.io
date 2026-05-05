@@ -19,6 +19,22 @@ export type DashboardViewControlState = {
   variant: "default" | "secondary";
 };
 
+export function buildDashboardEmptyMessage({ query, view }: { query: string; view: DashboardView }): string {
+  if (query.trim()) {
+    return "No items match your search.";
+  }
+
+  if (view === "borrowed") {
+    return "You haven't borrowed any items right now.";
+  }
+
+  if (view === "available") {
+    return "No items are currently available.";
+  }
+
+  return "No items found.";
+}
+
 export function buildDashboardInitialViewState(borrowedItemCount: number | null | undefined): DashboardInitialViewState {
   const hasBorrowedItems = Boolean(borrowedItemCount && borrowedItemCount > 0);
   return {
