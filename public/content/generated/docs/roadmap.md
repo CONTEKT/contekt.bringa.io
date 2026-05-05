@@ -5,7 +5,7 @@ Bringa starts as a focused sharing and borrowing app for communities. The long-t
 ## Foundation
 
 - Public JSONC configuration for branding, links, legal defaults, media limits, Supabase public values, and feature switches.
-- Clear fork/upstream workflow for deployments such as CONTEKT.
+- Clear fork/upstream workflow for deployment-specific operators.
 - Agent rules, skills, workflows, maintenance tasks, and optimization register.
 - Reliable local verification and backup preparation.
 

@@ -32,6 +32,7 @@ This is the current definition of done for upstream work. It is intentionally pr
 - `pnpm test:issue-prompt` when issue prompt content paths or rendering changes
 - `pnpm test:settings-data-actions` when settings data export filenames, account deletion request messages, or data action status presentation changes
 - `pnpm test:login-terms` when login terms acceptance, OAuth button gating, or login terms copy changes
+- `pnpm test:local-demo-mode` and `pnpm test:local-demo-supabase` when first-run local development, demo auth, or demo Supabase behavior changes
 - `pnpm test:invite-flow` when invite code normalization, invite page messages, submit state, or pending-approval copy changes
 - `pnpm test:profile-completion` when profile completion validation, labels, placeholders, or submit state changes
 - `pnpm test:admin-notification-settings` when admin notification settings or planned notification controls change

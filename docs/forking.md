@@ -36,6 +36,15 @@ To create a fork profile:
 4. Run `BRINGA_DEPLOYMENT=<fork-slug> pnpm generate:config`.
 5. Commit the profile, content overrides, and generated outputs in the fork.
 
+To publish a fork on GitHub Pages:
+
+1. Choose a deployment slug, usually the app domain such as `share.example.org`.
+2. Set `app.canonicalUrl`, repository links, public Supabase values, legal content, and brand assets in that deployment profile.
+3. Configure the repository's Pages source as GitHub Actions.
+4. Point a subdomain CNAME to `<github-owner>.github.io`.
+5. Add the matching Site URL and redirect URLs in Supabase Auth settings.
+6. Run the manual **Pages** workflow from the fork's deployment branch.
+
 ## What Forks Commonly Customize
 
 - App name and short name
@@ -44,6 +53,7 @@ To create a fork profile:
 - Languages
 - Supabase project and Auth providers
 - Public Supabase API URL and publishable key in deployment config
+- Local demo mode policy for development profiles
 - Repository, issue, and support links
 - Operator default owner label
 - Theme and brand assets
@@ -73,3 +83,17 @@ Recommended split:
 - Secret-required: deployment, Supabase backup, remote migrations, Edge Function deploy.
 
 Fork operators can keep upstream workflows if they configure their own repository variables and secrets.
+
+## Local Development
+
+`pnpm dev` starts with local demo mode enabled by default, so contributors can inspect the app without OAuth or a live Supabase project.
+
+When a fork needs the local Supabase CLI stack:
+
+```bash
+supabase start
+supabase status -o env
+BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
+```
+
+Use `config/local.config.jsonc` for ignored local overrides, including `"development": { "localDemoMode": false }` and local public Supabase values.

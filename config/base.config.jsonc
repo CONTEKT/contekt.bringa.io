@@ -67,6 +67,10 @@
     "publishableKey": "local-development-publishable-key",
     "authRedirectPath": "/dashboard"
   },
+  "development": {
+    // Development-only browser demo mode. Production builds ignore this flag.
+    "localDemoMode": true
+  },
   "invites": {
     "allowSignupWithoutInvite": false,
     "collectDisplayNameBeforeInvite": true

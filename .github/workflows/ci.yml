@@ -108,6 +108,12 @@ jobs:
       - name: Test login terms gate
         run: pnpm test:login-terms
 
+      - name: Test local demo mode guard
+        run: pnpm test:local-demo-mode
+
+      - name: Test local demo Supabase client
+        run: pnpm test:local-demo-supabase
+
       - name: Test invite flow helpers
         run: pnpm test:invite-flow
 

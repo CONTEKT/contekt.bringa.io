@@ -30,6 +30,7 @@ This writes:
 - `public/bringa.config.json` for runtime/public inspection.
 - `src/config/bringa.config.generated.json` for typed app imports.
 - `public/content/generated/**` for deployment-resolved public Markdown content.
+- `public/content/generated/docs/**` for the in-app documentation route.
 
 Run:
 
@@ -50,6 +51,22 @@ This verifies the config-layering behavior itself.
 Use `.env.local` for secrets and deployment-specific values that must not be public. Service role keys never belong in JSONC config.
 
 Browser-visible Supabase values are not secrets. Set `supabase.url` and `supabase.publishableKey` in the selected deployment config or an explicitly enabled `config/local.config.jsonc`. They are included in the static app bundle and should match the Supabase project or local CLI stack that the deployment uses.
+
+`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` are intentionally not used. Next.js inlines `NEXT_PUBLIC_*` values into browser bundles at build time, so keeping these public values in deployment config gives forks and GitHub Pages builds one clear source of truth.
+
+## Local Demo Mode
+
+`development.localDemoMode` enables the browser-only local demo for `pnpm dev`. It is useful for first-run development, agentic browser testing, and UI review without a running Supabase stack or OAuth providers.
+
+Production builds ignore local demo mode in code. Keep it documented as a development convenience, not as an authorization feature. To test against the Supabase CLI stack instead:
+
+```bash
+supabase start
+supabase status -o env
+BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
+```
+
+Use an ignored `config/local.config.jsonc` for the local CLI `supabase.url`, `supabase.publishableKey`, and `"development": { "localDemoMode": false }`.
 
 ## Layering Rules
 
@@ -83,11 +100,13 @@ Default content is copied first, then `content/deployments/<slug>` overrides mat
 - `operator.defaultOwnerLabel`: default owner label for operator-owned items.
 - `repository.url`, `repository.issuesUrl`: GitHub links shown in the app.
 - `content.sourcePath`, `content.deploymentPath`, `content.publicPath`: content profile inputs and generated public output.
+- `content.docsPublicPath`: generated public output for the in-app docs route.
 - `content.requiredFiles`: deployment content files required before config generation succeeds.
 - `legal.termsPath`: app route that displays terms.
 - `legal.termsContentPath`: public Markdown file fetched by the terms route.
 - `legal.publicDomainIntent`: contribution intent flag for UI and docs.
 - `supabase.url`, `supabase.publishableKey`: public browser client values for the Supabase API.
 - `supabase.authRedirectPath`: app-relative redirect path used by OAuth buttons.
+- `development.localDemoMode`: development-only in-browser demo data mode; ignored by production builds.
 - `media.*`: accepted image types and upload/compression limits.
 - `features.*`: public feature switches.

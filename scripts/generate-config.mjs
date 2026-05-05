@@ -298,6 +298,7 @@ function validateConfig(config) {
   assertString(config.supabase?.url, "supabase.url");
   assertString(config.supabase?.publishableKey, "supabase.publishableKey");
   assertString(config.supabase?.authRedirectPath, "supabase.authRedirectPath");
+  assertBoolean(config.development?.localDemoMode, "development.localDemoMode");
   assertBoolean(config.invites?.allowSignupWithoutInvite, "invites.allowSignupWithoutInvite");
   assertBoolean(config.invites?.collectDisplayNameBeforeInvite, "invites.collectDisplayNameBeforeInvite");
   assertStringArray(config.media?.acceptedImageMimeTypes, "media.acceptedImageMimeTypes");

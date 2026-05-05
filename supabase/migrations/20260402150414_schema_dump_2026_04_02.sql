@@ -1,6 +1,6 @@
 -- Current State Migration Dump via Antigravity
 -- Date: 2026-04-02
--- Project: rfeglkaexvwcytlifqte (contekt-bringa)
+-- Project: historical upstream schema source
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -190,5 +190,4 @@ CREATE TRIGGER profiles_updated_at_trigger BEFORE UPDATE ON public.profiles FOR 
 -- Note: This trigger must be created after the public.handle_new_user() function
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-
 

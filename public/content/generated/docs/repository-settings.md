@@ -33,6 +33,31 @@ Recommended rules:
 - Use the `github-pages` environment.
 - Protect the `github-pages` environment if deployments should require approval.
 - Keep app deployment secret-free and run it manually from `main` when deployment is needed.
+- Use `.github/workflows/pages.yml` to build `out/` and deploy the artifact with GitHub Pages Actions.
+
+## Custom App Domain
+
+For `app.bringa.io` or a fork-owned subdomain:
+
+1. Add or update a deployment profile in `config/deployments/<slug>.jsonc`.
+2. Set `app.canonicalUrl` to the final HTTPS app URL.
+3. Set `supabase.url` and `supabase.publishableKey` to that deployment's public Supabase API values.
+4. Run `BRINGA_DEPLOYMENT=<slug> pnpm generate:config` and commit the generated app config/content in the deployment branch.
+5. In GitHub repository settings, set Pages source to GitHub Actions and set the custom domain.
+6. In DNS, create a `CNAME` record from the subdomain to `<github-owner>.github.io`. For subdomains, do not include the repository name in the CNAME target.
+7. After DNS verifies, enable HTTPS in GitHub Pages.
+8. Run the manual **Pages** workflow from `main`.
+
+## Supabase Auth URLs
+
+In Supabase Auth URL Configuration:
+
+- Set Site URL to the production app URL, for example `https://app.bringa.io`.
+- Add the exact production redirect path used by `supabase.authRedirectPath`, for example `https://app.bringa.io/dashboard`.
+- Add local development redirects such as `http://localhost:3000/dashboard` or `http://localhost:3000/**`.
+- Use exact production redirect URLs instead of broad wildcards for released deployments.
+
+OAuth providers still need their provider-side callback URL configured to the Supabase Auth callback for the selected Supabase project. Keep provider secrets in Supabase or the provider dashboard, never in this repository.
 
 ## Forks
 

@@ -3,10 +3,12 @@
 import { useState } from "react";
 import GitSignInButton from "@/components/auth/git-signin-button";
 import GoogleSignInButton from "@/components/auth/google-signin-button";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { appConfig } from "@/lib/app-config";
 import { buildLoginCopy, buildLoginOAuthGate, normalizeTermsAccepted } from "@/lib/login-terms";
+import { localDemoModeEnabled } from "@/lib/supabaseclient";
 
 export default function LoginPage() {
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -38,6 +40,11 @@ export default function LoginPage() {
         </div>
 
         <div className="flex flex-col gap-2">
+          {localDemoModeEnabled && (
+            <Button asChild>
+              <Link href="/dashboard">Open local demo</Link>
+            </Button>
+          )}
           <GitSignInButton disabled={oauthGate.disabled} />
           <GoogleSignInButton disabled={oauthGate.disabled} />
         </div>

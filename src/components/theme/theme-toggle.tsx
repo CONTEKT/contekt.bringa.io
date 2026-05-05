@@ -17,8 +17,9 @@ export function ThemeToggle() {
 
     if (!mounted) {
         return (
-            <Toggle variant="outline" size="default" className="w-9 h-9">
+            <Toggle variant="outline" size="default" pressed={false} disabled className="w-9 h-9 border-none">
                 <Sun className="h-[1.2rem] w-[1.2rem]" />
+                <span className="sr-only">Toggle theme</span>
             </Toggle>
         )
     }

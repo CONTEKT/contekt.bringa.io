@@ -66,6 +66,9 @@ const completeBaseConfig = {
     publishableKey: "local-development-publishable-key",
     authRedirectPath: "/dashboard",
   },
+  development: {
+    localDemoMode: true,
+  },
   invites: {
     allowSignupWithoutInvite: false,
     collectDisplayNameBeforeInvite: true,

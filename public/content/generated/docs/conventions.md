@@ -90,6 +90,8 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm test:issue-prompt`
 - `pnpm test:settings-data-actions`
 - `pnpm test:login-terms`
+- `pnpm test:local-demo-mode`
+- `pnpm test:local-demo-supabase`
 - `pnpm test:invite-flow`
 - `pnpm test:profile-completion`
 - `pnpm test:admin-notification-settings`

@@ -11,6 +11,7 @@
     "content",
     "legal",
     "supabase",
+    "development",
     "invites",
     "media",
     "features"
@@ -40,6 +41,9 @@
     },
     "supabase": {
       "$ref": "#/$defs/supabase"
+    },
+    "development": {
+      "$ref": "#/$defs/development"
     },
     "invites": {
       "$ref": "#/$defs/invites"
@@ -300,6 +304,18 @@
         },
         "authRedirectPath": {
           "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "development": {
+      "type": "object",
+      "required": [
+        "localDemoMode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "localDemoMode": {
+          "type": "boolean"
         }
       }
     },
