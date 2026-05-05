@@ -41,7 +41,7 @@ If capacity or plan limits block a new project, first report the exact blocker a
 
 The `app.bringa.io` project exists in `eu-central-1` and was `ACTIVE_HEALTHY` when first discovered through Supabase MCP on 2026-05-05. Keep project refs and public browser values in local operator notes or deployment config after review, rather than hardcoding them into shared fork docs.
 
-Initial safe metadata checks found no applied repository migrations, no deployed Edge Functions, no performance advisor lints, and one security advisor warning for public execution of `public.rls_auto_enable()` as a SECURITY DEFINER helper. Resolve advisor findings and rerun security advisors before treating the live backend as ready.
+Initial safe metadata checks found no applied repository migrations, no deployed Edge Functions, no public app tables, no Storage buckets, no performance advisor lints, and one security advisor warning for public execution of `public.rls_auto_enable()` as a SECURITY DEFINER helper. Resolve advisor findings and rerun security advisors before treating the live backend as ready.
 
 ## Agent Workflow
 
