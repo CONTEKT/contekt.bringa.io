@@ -22,6 +22,7 @@ title: Supabase MCP Agent Setup
 - Limit feature groups with features=database,docs for ordinary schema/RLS audits; add development, debugging, or storage only when needed.
 - Account management tools such as list_projects, create_project, pause_project, and restore_project are disabled in project-scoped mode.
 - MCP exposes get_project_url and get_publishable_keys for public browser config.
+- MCP public-key helpers are not a server-side key handoff. Do not use MCP or chat to retrieve, reveal, or transmit secret or service-role keys.
 - Storage tools are disabled by default in Supabase MCP, so bucket review requires an explicit storage feature group.
 - Supabase's current API key docs recommend publishable keys for public browser clients and secret keys over legacy service_role keys where possible.
 - Never put SUPABASE_SECRET_KEY, SUPABASE_SERVICE_ROLE_KEY, or sb_secret_ values in docs, commits, browser bundles, screenshots, or chat.
@@ -52,6 +53,7 @@ title: Supabase MCP Agent Setup
 - If using the Management API, retrieve legacy keys with GET /v1/projects/{ref}/api-keys only in a trusted local environment.
 - For new secret keys, create them in Settings > API Keys or the Management API and reveal them only once in a trusted local environment.
 - Store local maintenance keys only in .env.local or an approved local secret store.
+- Treat MCP get_project_url and get_publishable_keys as public-browser-config helpers only.
 
 ## Local Handoff
 

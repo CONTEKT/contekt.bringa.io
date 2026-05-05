@@ -28,6 +28,8 @@ const requiredRunbookPhrases = [
   "create_project",
   "get_project_url",
   "get_publishable_keys",
+  "not a server-side key handoff",
+  "Do not use MCP or chat to retrieve, reveal, or transmit secret or service-role keys.",
   "Storage tools are disabled by default",
   "publishable keys for public browser clients",
   "secret keys over legacy service_role keys",
@@ -46,6 +48,7 @@ const requiredRunbookPhrases = [
   "Settings > API Keys > Legacy API Keys",
   "GET /v1/projects/{ref}/api-keys",
   "Store local maintenance keys only in .env.local or an approved local secret store.",
+  "public-browser-config helpers only",
   "supabase.url and supabase.publishableKey",
   "pnpm backup:supabase",
 ];
