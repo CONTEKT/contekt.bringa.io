@@ -46,4 +46,4 @@ After dependency upgrades, Supabase migrations, RLS policy changes, Edge Functio
 
 - Supabase live schema and Edge Function baseline exists; Auth provider redirects, Edge Function secrets, and restore drills are still pending.
 - Live restore drills and encrypted backup retention policy are pending.
-- Maskable PNG icons and complete homescreen testing are pending.
+- Complete homescreen, PWA install, and platform-specific icon behavior testing are pending.

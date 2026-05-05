@@ -31,6 +31,7 @@ const requiredPhrases = [
   "`docs/forking.md`",
   "`.github/workflows/ci.yml`",
   "`pnpm check:github-workflows`",
+  "`pnpm check:edge-functions`",
   "`supabase/schema.sql`",
   "`supabase/migrations/`",
   "`docs/supabase-contract-audit.md`",

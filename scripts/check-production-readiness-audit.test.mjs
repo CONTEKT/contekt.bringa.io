@@ -22,8 +22,8 @@ function validAuditContent() {
 | Source of truth and hyperoptimum | \`docs/hyperoptimum.md\`, \`docs/optimization-options.md\`, \`.agents/rules/source-of-truth.md\` | Covered |
 | Naming conventions and developer experience | \`docs/conventions.md\`, \`pnpm test:naming-conventions\`, \`pnpm check:naming-conventions\` | Covered |
 | Forkability and configuration | \`config/base.config.jsonc\`, \`config/deployments/app.bringa.io.jsonc\`, \`docs/configuration.md\`, \`docs/forking.md\` | Covered |
-| Secret-free manual CI/CD | \`.github/workflows/ci.yml\`, \`docs/conventions.md\`, \`pnpm check:github-workflows\` | Covered |
-| Supabase contract and privacy | \`supabase/schema.sql\`, \`supabase/migrations/\`, \`docs/supabase-contract-audit.md\`, \`pnpm test:supabase-contract\`, \`pnpm check:supabase-contract\` | Partial |
+| Secret-free manual CI/CD | \`.github/workflows/ci.yml\`, \`docs/conventions.md\`, \`pnpm check:github-workflows\`, \`pnpm check:edge-functions\` | Covered |
+| Supabase contract and privacy | \`supabase/schema.sql\`, \`supabase/migrations/\`, \`docs/supabase-contract-audit.md\`, \`pnpm test:supabase-contract\`, \`pnpm check:supabase-contract\`, \`pnpm check:edge-functions\` | Partial |
 | Product model and admin operations | \`docs/admin-operations.md\`, \`docs/readiness-checklist.md\`, \`pnpm test:admin-route-gate\`, \`scripts/admin-system-health.test.mjs\` | Partial |
 | Auth and onboarding decision boundaries | \`pnpm test:auth-redirect\`, \`pnpm test:protected-route\`, \`docs/supabase-branching.md\` Auth redirect URL tasks | Partial |
 | Browser, accessibility, and PWA QA | \`docs/browser-testing.md\`, \`.agents/skills/agentic-browser-testing/SKILL.md\`, \`pnpm test:pwa-manifest\` | Blocked |

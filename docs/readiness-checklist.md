@@ -91,7 +91,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 
 ## Verification Before Release
 
-2026-05-05 manual GitHub Actions run `25392381617` on `main` passed the full secret-free quality workflow on commit `d9f842e11f20648720849852f98ce52dd49b583a`, including generated config, unit/script checks, documentation checks, committed secret scanning, lint, TypeScript, and static build.
+2026-05-05 manual GitHub Actions run `25392381617` on `main` passed the full secret-free quality workflow on commit `d9f842e11f20648720849852f98ce52dd49b583a`, including generated config, unit/script checks, documentation checks, committed secret scanning, lint, TypeScript, and static build. Current branch run `25402520805` on commit `c52c513d8246a7ffef0c88b54766bb8e2d96feea` also passed with the Supabase Edge Function Deno check.
 
 - [ ] `pnpm check:config`
 - [ ] `pnpm test:config`
@@ -157,6 +157,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 - [ ] `pnpm check:production-readiness-audit`
 - [ ] `pnpm check:release-checklist`
 - [ ] `pnpm check:github-workflows`
+- [ ] `pnpm check:edge-functions`
 - [ ] `pnpm test:static-export`
 - [ ] `pnpm check:static-export`
 - [ ] `pnpm check:supabase-contract`
