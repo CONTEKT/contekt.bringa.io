@@ -39,9 +39,13 @@ const requiredPhrases = [
   "`docs/restore-drills.md`",
   "`pnpm test:account-deletion-cleanup`",
   "`pnpm check:restore-drills`",
+  "`docs/observability.md`",
+  "`pnpm test:observability`",
+  "`pnpm check:observability`",
   "`pnpm check:copy`",
   "GitHub branch protection and manual Pages deployment settings require repository UI or plan access.",
   "Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions review requires approved access.",
+  "Live Supabase health checks, Edge Function log review, and any external error-reporting decision require approved access and policy.",
   "Local app development cannot be linked to a Supabase development branch without approved project refs and branch access.",
   "Auth persistence, logout, PWA install, slow network, and long-content states still need browser evidence.",
   "Trusted account deletion cleanup still needs approved rehearsal or production run with backup/export evidence and operator retention policy.",
@@ -57,6 +61,7 @@ const requiredRows = [
   "Product model and admin operations",
   "Browser, accessibility, and PWA QA",
   "Backups, restore, and deletion cleanup",
+  "Privacy-preserving observability",
   "German organization wording removed from English docs",
 ];
 

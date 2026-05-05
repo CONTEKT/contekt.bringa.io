@@ -76,6 +76,8 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [x] Restore drill and encrypted retention evidence requirements are documented and checked.
 - [ ] Live restore drills and encrypted backup handling are complete with approved access and policy.
 - [x] Telegram notification dedupe, mute windows, retry state, and privacy review are complete in the local contract.
+- [x] Privacy-preserving observability runbook is documented and checked.
+- [ ] Live Supabase health checks, Edge Function log review, and any external error-reporting decision are complete with approved access and policy.
 
 ## Verification Before Release
 
@@ -96,6 +98,7 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [ ] `pnpm test:browser-testing`
 - [ ] `pnpm test:supabase-branching`
 - [ ] `pnpm test:restore-drills`
+- [ ] `pnpm test:observability`
 - [ ] `pnpm test:production-readiness-audit`
 - [ ] `pnpm test:release-checklist`
 - [ ] `pnpm test:admin-notification-settings`
@@ -117,6 +120,7 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [ ] `pnpm check:browser-testing`
 - [ ] `pnpm check:supabase-branching`
 - [ ] `pnpm check:restore-drills`
+- [ ] `pnpm check:observability`
 - [ ] `pnpm check:production-readiness-audit`
 - [ ] `pnpm check:release-checklist`
 - [ ] `pnpm check:github-workflows`

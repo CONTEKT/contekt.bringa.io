@@ -10,6 +10,7 @@ Before changing schema or policies, read [Supabase Contract Audit](supabase-cont
 The repository-level Supabase source-of-truth notes live in `supabase/README.md`.
 Future development-branch setup tasks live in [Supabase Branching](supabase-branching.md).
 Restore rehearsal and encrypted retention evidence live in [Restore Drills](restore-drills.md).
+Privacy-preserving diagnostics and live log boundaries live in [Observability](observability.md).
 Run `pnpm check:supabase-contract` after changing RPCs, item write policies, or Storage bucket limits.
 
 ## Before MCP Access
@@ -27,6 +28,7 @@ When Supabase MCP and service role access are available, inspect:
 - RLS policies for `profiles`, `admins`, `items`, `borrow_history`, `item_sharing`, and Storage buckets.
 - Whether invite validation, admin promotion, borrow/return, visibility, deletion, and moderation should move behind RPC functions.
 - Edge Function names, secrets, app URL defaults, retry behavior, and Telegram notification throttling.
+- Edge Function logs, dashboard Invocations, and Logs Explorer access boundaries without copying personal data.
 - Storage limits for image MIME types, file size, animated formats, cleanup, title images, and export/download.
 
 Use the audit checklist to compare local UI behavior, schema, migrations, Storage, and Edge Functions before proposing migrations.

@@ -30,6 +30,7 @@ This audit maps the active goal prompt to durable repository artifacts. It is no
 | Media upload and Storage contract | `src/lib/media.ts`, create/edit item routes, `supabase/schema.sql`, `pnpm check:supabase-contract` | Partial until live Storage bucket review |
 | Browser, accessibility, and PWA QA | `docs/browser-testing.md`, `.agents/skills/agentic-browser-testing/SKILL.md`, `pnpm test:pwa-manifest` | Blocked until browser evidence |
 | Backups, restore, and deletion cleanup | `scripts/backup-supabase.mjs`, `scripts/verify-supabase-backup.mjs`, `scripts/cleanup-account-deletion.mjs`, `docs/maintenance.md`, `docs/restore-drills.md`, `pnpm test:account-deletion-cleanup`, `pnpm check:restore-drills` | Partial until live rehearsal and retention policy |
+| Privacy-preserving observability | `docs/observability.md`, `pnpm test:observability`, `pnpm check:observability` | Partial until live log review and external error-reporting decision |
 | Dependency and tooling currency | `package.json`, `pnpm-lock.yaml`, `docs/dependency-audit.md`, `pnpm outdated` | Partial; major upgrades intentionally deferred |
 | German organization wording removed from English docs | `pnpm check:copy` and direct `rg` check | Covered |
 
@@ -42,6 +43,7 @@ This audit maps the active goal prompt to durable repository artifacts. It is no
 - `docs/browser-testing.md`
 - `docs/supabase-branching.md`
 - `docs/restore-drills.md`
+- `docs/observability.md`
 - `supabase/README.md`
 - `.agents/`
 - `.github/workflows/`
@@ -52,6 +54,7 @@ This audit maps the active goal prompt to durable repository artifacts. It is no
 
 - GitHub branch protection and manual Pages deployment settings require repository UI or plan access.
 - Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions review requires approved access.
+- Live Supabase health checks, Edge Function log review, and any external error-reporting decision require approved access and policy.
 - Local app development cannot be linked to a Supabase development branch without approved project refs and branch access.
 - Auth persistence, logout, PWA install, slow network, and long-content states still need browser evidence.
 - Trusted account deletion cleanup still needs approved rehearsal or production run with backup/export evidence and operator retention policy.

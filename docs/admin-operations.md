@@ -44,6 +44,7 @@ For the trusted follow-up, use `pnpm cleanup:account-deletion` from a server-sid
 - Run or offer `pnpm backup:supabase` before production database work when a service role key is available.
 - Use `/admin/user-items` for item review instead of copying user item lists into chat or external systems.
 - Use `/admin/deletion-requests` for account deletion triage instead of exporting deletion request rows into chat or issue comments.
+- Use [Observability](observability.md) for diagnostics, live log boundaries, and redaction rules before sharing troubleshooting evidence.
 
 ## Before Production Changes
 
