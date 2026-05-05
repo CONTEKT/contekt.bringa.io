@@ -1,7 +1,3 @@
----
-title: First Big Version Readiness Checklist
----
-
 # First Big Version Readiness Checklist
 
 Use this checklist before calling the generic upstream ready for a first large open-source release. It is not a launch claim for any live deployment.

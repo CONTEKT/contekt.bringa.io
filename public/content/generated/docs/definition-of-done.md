@@ -1,7 +1,3 @@
----
-title: Definition Of Done
----
-
 # Definition Of Done
 
 This is the current definition of done for upstream work. It is intentionally practical: the hyperoptimum is reached through verified, coherent increments.

@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { findMissingDocsIndexLinks, findMissingDocsNavLinks } from "./check-docs-index.mjs";
+import { findMissingDocsIndexLinks, findMissingGeneratedDocsArtifacts } from "./check-docs-index.mjs";
 
 async function writeDoc(root, name, content = "---\ntitle: Test\n---\n\n# Test\n") {
   await writeFile(path.join(root, name), content);
@@ -24,20 +24,18 @@ test("reports top-level docs missing from docs/index.md", async (t) => {
   assert.deepEqual(missing, ["missing.md"]);
 });
 
-test("reports top-level docs missing from the GitHub Pages nav", async (t) => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "bringa-docs-nav-test-"));
+test("reports top-level docs missing from generated app docs artifacts", async (t) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "bringa-docs-artifacts-test-"));
   t.after(() => rm(root, { recursive: true, force: true }));
 
-  await mkdir(path.join(root, "_layouts"), { recursive: true });
+  const manifestPath = path.join(root, "generated", "index.json");
+  await mkdir(path.dirname(manifestPath), { recursive: true });
   await writeDoc(root, "index.md");
   await writeDoc(root, "listed.md");
   await writeDoc(root, "missing.md");
-  await writeFile(
-    path.join(root, "_layouts", "default.html"),
-    "<nav><a href=\"{{ '/listed.html' | relative_url }}\">Listed</a></nav>\n",
-  );
+  await writeFile(manifestPath, JSON.stringify({ docs: [{ slug: "listed" }] }));
 
-  const missing = await findMissingDocsNavLinks({ docsDir: root });
+  const missing = await findMissingGeneratedDocsArtifacts({ docsDir: root, manifestPath });
 
   assert.deepEqual(missing, ["missing.md"]);
 });
@@ -48,8 +46,11 @@ test("accepts the current repository docs index", async () => {
   assert.deepEqual(missing, []);
 });
 
-test("accepts the current repository GitHub Pages nav", async () => {
-  const missing = await findMissingDocsNavLinks({ docsDir: path.join(process.cwd(), "docs") });
+test("accepts the current generated app docs manifest", async () => {
+  const missing = await findMissingGeneratedDocsArtifacts({
+    docsDir: path.join(process.cwd(), "docs"),
+    manifestPath: path.join(process.cwd(), "public", "content", "generated", "docs", "index.json"),
+  });
 
   assert.deepEqual(missing, []);
 });

@@ -20,6 +20,7 @@
     "test:naming-conventions": "node --test scripts/check-naming-conventions.test.mjs",
     "test:copy": "node --test scripts/check-copy.test.mjs",
     "test:optimization-options": "node --test scripts/check-optimization-options.test.mjs",
+    "test:docs-view": "node --test scripts/docs-view.test.mjs",
     "test:docs-index": "node --test scripts/check-docs-index.test.mjs",
     "test:browser-testing": "node --test scripts/check-browser-testing.test.mjs",
     "test:supabase-branching": "node --test scripts/check-supabase-branching.test.mjs",

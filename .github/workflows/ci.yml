@@ -63,6 +63,9 @@ jobs:
       - name: Test optimization options checker
         run: pnpm test:optimization-options
 
+      - name: Test in-app docs view helpers
+        run: pnpm test:docs-view
+
       - name: Test docs index checker
         run: pnpm test:docs-index
 

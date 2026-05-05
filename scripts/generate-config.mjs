@@ -284,6 +284,7 @@ function validateConfig(config) {
   assertRelativeContentPath(config.content?.sourcePath, "content.sourcePath");
   assertRelativeContentPath(config.content?.deploymentPath, "content.deploymentPath");
   assertPublicDirectoryPath(config.content?.publicPath, "content.publicPath");
+  assertPublicDirectoryPath(config.content?.docsPublicPath, "content.docsPublicPath");
   assertPublicPath(config.content?.issuePromptPath, "content.issuePromptPath");
   assertStringArray(config.content?.requiredFiles, "content.requiredFiles");
   for (const [index, requiredFile] of config.content.requiredFiles.entries()) {
@@ -398,6 +399,11 @@ function contentPublicPath(config, relativePath) {
   return `${config.content.publicPath}/${relativePath}`;
 }
 
+function docsPublicPath(config, relativePath) {
+  assertRelativeContentPath(relativePath, "docs file path");
+  return `${config.content.docsPublicPath}/${relativePath}`;
+}
+
 export async function buildContentFiles(root, deploymentSlug, config) {
   const defaultContentRoot = resolveRepoPath(root, config.content.sourcePath, "content.sourcePath");
   const deploymentContentRoot = path.join(
@@ -425,6 +431,86 @@ export async function buildContentFiles(root, deploymentSlug, config) {
       outputPath: path.resolve(root, "public", contentPublicPath(config, relativePath).slice(1)),
       content,
     }));
+}
+
+function stripMarkdownFrontmatter(content) {
+  if (!content.startsWith("---\n")) {
+    return content;
+  }
+
+  const end = content.indexOf("\n---", 4);
+  if (end === -1) {
+    return content;
+  }
+
+  const after = content.indexOf("\n", end + 4);
+  return after === -1 ? "" : content.slice(after + 1).replace(/^\n+/, "");
+}
+
+function titleFromMarkdown(fileName, content) {
+  const frontmatterTitle = content.match(/^---\n[\s\S]*?\ntitle:\s*["']?([^"'\n]+)["']?\n[\s\S]*?\n---/)?.[1]?.trim();
+  if (frontmatterTitle) {
+    return frontmatterTitle;
+  }
+
+  const headingTitle = content.match(/^#\s+(.+)$/m)?.[1]?.trim();
+  if (headingTitle) {
+    return headingTitle;
+  }
+
+  return fileName
+    .replace(/\.md$/, "")
+    .split(/[-_]/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+export async function buildDocsFiles(root, config) {
+  const docsRoot = path.join(root, "docs");
+  const entries = await readdir(docsRoot, { withFileTypes: true });
+  const markdownFiles = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .map((entry) => entry.name)
+    .sort((left, right) => {
+      if (left === "index.md") return -1;
+      if (right === "index.md") return 1;
+      return left.localeCompare(right);
+    });
+
+  const docs = [];
+  const files = [];
+
+  for (const fileName of markdownFiles) {
+    const sourcePath = path.join(docsRoot, fileName);
+    const sourceContent = await readFile(sourcePath, "utf8");
+    const slug = fileName.replace(/\.md$/, "");
+    const relativePath = `${slug}.md`;
+    const publicPath = docsPublicPath(config, relativePath);
+    const title = titleFromMarkdown(fileName, sourceContent);
+
+    docs.push({
+      slug,
+      title,
+      path: publicPath,
+      sourcePath: `docs/${fileName}`,
+    });
+    files.push({
+      relativePath,
+      publicPath,
+      outputPath: path.resolve(root, "public", publicPath.slice(1)),
+      content: stripMarkdownFrontmatter(sourceContent),
+    });
+  }
+
+  const indexPath = docsPublicPath(config, "index.json");
+  files.unshift({
+    relativePath: "index.json",
+    publicPath: indexPath,
+    outputPath: path.resolve(root, "public", indexPath.slice(1)),
+    content: `${JSON.stringify({ docs }, null, 2)}\n`,
+  });
+
+  return files;
 }
 
 async function assertGeneratedFileCurrent(root, outputPath, expectedContent) {
@@ -468,12 +554,14 @@ export async function buildConfigArtifacts(options = {}) {
     validatePublicFiles: false,
   });
   const contentFiles = await buildContentFiles(root, deploymentSlug, config);
+  const docsFiles = await buildDocsFiles(root, config);
 
   await validateReferencedPublicFiles(root, config, { skipLegalContent: true });
 
   return {
     configJson: `${JSON.stringify(config, null, 2)}\n`,
     contentFiles,
+    docsFiles,
   };
 }
 
@@ -536,6 +624,7 @@ async function main() {
   }
 
   await syncGeneratedContent(root, artifacts.contentFiles, checkOnly);
+  await syncGeneratedContent(root, artifacts.docsFiles, checkOnly);
   await validateReferencedGeneratedFiles(root, JSON.parse(artifacts.configJson));
 }
 

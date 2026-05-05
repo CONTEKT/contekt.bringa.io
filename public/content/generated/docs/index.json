@@ -1,0 +1,148 @@
+{
+  "docs": [
+    {
+      "slug": "index",
+      "title": "bringa.io Docs",
+      "path": "/content/generated/docs/index.md",
+      "sourcePath": "docs/index.md"
+    },
+    {
+      "slug": "admin-operations",
+      "title": "Admin Operations",
+      "path": "/content/generated/docs/admin-operations.md",
+      "sourcePath": "docs/admin-operations.md"
+    },
+    {
+      "slug": "browser-testing",
+      "title": "Browser Testing",
+      "path": "/content/generated/docs/browser-testing.md",
+      "sourcePath": "docs/browser-testing.md"
+    },
+    {
+      "slug": "configuration",
+      "title": "Configuration",
+      "path": "/content/generated/docs/configuration.md",
+      "sourcePath": "docs/configuration.md"
+    },
+    {
+      "slug": "conventions",
+      "title": "Conventions",
+      "path": "/content/generated/docs/conventions.md",
+      "sourcePath": "docs/conventions.md"
+    },
+    {
+      "slug": "definition-of-done",
+      "title": "Definition Of Done",
+      "path": "/content/generated/docs/definition-of-done.md",
+      "sourcePath": "docs/definition-of-done.md"
+    },
+    {
+      "slug": "dependency-audit",
+      "title": "Dependency Audit",
+      "path": "/content/generated/docs/dependency-audit.md",
+      "sourcePath": "docs/dependency-audit.md"
+    },
+    {
+      "slug": "fork-content-strategy",
+      "title": "Fork Content Strategy",
+      "path": "/content/generated/docs/fork-content-strategy.md",
+      "sourcePath": "docs/fork-content-strategy.md"
+    },
+    {
+      "slug": "forking",
+      "title": "Forking",
+      "path": "/content/generated/docs/forking.md",
+      "sourcePath": "docs/forking.md"
+    },
+    {
+      "slug": "hyperoptimum",
+      "title": "Hyperoptimum",
+      "path": "/content/generated/docs/hyperoptimum.md",
+      "sourcePath": "docs/hyperoptimum.md"
+    },
+    {
+      "slug": "issue-prompt-template",
+      "title": "Issue Prompt Template",
+      "path": "/content/generated/docs/issue-prompt-template.md",
+      "sourcePath": "docs/issue-prompt-template.md"
+    },
+    {
+      "slug": "legal-notes",
+      "title": "Legal Notes",
+      "path": "/content/generated/docs/legal-notes.md",
+      "sourcePath": "docs/legal-notes.md"
+    },
+    {
+      "slug": "maintenance",
+      "title": "Maintenance",
+      "path": "/content/generated/docs/maintenance.md",
+      "sourcePath": "docs/maintenance.md"
+    },
+    {
+      "slug": "observability",
+      "title": "Observability",
+      "path": "/content/generated/docs/observability.md",
+      "sourcePath": "docs/observability.md"
+    },
+    {
+      "slug": "optimization-options",
+      "title": "Optimization Options",
+      "path": "/content/generated/docs/optimization-options.md",
+      "sourcePath": "docs/optimization-options.md"
+    },
+    {
+      "slug": "production-readiness-audit",
+      "title": "Production Readiness Audit",
+      "path": "/content/generated/docs/production-readiness-audit.md",
+      "sourcePath": "docs/production-readiness-audit.md"
+    },
+    {
+      "slug": "readiness-checklist",
+      "title": "First Big Version Readiness Checklist",
+      "path": "/content/generated/docs/readiness-checklist.md",
+      "sourcePath": "docs/readiness-checklist.md"
+    },
+    {
+      "slug": "repository-settings",
+      "title": "Repository Settings",
+      "path": "/content/generated/docs/repository-settings.md",
+      "sourcePath": "docs/repository-settings.md"
+    },
+    {
+      "slug": "restore-drills",
+      "title": "Restore Drills",
+      "path": "/content/generated/docs/restore-drills.md",
+      "sourcePath": "docs/restore-drills.md"
+    },
+    {
+      "slug": "roadmap",
+      "title": "Roadmap",
+      "path": "/content/generated/docs/roadmap.md",
+      "sourcePath": "docs/roadmap.md"
+    },
+    {
+      "slug": "supabase-branching",
+      "title": "Supabase Branching",
+      "path": "/content/generated/docs/supabase-branching.md",
+      "sourcePath": "docs/supabase-branching.md"
+    },
+    {
+      "slug": "supabase-contract-audit",
+      "title": "Supabase Contract Audit",
+      "path": "/content/generated/docs/supabase-contract-audit.md",
+      "sourcePath": "docs/supabase-contract-audit.md"
+    },
+    {
+      "slug": "supabase",
+      "title": "Supabase",
+      "path": "/content/generated/docs/supabase.md",
+      "sourcePath": "docs/supabase.md"
+    },
+    {
+      "slug": "telegramBot",
+      "title": "Telegram Notifications",
+      "path": "/content/generated/docs/telegramBot.md",
+      "sourcePath": "docs/telegramBot.md"
+    }
+  ]
+}

@@ -50,6 +50,7 @@ const completeBaseConfig = {
     sourcePath: "content/default",
     deploymentPath: "content/deployments",
     publicPath: "/content/generated",
+    docsPublicPath: "/content/generated/docs",
     issuePromptPath: "/content/generated/issues/en.md",
     requiredFiles: ["legal/en.md", "onboarding/en.md"],
   },
@@ -134,6 +135,17 @@ async function createConfigProject({ deployment = {}, local = undefined, deploym
     await writeFile(filePath, content);
   }
 
+  const docs = {
+    "index.md": "---\ntitle: Documentation\n---\n\n# Documentation\n\n- [Configuration](configuration.md)\n",
+    "configuration.md": "---\ntitle: Configuration\n---\n\n# Configuration\n\nConfig docs.\n",
+  };
+
+  for (const [docsPath, content] of Object.entries(docs)) {
+    const filePath = path.join(root, "docs", docsPath);
+    await mkdir(path.dirname(filePath), { recursive: true });
+    await writeFile(filePath, content);
+  }
+
   return root;
 }
 
@@ -195,6 +207,26 @@ test("builds generated public content from default and deployment content profil
   assert.equal(
     artifacts.contentFiles.find((file) => file.publicPath === "/content/generated/onboarding/en.md")?.content,
     "# Default Onboarding\n",
+  );
+});
+
+test("builds generated in-app docs artifacts from top-level docs", async (t) => {
+  const root = await createConfigProject();
+  t.after(() => rm(root, { recursive: true, force: true }));
+
+  const artifacts = await buildConfigArtifacts({ root, deploymentSlug: "app.bringa.io" });
+  const docsFiles = artifacts.docsFiles;
+  const docsIndex = JSON.parse(
+    docsFiles.find((file) => file.publicPath === "/content/generated/docs/index.json").content,
+  );
+
+  assert.deepEqual(docsIndex.docs.map((doc) => [doc.slug, doc.title, doc.path]), [
+    ["index", "Documentation", "/content/generated/docs/index.md"],
+    ["configuration", "Configuration", "/content/generated/docs/configuration.md"],
+  ]);
+  assert.equal(
+    docsFiles.find((file) => file.publicPath === "/content/generated/docs/configuration.md")?.content,
+    "# Configuration\n\nConfig docs.\n",
   );
 });
 

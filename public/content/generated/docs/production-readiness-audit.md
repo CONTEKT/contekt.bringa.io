@@ -1,7 +1,3 @@
----
-title: Production Readiness Audit
----
-
 # Production Readiness Audit
 
 This audit maps the active goal prompt to durable repository artifacts. It is not a release announcement and does not replace the operational checks in [First Big Version Readiness Checklist](readiness-checklist.md).

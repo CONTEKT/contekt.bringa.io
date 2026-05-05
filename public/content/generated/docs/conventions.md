@@ -1,7 +1,3 @@
----
-title: Conventions
----
-
 # Conventions
 
 These conventions keep the upstream repository easy to review, fork, sync, and maintain.

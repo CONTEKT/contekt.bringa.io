@@ -1,7 +1,3 @@
----
-title: Optimization Options
----
-
 # Optimization Options
 
 This file is the living roadmap and anti-roadmap for ideas discovered by users and agents. Keep it compact. Remove completed items once implementation, tests, docs, or git history become the source of truth.

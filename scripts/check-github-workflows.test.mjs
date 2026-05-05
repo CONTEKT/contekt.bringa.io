@@ -30,7 +30,7 @@ on:
 
 test("rejects inline arrays with non-manual triggers", () => {
   assert.throws(
-    () => checkWorkflowContent(".github/workflows/docs.yml", "on: [workflow_dispatch, pull_request]"),
+    () => checkWorkflowContent(".github/workflows/pages.yml", "on: [workflow_dispatch, pull_request]"),
     /must stay manual-only.*pull_request/s,
   );
 });

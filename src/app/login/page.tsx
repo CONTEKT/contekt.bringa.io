@@ -41,6 +41,12 @@ export default function LoginPage() {
           <GitSignInButton disabled={oauthGate.disabled} />
           <GoogleSignInButton disabled={oauthGate.disabled} />
         </div>
+
+        <div className="mt-6 text-center">
+          <Link href="/docs" className="text-sm text-muted-foreground hover:text-foreground">
+            Docs
+          </Link>
+        </div>
       </div>
     </div>
   );

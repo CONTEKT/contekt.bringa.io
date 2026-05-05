@@ -88,6 +88,11 @@ export default function TopBar() {
                                         <span>Settings</span>
                                     </MenubarItem>
                                 </Link>
+                                <Link href="/docs">
+                                    <MenubarItem className="flex items-center gap-2 cursor-pointer">
+                                        <span>Docs</span>
+                                    </MenubarItem>
+                                </Link>
                                 <a href={appConfig.repository.issuesUrl} target="_blank" rel="noreferrer">
                                     <MenubarItem className="flex items-center gap-2 cursor-pointer">
                                         <span>Feedback & Issues</span>

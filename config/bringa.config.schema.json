@@ -253,6 +253,7 @@
         "sourcePath",
         "deploymentPath",
         "publicPath",
+        "docsPublicPath",
         "issuePromptPath",
         "requiredFiles"
       ],
@@ -265,6 +266,9 @@
           "$ref": "#/$defs/nonEmptyString"
         },
         "publicPath": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "docsPublicPath": {
           "$ref": "#/$defs/nonEmptyString"
         },
         "issuePromptPath": {
