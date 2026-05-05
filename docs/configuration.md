@@ -76,7 +76,7 @@ Default content is copied first, then `content/deployments/<slug>` overrides mat
 ## Common Fork Fields
 
 - `app.name`, `app.shortName`, `branding.logoText`: visible app identity.
-- `branding.logoPath`, `branding.iconPath`, `branding.appleTouchIconPath`: public brand assets used by navigation, metadata, and the PWA manifest.
+- `branding.logoPath`, `branding.iconPath`, `branding.pwaIcon192Path`, `branding.pwaIcon512Path`, `branding.maskableIcon512Path`, `branding.appleTouchIconPath`: public brand assets used by navigation, metadata, install icons, and the PWA manifest.
 - `branding.themeColor`, `branding.backgroundColor`: install and browser chrome colors for the generated manifest.
 - `operator.defaultOwnerLabel`: default owner label for operator-owned items.
 - `repository.url`, `repository.issuesUrl`: GitHub links shown in the app.

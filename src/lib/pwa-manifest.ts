@@ -7,6 +7,9 @@ export type PwaManifestConfig = {
   };
   branding: {
     iconPath: string;
+    pwaIcon192Path: string;
+    pwaIcon512Path: string;
+    maskableIcon512Path: string;
     backgroundColor: string;
     themeColor: string;
   };
@@ -49,9 +52,21 @@ export function buildPwaManifest(config: PwaManifestConfig): PwaManifest {
         purpose: "any",
       },
       {
-        src: config.branding.iconPath,
-        sizes: "any",
-        type: "image/svg+xml",
+        src: config.branding.pwaIcon192Path,
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: config.branding.pwaIcon512Path,
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: config.branding.maskableIcon512Path,
+        sizes: "512x512",
+        type: "image/png",
         purpose: "maskable",
       },
     ],

@@ -16,7 +16,10 @@
     "logoText": "bringa",
     "logoPath": "/icon.svg",
     "iconPath": "/icon.svg",
-    "appleTouchIconPath": "/icon.svg",
+    "pwaIcon192Path": "/icon-192.png",
+    "pwaIcon512Path": "/icon-512.png",
+    "maskableIcon512Path": "/maskable-icon-512.png",
+    "appleTouchIconPath": "/apple-touch-icon.png",
     "themeColor": "#ffffff",
     "backgroundColor": "#ffffff",
     "bornAndHostedBy": "Born and hosted by bringa.io"

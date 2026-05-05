@@ -109,6 +109,9 @@
         "logoText",
         "logoPath",
         "iconPath",
+        "pwaIcon192Path",
+        "pwaIcon512Path",
+        "maskableIcon512Path",
         "appleTouchIconPath",
         "themeColor",
         "backgroundColor",
@@ -123,6 +126,15 @@
           "$ref": "#/$defs/nonEmptyString"
         },
         "iconPath": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "pwaIcon192Path": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "pwaIcon512Path": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "maskableIcon512Path": {
           "$ref": "#/$defs/nonEmptyString"
         },
         "appleTouchIconPath": {

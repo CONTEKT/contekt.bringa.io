@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="bringa.io maskable icon">
+  <rect width="512" height="512" fill="#111827"/>
+  <path d="M168 128h112c60 0 104 38 104 92 0 30-14 56-38 72 32 15 50 46 50 84 0 58-46 96-112 96H168V128Zm76 62v76h30c22 0 36-14 36-38s-14-38-36-38h-30Zm0 134v86h40c24 0 38-16 38-43 0-26-14-43-38-43h-40Z" fill="#f9fafb"/>
+  <circle cx="354" cy="158" r="28" fill="#22c55e"/>
+</svg>

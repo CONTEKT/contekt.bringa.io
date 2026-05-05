@@ -262,6 +262,9 @@ function validateConfig(config) {
   assertString(config.branding?.logoText, "branding.logoText");
   assertPublicPath(config.branding?.logoPath, "branding.logoPath");
   assertPublicPath(config.branding?.iconPath, "branding.iconPath");
+  assertPublicPath(config.branding?.pwaIcon192Path, "branding.pwaIcon192Path");
+  assertPublicPath(config.branding?.pwaIcon512Path, "branding.pwaIcon512Path");
+  assertPublicPath(config.branding?.maskableIcon512Path, "branding.maskableIcon512Path");
   assertPublicPath(config.branding?.appleTouchIconPath, "branding.appleTouchIconPath");
   assertString(config.branding?.themeColor, "branding.themeColor");
   assertString(config.branding?.backgroundColor, "branding.backgroundColor");
@@ -329,6 +332,9 @@ async function validateReferencedPublicFiles(root, config, { skipLegalContent = 
   const files = [
     assertPublicFileExists(root, config.branding.logoPath, "branding.logoPath"),
     assertPublicFileExists(root, config.branding.iconPath, "branding.iconPath"),
+    assertPublicFileExists(root, config.branding.pwaIcon192Path, "branding.pwaIcon192Path"),
+    assertPublicFileExists(root, config.branding.pwaIcon512Path, "branding.pwaIcon512Path"),
+    assertPublicFileExists(root, config.branding.maskableIcon512Path, "branding.maskableIcon512Path"),
     assertPublicFileExists(root, config.branding.appleTouchIconPath, "branding.appleTouchIconPath"),
   ];
 

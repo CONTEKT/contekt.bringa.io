@@ -13,6 +13,9 @@ test("builds the app manifest from public app and branding config", () => {
     },
     branding: {
       iconPath: "/brand/icon.svg",
+      pwaIcon192Path: "/brand/icon-192.png",
+      pwaIcon512Path: "/brand/icon-512.png",
+      maskableIcon512Path: "/brand/maskable-icon-512.png",
       backgroundColor: "#ffffff",
       themeColor: "#111111",
     },
@@ -34,9 +37,21 @@ test("builds the app manifest from public app and branding config", () => {
       purpose: "any",
     },
     {
-      src: "/brand/icon.svg",
-      sizes: "any",
-      type: "image/svg+xml",
+      src: "/brand/icon-192.png",
+      sizes: "192x192",
+      type: "image/png",
+      purpose: "any",
+    },
+    {
+      src: "/brand/icon-512.png",
+      sizes: "512x512",
+      type: "image/png",
+      purpose: "any",
+    },
+    {
+      src: "/brand/maskable-icon-512.png",
+      sizes: "512x512",
+      type: "image/png",
       purpose: "maskable",
     },
   ]);

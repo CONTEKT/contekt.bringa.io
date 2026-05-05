@@ -43,7 +43,7 @@ As of 2026-05-05, GitHub API checks show the repository is private, `has_pages` 
 - [x] Create/edit image flow has config-driven validation and immediate preview.
 - [x] Settings exposes repo links, issue prompt copy, JSON data export, and account deletion request.
 - [x] Item details let users suggest changes, flag issues, hide their own items, or request visibility for admin review.
-- [x] PWA manifest fields are generated from public app and branding config and covered by `pnpm test:pwa-manifest`.
+- [x] PWA manifest fields, PNG install icons, and maskable icon paths are generated from public app and branding config and covered by `pnpm test:pwa-manifest`.
 - [ ] Auth persistence, logout, PWA install, slow network, and long-content states have been browser-tested across target browsers.
 
 ## Admin Experience

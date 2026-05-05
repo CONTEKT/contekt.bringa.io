@@ -5,7 +5,7 @@ description: Use when manually testing this web app through an agentic browser, 
 
 # Agentic Browser Testing
 
-Use existing browser-agent capabilities first. Do not add Playwright or another browser package unless the user asks or the current task requires repeatable CI automation.
+Use existing browser-agent capabilities first. Do not add Playwright or another browser package unless the user asks or the current task requires repeatable CI automation. Use `docs/browser-testing.md` as the maintainer-facing evidence format.
 
 ## Tool Choice
 
