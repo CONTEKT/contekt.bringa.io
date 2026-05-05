@@ -55,6 +55,7 @@ As of 2026-05-05, Supabase MCP can see the `app.bringa.io` project in `eu-centra
 - [x] Settings exposes repo links, issue prompt copy, JSON data export, and account deletion request.
 - [x] Item details let users suggest changes, flag issues, hide their own items, or request visibility for admin review.
 - [x] PWA manifest fields, PNG install icons, and maskable icon paths are generated from public app and branding config and covered by `pnpm test:pwa-manifest`.
+- [x] Production browser chunks are checked to exclude development-only local demo fixture markers after static builds.
 - [ ] Auth persistence, logout, PWA install, slow network, and long-content states have been browser-tested across target browsers.
 
 A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long item details, in-app docs, admin dashboard, and item creation in local demo mode. A 2026-05-06 quick-start contract check confirmed the default `pnpm dev` config enables local demo mode without a Supabase server and remains production-disabled through the `NODE_ENV` guard. Browser Use could not attach to an in-app browser on 2026-05-06, so connected auth, PWA install, slow-network, visual browser, and target-browser evidence remain open.
@@ -128,6 +129,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 - [ ] `pnpm test:copy`
 - [ ] `pnpm test:docs-index`
 - [ ] `pnpm test:browser-testing`
+- [ ] `pnpm test:production-bundle`
 - [ ] `pnpm test:local-supabase`
 - [ ] `pnpm test:supabase-mcp`
 - [ ] `pnpm test:supabase-cli`
@@ -168,6 +170,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 - [ ] `pnpm check:edge-functions`
 - [ ] `pnpm test:static-export`
 - [ ] `pnpm check:static-export`
+- [ ] `pnpm check:production-bundle`
 - [ ] `pnpm check:supabase-contract`
 - [ ] `pnpm outdated`
 - [ ] `pnpm lint`

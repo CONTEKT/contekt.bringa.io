@@ -245,6 +245,9 @@ jobs:
       - name: Test static export checker
         run: pnpm test:static-export
 
+      - name: Test production bundle checker
+        run: pnpm test:production-bundle
+
       - name: Check static export contract
         run: pnpm check:static-export
 
@@ -262,3 +265,6 @@ jobs:
 
       - name: Static build
         run: pnpm build
+
+      - name: Check production bundle
+        run: pnpm check:production-bundle

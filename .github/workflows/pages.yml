@@ -41,6 +41,9 @@ jobs:
       - name: Build static app
         run: pnpm build
 
+      - name: Check production bundle
+        run: pnpm check:production-bundle
+
       - name: Setup Pages
         if: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/deploy/') }}
         uses: actions/configure-pages@v5

@@ -17,7 +17,7 @@ jobs:
   assert.deepEqual([...triggers], ["workflow_dispatch"]);
 });
 
-test("accepts the CI workflow when it checks Supabase CLI, local Supabase, security maintenance, and Edge Functions", () => {
+test("accepts the CI workflow when it checks Supabase CLI, local Supabase, security maintenance, Edge Functions, and production bundles", () => {
   const triggers = checkWorkflowContent(".github/workflows/ci.yml", `name: CI
 
 on:
@@ -32,6 +32,7 @@ jobs:
       - run: pnpm check:local-supabase
       - run: pnpm check:security-maintenance
       - run: pnpm check:edge-functions
+      - run: pnpm check:production-bundle
 `);
 
   assert.deepEqual([...triggers], ["workflow_dispatch"]);
@@ -107,6 +108,44 @@ jobs:
       - run: pnpm check:edge-functions
 `),
     /check:security-maintenance/,
+  );
+});
+
+test("requires the CI workflow to check production bundles after static build output exists", () => {
+  assert.throws(
+    () => checkWorkflowContent(".github/workflows/ci.yml", `name: CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: denoland/setup-deno@v2
+      - run: pnpm check:supabase-cli
+      - run: pnpm check:local-supabase
+      - run: pnpm check:security-maintenance
+      - run: pnpm check:edge-functions
+`),
+    /check:production-bundle/,
+  );
+});
+
+test("requires the Pages workflow to check production bundles before artifact upload", () => {
+  assert.throws(
+    () => checkWorkflowContent(".github/workflows/pages.yml", `name: Pages
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pnpm build
+`),
+    /check:production-bundle/,
   );
 });
 

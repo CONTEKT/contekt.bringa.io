@@ -194,7 +194,7 @@ Documentation should be compact, practical, and link to the source of truth.
 
 ## Static Export
 
-This app uses Next.js static export. Keep `output: 'export'` and `images.unoptimized: true` in `next.config.ts`, avoid middleware, and keep any future App Router route handlers explicitly static. `pnpm check:static-export` enforces this architecture boundary.
+This app uses Next.js static export. Keep `output: 'export'` and `images.unoptimized: true` in `next.config.ts`, avoid middleware, and keep any future App Router route handlers explicitly static. Production builds must also keep development-only local demo fixtures out of generated browser chunks. `pnpm check:static-export` enforces the architecture boundary. `pnpm test:production-bundle` covers the bundle checker itself, and `pnpm check:production-bundle` enforces the production bundle boundary after `pnpm build`.
 
 ## Hyperoptimum Practice
 

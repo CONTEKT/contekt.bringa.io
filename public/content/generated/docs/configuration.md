@@ -80,7 +80,7 @@ Browser-visible Supabase values are not secrets. Set `supabase.url` and `supabas
 
 `development.localDemoMode` enables the browser-only local demo for `pnpm dev`. It is useful for first-run development, agentic browser testing, and UI review without a running Supabase stack or OAuth providers.
 
-Production builds ignore local demo mode in code. Keep it documented as a development convenience, not as an authorization feature. To test against the Supabase CLI stack instead:
+Production builds ignore local demo mode in code and alias the demo Supabase fixture module to a small production stub. Keep it documented as a development convenience, not as an authorization feature. `pnpm check:production-bundle` verifies after `pnpm build` that fixture data such as demo users, demo items, and demo tokens are not present in generated browser chunks. To test against the Supabase CLI stack instead:
 
 ```bash
 pnpm exec supabase start

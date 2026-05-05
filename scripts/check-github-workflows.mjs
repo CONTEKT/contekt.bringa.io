@@ -105,6 +105,15 @@ export function checkWorkflowContent(filePath, content) {
     if (!content.includes("pnpm check:edge-functions")) {
       throw new Error(`${filePath} must run pnpm check:edge-functions so Edge Functions are checked in CI.`);
     }
+    if (!content.includes("pnpm check:production-bundle")) {
+      throw new Error(`${filePath} must run pnpm check:production-bundle after the static build so development fixtures stay out of production chunks.`);
+    }
+  }
+
+  if (filePath === ".github/workflows/pages.yml") {
+    if (!content.includes("pnpm check:production-bundle")) {
+      throw new Error(`${filePath} must run pnpm check:production-bundle before uploading the Pages artifact.`);
+    }
   }
 
   return triggers;

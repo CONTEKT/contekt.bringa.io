@@ -41,12 +41,13 @@ pnpm check:supabase-contract
 pnpm check:supabase-cli
 pnpm check:edge-functions
 pnpm check:security-maintenance
+pnpm check:production-bundle
 pnpm lint
 pnpm exec tsc --noEmit
 pnpm build
 ```
 
-Add focused tests when behavior changes. Current high-value areas include auth redirects, protected route decisions, local demo mode, invite flow, profile completion, admin gates, media policy, Supabase contract checks, backup verification, account deletion cleanup, PWA manifest output, static export boundaries, and GitHub workflow triggers.
+Add focused tests when behavior changes. Current high-value areas include auth redirects, protected route decisions, local demo mode, production bundle fixture isolation, invite flow, profile completion, admin gates, media policy, Supabase contract checks, backup verification, account deletion cleanup, PWA manifest output, static export boundaries, and GitHub workflow triggers.
 
 For GitHub workflow changes, also run:
 
