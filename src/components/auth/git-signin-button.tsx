@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 
 import { supabase } from "@/lib/supabaseclient";
 import { appConfig } from "@/lib/app-config";
+import { buildBrowserOAuthRedirectTo } from "@/lib/auth-redirect";
 import { Button } from "@/components/ui/button";
 
 type Props = {
@@ -13,10 +14,7 @@ type Props = {
 export default function GitSignInButton({ auto = false, redirectTo = appConfig.supabase.authRedirectPath, disabled = false }: Props) {
     const handleSignIn = useCallback(async () => {
         try {
-            const finalRedirect =
-                typeof window !== "undefined" && redirectTo.startsWith("/")
-                    ? window.location.origin + redirectTo
-                    : redirectTo;
+            const finalRedirect = buildBrowserOAuthRedirectTo(redirectTo);
 
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: "github",

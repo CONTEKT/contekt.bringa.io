@@ -10,6 +10,7 @@
   "scripts": {
     "generate:config": "node scripts/generate-config.mjs",
     "test:config": "node --test scripts/generate-config.test.mjs",
+    "test:auth-redirect": "node --test scripts/auth-redirect.test.mjs",
     "test:app-config": "node --test scripts/app-config.test.mjs",
     "test:media-policy": "node --test scripts/media-policy.test.mjs",
     "test:protected-route": "node --test scripts/protected-route-decision.test.mjs",

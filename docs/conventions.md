@@ -69,6 +69,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm install --frozen-lockfile`
 - `pnpm check:config`
 - `pnpm test:config`
+- `pnpm test:auth-redirect`
 - `pnpm test:app-config`
 - `pnpm test:media-policy`
 - `pnpm test:protected-route`
