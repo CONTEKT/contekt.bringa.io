@@ -46,7 +46,7 @@ This file is the living roadmap and anti-roadmap for ideas discovered by users a
 
 - Search actions: revisit buttons above the search field as compact icon/segmented controls with accessible labels and stable responsive dimensions. Impact: mobile scanning and repeated use. Uncertainty/research: needs browser testing across viewport sizes.
 - Moderation follow-through: build on suggestion/flag creation, review RPCs, content/image/owner suggestion application, and the Telegram notification state contract with item/image-specific moderation, user-facing notification history, and operator retry jobs if needed. Impact: community quality without broad browser writes. Uncertainty/research: full image moderation semantics and live notification delivery need operator review.
-- Invite and onboarding: decide whether display name comes before invite code and refine pending-approval messaging now that admins can validate profiles directly. Impact: smoother onboarding and moderation. Side effect: auth/profile routes and RPCs need alignment.
+- Invite and onboarding: build on the tested invite page copy/state helper and decide whether display name comes before invite code. Impact: smoother onboarding and moderation. Side effect: auth/profile routes and RPCs need alignment.
 - User data export and deletion processing: build on the prepared user JSON export, deletion-request RPC, admin review queue, database-side completion stage, and trusted cleanup helper with live rehearsal, Storage path evidence, retention policy, suggestions/flags, and image metadata. Impact: trust and portability. Uncertainty/research: requires Supabase Auth/Storage policy review and legal/operator retention decisions.
 
 ## App Experience
@@ -67,7 +67,7 @@ This file is the living roadmap and anti-roadmap for ideas discovered by users a
 
 ## Developer Experience
 
-- Test strategy: extend focused tests beyond config generation, OAuth redirect helpers, app-config helpers, admin route gates, media policy helpers, protected-route decisions, settings data actions, and Supabase contract checker behavior to more critical UI states. Impact: safer refactors. Side effect: respect the user's preference for agentic browser skills before adding browser-test packages.
+- Test strategy: extend focused tests beyond config generation, OAuth redirect helpers, app-config helpers, admin route gates, media policy helpers, protected-route decisions, invite flow helpers, settings data actions, and Supabase contract checker behavior to more critical UI states. Impact: safer refactors. Side effect: respect the user's preference for agentic browser skills before adding browser-test packages.
 - Static export verifier growth: expand `pnpm check:static-export` if the app adds generated route handlers, custom export paths, or deployment-specific hosting rules. Impact: preserves the static-export architecture while Next.js evolves. Uncertainty/research: use current Next.js docs before broadening the checker.
 - Major dependency upgrades: review Node 25 runtime/types, ESLint, and TypeScript major updates with current official docs before upgrading. Impact: keeps tooling current without avoidable breakage. Uncertainty/research: confirm runtime Node policy, lint migration path, and compiler changes.
 - Source-of-truth comments: where duplication is unavoidable, add a nearby note naming the canonical file. Impact: prevents future drift.

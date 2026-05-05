@@ -8,12 +8,23 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
 import { appConfig } from "@/lib/app-config"
+import {
+    buildInviteCodeInput,
+    buildInviteErrorMessage,
+    buildInviteIntroCopy,
+    buildInviteSubmitState,
+} from "@/lib/invite-flow"
 
 export default function InviteCodePage() {
     const router = useRouter()
     const [code, setCode] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const inviteIntro = buildInviteIntroCopy({
+        appName: appConfig.app.name,
+        allowSignupWithoutInvite: appConfig.invites.allowSignupWithoutInvite,
+    })
+    const submitState = buildInviteSubmitState({ code, loading })
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -28,7 +39,7 @@ export default function InviteCodePage() {
                 return
             }
 
-            const inviteCode = code.trim()
+            const inviteCode = buildInviteCodeInput(code)
             const { data: inviteAccepted, error: inviteError } = await supabase
                 .rpc('verify_and_apply_invite', {
                     invite_code_input: inviteCode,
@@ -39,7 +50,7 @@ export default function InviteCodePage() {
             }
 
             if (!inviteAccepted) {
-                setError('Invalid invite code. Please try again.')
+                setError(buildInviteErrorMessage("invalidCode"))
                 setLoading(false)
                 return
             }
@@ -48,7 +59,7 @@ export default function InviteCodePage() {
             router.push('/dashboard')
             router.refresh()
         } catch {
-            setError('Ein Fehler ist aufgetreten. Bitte versuche es später erneut.')
+            setError(buildInviteErrorMessage("unexpected"))
         } finally {
             setLoading(false)
         }
@@ -58,14 +69,14 @@ export default function InviteCodePage() {
         <div className="min-h-screen flex items-center justify-center bg-background p-4">
             <div className="w-full max-w-md bg-card rounded-xl shadow-sm border p-8">
                 <div className="text-center mb-8">
-                    <h1 className="text-2xl font-bold mb-2">Welcome to {appConfig.app.name}</h1>
+                    <h1 className="text-2xl font-bold mb-2">{inviteIntro.title}</h1>
                     <p className="text-sm text-muted-foreground">
-                        Please enter your invite code to access the app
+                        {inviteIntro.description}
                     </p>
                 </div>
 
                 {error && (
-                    <div className="bg-destructive/10 text-destructive p-3 rounded-md mb-4 text-sm">
+                    <div className="bg-destructive/10 text-destructive p-3 rounded-md mb-4 text-sm" role="alert">
                         {error}
                     </div>
                 )}
@@ -85,14 +96,14 @@ export default function InviteCodePage() {
                         />
                     </div>
 
-                    <Button type="submit" className="w-full" disabled={loading || !code.trim()}>
-                        {loading ? (
+                    <Button type="submit" className="w-full" disabled={submitState.disabled} aria-busy={submitState.busy}>
+                        {submitState.busy ? (
                             <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Verifying...
+                                {submitState.label}
                             </>
                         ) : (
-                            'Continue'
+                            submitState.label
                         )}
                     </Button>
                 </form>
