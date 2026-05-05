@@ -74,7 +74,9 @@ test("accepts privacy-preserving observability runbook content", () => {
 
 ## Known Gaps
 
-- Supabase Edge Function logs were checked on 2026-05-05 and had no invocations in the last 24 hours.
+- Supabase Edge Function logs were checked on 2026-05-05 and rechecked through Supabase MCP on 2026-05-06; no Edge Function invocations were present in the latest 24-hour window.
+- Auth logs were checked on 2026-05-05 and rechecked through Supabase MCP on 2026-05-06 without app auth failures in the redacted review.
+- API and Storage logs on 2026-05-06 showed successful management health and bucket metadata requests.
 - No external error reporting is configured.
 - Live schema/key/API health checks passed on 2026-05-05; full connected-auth behavior still needs browser evidence.
 - Browser/PWA failure evidence is still pending.

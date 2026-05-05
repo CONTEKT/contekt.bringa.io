@@ -55,8 +55,9 @@ This runbook is the source of truth for privacy-preserving observability in the 
 
 ## Known Gaps
 
-- Supabase Edge Function logs were checked on 2026-05-05 and had no invocations in the last 24 hours. Live notification delivery still needs another review after Edge Function secrets, Telegram webhook URLs, and Telegram settings are configured.
-- Auth logs were checked on 2026-05-05 without app auth failures, but Supabase-managed GoTrue default/admin group deprecation warnings appeared and should be rechecked after Auth provider setup.
+- Supabase Edge Function logs were checked on 2026-05-05 and rechecked through Supabase MCP on 2026-05-06; no Edge Function invocations were present in the latest 24-hour window. Live notification delivery still needs another review after Edge Function secrets, Telegram webhook URLs, and Telegram settings are configured.
+- Auth logs were checked on 2026-05-05 and rechecked through Supabase MCP on 2026-05-06 without app auth failures in the redacted review. The known Supabase-managed GoTrue default/admin group deprecation warnings remain and should be rechecked after Auth provider setup.
+- API and Storage logs on 2026-05-06 showed successful management health and bucket metadata requests. Postgres logs showed routine connection and checkpoint messages in the redacted review. This is service-health evidence, not connected browser-auth or Telegram-delivery evidence.
 - Live schema/key/API health checks passed on 2026-05-05; full connected-auth behavior still needs browser evidence.
 - No external error reporting is configured.
 - Browser/PWA failure evidence is still pending.

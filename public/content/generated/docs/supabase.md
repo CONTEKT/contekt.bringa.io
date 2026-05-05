@@ -94,7 +94,7 @@ As of 2026-05-05, the upstream `app.bringa.io` Supabase project in `eu-central-1
 - both Telegram Edge Functions are deployed with `verify_jwt=true`;
 - `pnpm backup:supabase` and `pnpm verify:backup` completed against the empty live baseline.
 
-Known remaining live setup items are Auth provider configuration, Site URL and redirect URL confirmation, Edge Function secrets, Telegram webhook URL settings, live log review, and restore drill evidence. Supabase Branching is no longer a release blocker for the free-account default path; it remains an optional paid remote-preview follow-up.
+Known remaining live setup items are Auth provider configuration, Site URL and redirect URL confirmation, Edge Function secrets, Telegram webhook URL settings, live notification delivery log review, and restore drill evidence. Edge Function logs had no invocations in the last 24-hour windows checked through MCP on 2026-05-05 and 2026-05-06; Auth logs still show the known Supabase-managed GoTrue default/admin group deprecation warnings until provider setup is complete. Supabase Branching is no longer a release blocker for the free-account default path; it remains an optional paid remote-preview follow-up.
 
 ## Edge Function Runtime
 
