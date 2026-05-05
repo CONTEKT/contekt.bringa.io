@@ -45,6 +45,9 @@ jobs:
       - name: Test docs index checker
         run: pnpm test:docs-index
 
+      - name: Test browser testing checker
+        run: pnpm test:browser-testing
+
       - name: Test release checklist checker
         run: pnpm test:release-checklist
 
@@ -107,6 +110,9 @@ jobs:
 
       - name: Check docs index
         run: pnpm check:docs-index
+
+      - name: Check browser testing scenarios
+        run: pnpm check:browser-testing
 
       - name: Check release checklist
         run: pnpm check:release-checklist
