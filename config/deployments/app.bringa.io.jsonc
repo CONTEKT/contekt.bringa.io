@@ -28,6 +28,6 @@
     "authRedirectPath": "/dashboard"
   },
   "development": {
-    "localDemoMode": false
+    "localDemoMode": true
   }
 }

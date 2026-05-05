@@ -67,6 +67,15 @@ When the browser supports installation, install or simulate installed mode and t
 - `/manifest.webmanifest`: generated app name, icons, colors, and start URL were readable from the static export.
 - `/dashboard`: direct anonymous access redirected back to `/login`; local demo data intentionally stayed unavailable in the production export.
 
+2026-05-06 local quick-start contract check against `pnpm dev --hostname 127.0.0.1 --port 4324`:
+
+- `pnpm dev` regenerated the default `app.bringa.io` public config with `development.localDemoMode=true`.
+- `http://127.0.0.1:4324/bringa.config.json` returned the public config with `localDemoMode=true`.
+- `http://127.0.0.1:4324/login` returned a successful response containing the **Open local demo** entry without a running local Supabase server.
+- `/manifest.webmanifest` returned the configured app name, start URL, and install icons.
+- `pnpm test:local-demo-mode` now checks that the committed generated config enables local demo mode in development and remains disabled in production through the `NODE_ENV` guard.
+- Browser Use could not attach to a Codex in-app browser in this session because no `iab` backend was discoverable, so this is not a replacement for visual browser evidence.
+
 Remaining release evidence still needs connected Supabase auth persistence, logout, PWA install behavior, slow-network review, target-browser coverage, and approved live/staging data boundaries.
 
 ## Reporting
