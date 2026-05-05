@@ -84,11 +84,12 @@ Production builds ignore local demo mode in code. Keep it documented as a develo
 
 ```bash
 pnpm exec supabase start
+pnpm seed:local-supabase
 pnpm exec supabase status -o env
 BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
 ```
 
-Use an ignored `config/local.config.jsonc` for the local CLI `supabase.url`, `supabase.publishableKey`, and `"development": { "localDemoMode": false }`.
+Use an ignored `config/local.config.jsonc` for the local CLI `supabase.url`, `supabase.publishableKey`, and `"development": { "localDemoMode": false }`. See [Local Supabase Development](local-supabase-development.md) for the local seed accounts and reset flow.
 
 ## Layering Rules
 

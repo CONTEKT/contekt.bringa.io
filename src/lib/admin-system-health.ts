@@ -138,10 +138,10 @@ export function buildAdminSystemHealthItems(input: AdminSystemHealthInput): Admi
     },
     {
       key: "devBranch",
-      label: "Development branch",
-      value: "Task list",
-      detail: "Use the Supabase branch checklist before pointing local app development at a production-derived branch.",
-      href: docHref(input.repositoryUrl, "docs/supabase-branching.md"),
+      label: "Local Supabase",
+      value: "Free default",
+      detail: "Use the local Supabase CLI stack for backend development before considering a paid branch or dev project.",
+      href: docHref(input.repositoryUrl, "docs/local-supabase-development.md"),
     },
     {
       key: "backups",

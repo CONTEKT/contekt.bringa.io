@@ -73,6 +73,12 @@
       "sourcePath": "docs/legal-notes.md"
     },
     {
+      "slug": "local-supabase-development",
+      "title": "Local Supabase Development",
+      "path": "/content/generated/docs/local-supabase-development.md",
+      "sourcePath": "docs/local-supabase-development.md"
+    },
+    {
       "slug": "maintenance",
       "title": "Maintenance",
       "path": "/content/generated/docs/maintenance.md",

@@ -17,7 +17,7 @@ jobs:
   assert.deepEqual([...triggers], ["workflow_dispatch"]);
 });
 
-test("accepts the CI workflow when it checks Supabase CLI, security maintenance, and Edge Functions", () => {
+test("accepts the CI workflow when it checks Supabase CLI, local Supabase, security maintenance, and Edge Functions", () => {
   const triggers = checkWorkflowContent(".github/workflows/ci.yml", `name: CI
 
 on:
@@ -29,6 +29,7 @@ jobs:
     steps:
       - uses: denoland/setup-deno@v2
       - run: pnpm check:supabase-cli
+      - run: pnpm check:local-supabase
       - run: pnpm check:security-maintenance
       - run: pnpm check:edge-functions
 `);
@@ -47,7 +48,7 @@ jobs:
   quality:
     runs-on: ubuntu-latest
 `),
-    /check:supabase-cli|Deno before checking Supabase Edge Functions|check:edge-functions/,
+    /check:supabase-cli|check:local-supabase|Deno before checking Supabase Edge Functions|check:edge-functions/,
   );
 });
 
@@ -69,6 +70,26 @@ jobs:
   );
 });
 
+test("requires the CI workflow to check local Supabase development guardrails", () => {
+  assert.throws(
+    () => checkWorkflowContent(".github/workflows/ci.yml", `name: CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: denoland/setup-deno@v2
+      - run: pnpm check:supabase-cli
+      - run: pnpm check:security-maintenance
+      - run: pnpm check:edge-functions
+`),
+    /check:local-supabase/,
+  );
+});
+
 test("requires the CI workflow to check security maintenance guardrails", () => {
   assert.throws(
     () => checkWorkflowContent(".github/workflows/ci.yml", `name: CI
@@ -82,6 +103,7 @@ jobs:
     steps:
       - uses: denoland/setup-deno@v2
       - run: pnpm check:supabase-cli
+      - run: pnpm check:local-supabase
       - run: pnpm check:edge-functions
 `),
     /check:security-maintenance/,

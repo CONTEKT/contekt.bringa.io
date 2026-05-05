@@ -107,6 +107,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm test:docs-view`
 - `pnpm test:docs-index`
 - `pnpm test:browser-testing`
+- `pnpm test:local-supabase`
 - `pnpm test:supabase-mcp`
 - `pnpm test:supabase-cli`
 - `pnpm test:supabase-branching`
@@ -148,6 +149,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm check:optimization-options`
 - `pnpm check:docs-index`
 - `pnpm check:browser-testing`
+- `pnpm check:local-supabase`
 - `pnpm check:supabase-mcp`
 - `pnpm check:supabase-cli`
 - `pnpm check:supabase-branching`

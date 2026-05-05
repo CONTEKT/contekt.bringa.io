@@ -1,6 +1,6 @@
 # Supabase MCP Agent Setup
 
-This runbook is for agents and maintainers who need to prepare the live `app.bringa.io` Supabase setup without exposing production data or secrets. It complements [Supabase](supabase.md), [Supabase Branching](supabase-branching.md), [Maintenance](maintenance.md), and the repository-local `.agents/skills/supabase-mcp/SKILL.md`.
+This runbook is for agents and maintainers who need to prepare the live `app.bringa.io` Supabase setup without exposing production data or secrets. It complements [Supabase](supabase.md), [Local Supabase Development](local-supabase-development.md), [Supabase Branching](supabase-branching.md), [Maintenance](maintenance.md), and the repository-local `.agents/skills/supabase-mcp/SKILL.md`.
 
 ## Current Documentation Signals
 
@@ -62,7 +62,14 @@ As of 2026-05-05, the repository baseline has been applied to the live project, 
 
 ## CLI Fallback
 
-Supabase MCP OAuth is the preferred agent path. When MCP branch tooling fails, maintainers can use the repo-local CLI after `pnpm install`:
+Supabase MCP OAuth is the preferred agent path for hosted projects. For normal development, prefer the local Supabase CLI stack first:
+
+```bash
+pnpm exec supabase start
+pnpm seed:local-supabase
+```
+
+When optional MCP branch tooling fails, maintainers can use the repo-local CLI after `pnpm install`:
 
 ```bash
 pnpm exec supabase branches list --project-ref <production-ref>

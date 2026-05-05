@@ -13,8 +13,9 @@ Forkable open source sharing and borrowing software for communities, clubs, asso
 - [Forking](forking.md): keep upstream collaboration smooth while customizing legal, brand, and operator details.
 - [Fork Content Strategy](fork-content-strategy.md): layer config, legal text, brand assets, secrets, and CI for rebaseable forks.
 - [Supabase](supabase.md): prepare schema, RLS, Storage, Auth, Edge Functions, backups, and privacy-aware MCP work.
+- [Local Supabase Development](local-supabase-development.md): default free-account development path with local CLI, Auth, Storage, Edge Functions, and seed data.
 - [Supabase MCP Agent Setup](supabase-mcp.md): configure Supabase MCP access, target `app.bringa.io`, and handle public keys versus server-only keys safely.
-- [Supabase Branching](supabase-branching.md): future task list for moving development onto a Supabase branch from production.
+- [Supabase Branching](supabase-branching.md): optional paid remote-preview path, not the default for free-account-oriented forks.
 - [Supabase Contract Audit](supabase-contract-audit.md): local app/schema mismatch checklist before live MCP review.
 - [Admin Operations](admin-operations.md): current admin surfaces, moderation queues, privacy defaults, and production-change steps.
 - [Restore Drills](restore-drills.md): backup restore rehearsal, encrypted retention, and recovery evidence requirements.

@@ -43,7 +43,7 @@ test("accepts privacy-preserving observability runbook content", () => {
 - \`pnpm check:config\` verifies generated public config.
 - \`pnpm check:supabase-contract\` verifies committed schema/RPC/RLS/Storage contracts.
 - \`pnpm check:github-workflows\` verifies manual-only workflows.
-- Admin dashboard system health links config, Supabase, Storage, development branch, backups, docs, and Telegram health.
+- Admin dashboard system health links config, Supabase, Storage, local backend setup, backups, docs, and Telegram health.
 - \`backup_runs\` records compact backup freshness metadata.
 - \`notification_events\` records Telegram status, attempts, next retry planning, and seen-state.
 - \`notification_mutes\` records mute windows without exposing row bodies.

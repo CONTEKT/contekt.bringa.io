@@ -24,13 +24,15 @@ test("accepts the required Supabase branching runbook contract", () => {
   assert.doesNotThrow(() => checkSupabaseBranchingContent(`
 # Supabase Branching
 
-This is based on 2026-05-05 Context7 reviews of current Supabase Branching, Management API, and CLI documentation.
+This is based on 2026-05-06 Context7 and official Supabase documentation reviews of current Supabase Branching, Management API, and CLI documentation.
+Supabase Branching is not the default development path for free-account-oriented forks; use [Local Supabase Development](local-supabase-development.md) first.
 
 ## Current Documentation Signals
 
 - Supabase supports development or preview branches for a project, with persistent branches available.
 - Supabase describes branches as isolated project copies for database, Edge Function, and configuration changes.
 - Default development branch planning should assume no production row data is copied.
+- Branches are separate Supabase environments with their own database, Auth, Storage, API credentials, Edge Functions, usage, and billing surface.
 - Branches can be created through the Management API with \`POST /v1/projects/{ref}/branches\` or through the CLI with \`supabase branches create [name]\`.
 - The CLI branch creation command supports \`--project-ref <production-ref>\`, \`--persistent\`, and \`--with-data\`.
 - If a workflow explicitly copies production data into a branch, use it only after a privacy decision because copied branch rows remain production data.
@@ -49,6 +51,7 @@ This is based on 2026-05-05 Context7 reviews of current Supabase Branching, Mana
 ## Target State
 
 - Production deployment secrets point at the production Supabase project.
+- Default local app development uses the local Supabase CLI stack.
 - Local \`.env.local\` for app development points at a persistent Supabase development branch.
 - The Supabase CLI is linked to the development branch ref.
 - Production data is not cloned into the branch by default.
@@ -58,6 +61,8 @@ This is based on 2026-05-05 Context7 reviews of current Supabase Branching, Mana
 ## Preparation Tasks
 
 - [ ] Confirm the production Supabase project ref.
+- [ ] Confirm that the local Supabase CLI stack is insufficient for the current workflow.
+- [ ] Confirm that the operator accepts the usage and billing behavior of Supabase branches.
 - [ ] Confirm whether development branches are enabled for the project plan.
 - [ ] Choose the branch name, defaulting to \`dev\`.
 - [ ] Confirm whether the development branch should clone production data, start schema-only, or use seed/fixture data.
@@ -115,10 +120,12 @@ test("rejects missing production data privacy coverage", () => {
   assert.throws(
     () => checkSupabaseBranchingContent(`
 # Supabase Branching
-This is based on 2026-05-05 Context7 reviews.
+This is based on 2026-05-06 Context7 and official Supabase documentation reviews.
+Supabase Branching is not the default development path for free-account-oriented forks; use [Local Supabase Development](local-supabase-development.md) first.
 ## Current Documentation Signals
 - Supabase supports development or preview branches for a project, with persistent branches available.
 - Supabase describes branches as isolated project copies for database, Edge Function, and configuration changes.
+- Branches are separate Supabase environments with their own database, Auth, Storage, API credentials, Edge Functions, usage, and billing surface.
 - Branches can be created through the Management API with \`POST /v1/projects/{ref}/branches\`.
 - The CLI supports \`supabase branches create [name]\`.
 - Branches can be listed with \`supabase branches list --project-ref <production-ref>\`.
@@ -130,11 +137,14 @@ This is based on 2026-05-05 Context7 reviews.
 - prefer reviewed migrations in git.
 ## Target State
 - Production deployment secrets point at production.
+- Default local app development uses the local Supabase CLI stack.
 - Local \`.env.local\` points at a persistent Supabase development branch.
 - The Supabase CLI is linked to the development branch ref.
 - Repository migrations remain the canonical change record.
 ## Preparation Tasks
 - [ ] Confirm the production Supabase project ref.
+- [ ] Confirm that the local Supabase CLI stack is insufficient for the current workflow.
+- [ ] Confirm that the operator accepts the usage and billing behavior of Supabase branches.
 ## Recommended Workflow
 \`supabase branches create dev --persistent --project-ref <production-ref>\`
 \`supabase branches list --project-ref <production-ref>\`
@@ -152,11 +162,13 @@ test("rejects global-only recommended Supabase CLI branch commands", () => {
   assert.throws(
     () => checkSupabaseBranchingContent(`
 # Supabase Branching
-This is based on 2026-05-05 Context7 reviews.
+This is based on 2026-05-06 Context7 and official Supabase documentation reviews.
+Supabase Branching is not the default development path for free-account-oriented forks; use [Local Supabase Development](local-supabase-development.md) first.
 ## Current Documentation Signals
 - Supabase supports development or preview branches for a project, with persistent branches available.
 - Supabase describes branches as isolated project copies for database, Edge Function, and configuration changes.
 - Default development branch planning should assume no production row data is copied.
+- Branches are separate Supabase environments with their own database, Auth, Storage, API credentials, Edge Functions, usage, and billing surface.
 - Branches can be created through the Management API with \`POST /v1/projects/{ref}/branches\`.
 - The CLI supports \`supabase branches create [name]\`.
 - The CLI branch creation command supports \`--project-ref <production-ref>\`, \`--persistent\`, and \`--with-data\`.
@@ -174,6 +186,7 @@ This is based on 2026-05-05 Context7 reviews.
 - Remote branch commands require \`supabase login\` or \`SUPABASE_ACCESS_TOKEN\`.
 ## Target State
 - Production deployment secrets point at the production Supabase project.
+- Default local app development uses the local Supabase CLI stack.
 - Local \`.env.local\` for app development points at a persistent Supabase development branch.
 - The Supabase CLI is linked to the development branch ref.
 - Production data is not cloned into the branch by default.
@@ -181,6 +194,8 @@ This is based on 2026-05-05 Context7 reviews.
 - Repository migrations remain the canonical change record.
 ## Preparation Tasks
 - [ ] Confirm the production Supabase project ref.
+- [ ] Confirm that the local Supabase CLI stack is insufficient for the current workflow.
+- [ ] Confirm that the operator accepts the usage and billing behavior of Supabase branches.
 - [ ] Confirm whether development branches are enabled for the project plan.
 - [ ] Choose the branch name, defaulting to \`dev\`.
 - [ ] Confirm whether the development branch should clone production data, start schema-only, or use seed/fixture data.

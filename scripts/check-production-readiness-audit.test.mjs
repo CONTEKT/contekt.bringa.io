@@ -25,7 +25,8 @@ function validAuditContent() {
 | Security maintenance and fork safety | \`SECURITY.md\`, \`docs/security.md\`, \`docs/maintenance.md\`, \`.agents/skills/security-maintenance/SKILL.md\`, \`.agents/skills/fork-operator-onboarding/SKILL.md\`, \`pnpm test:security-maintenance\`, \`pnpm check:security-maintenance\`, \`pnpm check:secrets\`, \`pnpm check:release-checklist\` | Covered locally |
 | Secret-free manual CI/CD | \`.github/workflows/ci.yml\`, \`docs/conventions.md\`, \`pnpm check:github-workflows\`, \`pnpm check:edge-functions\` | Covered |
 | Supabase contract and privacy | \`supabase/schema.sql\`, \`supabase/migrations/\`, \`docs/supabase-contract-audit.md\`, \`pnpm test:supabase-contract\`, \`pnpm check:supabase-contract\`, \`pnpm check:supabase-mcp\`, \`pnpm check:edge-functions\` | Partial |
-| Supabase development branch setup | \`docs/supabase-branching.md\`, \`pnpm test:supabase-cli\`, \`pnpm check:supabase-cli\`, \`pnpm check:supabase-branching\` | Blocked |
+| Local Supabase development default | \`docs/local-supabase-development.md\`, \`scripts/seed-local-supabase.mjs\`, \`pnpm test:local-supabase\`, \`pnpm check:local-supabase\`, \`pnpm test:supabase-cli\`, \`pnpm check:supabase-cli\` | Covered locally |
+| Optional Supabase development branch setup | \`docs/supabase-branching.md\`, \`pnpm check:supabase-branching\` | Deferred |
 | Product model and admin operations | \`docs/admin-operations.md\`, \`docs/readiness-checklist.md\`, \`pnpm test:admin-route-gate\`, \`scripts/admin-system-health.test.mjs\` | Partial |
 | Auth and onboarding decision boundaries | \`pnpm test:auth-redirect\`, \`pnpm test:protected-route\`, \`docs/supabase-branching.md\` Auth redirect URL tasks | Partial |
 | Browser, accessibility, and PWA QA | \`docs/browser-testing.md\`, \`.agents/skills/agentic-browser-testing/SKILL.md\`, \`pnpm test:pwa-manifest\` | Blocked |
@@ -42,6 +43,7 @@ function validAuditContent() {
 - \`docs/conventions.md\`
 - \`docs/browser-testing.md\`
 - \`docs/supabase-branching.md\`
+- \`docs/local-supabase-development.md\`
 - \`docs/restore-drills.md\`
 - \`docs/observability.md\`
 - \`supabase/README.md\`
@@ -52,7 +54,7 @@ function validAuditContent() {
 - GitHub branch protection, forkability, and manual Pages deployment settings require repository UI, organization policy, visibility, or plan access. GitHub Pages site creation and private-repository fork enabling currently return plan or organization-policy limitations.
 - Live Supabase schema, RLS, functions, triggers, Storage, Edge Functions, advisor remediation, Storage bucket metadata, and an empty-baseline backup have approved evidence.
 - Live Supabase health checks beyond schema/key/API smoke tests and any external error-reporting decision require final operator policy. Supabase Edge Function logs were checked on 2026-05-05 and had no invocations in the last 24 hours; recheck them after Telegram delivery is configured.
-- Local app development cannot be linked to a Supabase development branch until Supabase MCP branch access stops returning the current permission-validation error or an alternate branch workflow is selected.
+- Local app development now defaults to the local Supabase CLI stack for free-account-oriented forks. Supabase Branching is optional for paid remote-preview, staging, or QA workflows and is not required for the first open-source release path.
 - Auth persistence, logout, PWA install, slow network, and long-content states still need browser evidence.
 - Trusted account deletion cleanup still needs approved rehearsal or production run with backup/export evidence and operator retention policy.
 - Live restore drills and encrypted backup handling still need approved access and policy.

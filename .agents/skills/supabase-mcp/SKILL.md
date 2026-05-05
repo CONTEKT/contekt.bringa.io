@@ -27,7 +27,7 @@ Protect privacy first. Before reading real table contents, ask the user for expl
 ## Questions To Resolve
 
 - Which Supabase project is production for `app.bringa.io`?
-- Will development use a separate project, branch, or local Supabase?
+- Will development use the default local Supabase CLI stack, or is there a concrete reason for a separate project or paid branch?
 - Which OAuth providers should be enabled beyond GitHub and Google?
 - Should invite approval be admin-mediated through RPC instead of direct client updates?
 - Which Storage buckets exist, and what are their size/type/RLS limits?
@@ -41,6 +41,7 @@ Protect privacy first. Before reading real table contents, ask the user for expl
 - Prefer project-scoped mode with `project_ref=<project-ref>` and `read_only=true` for production audits.
 - Use `app.bringa.io` as the target project name until the user changes it.
 - Do not delete or pause contekt projects without separate explicit confirmation.
+- Use local Supabase as the default development path for free-account-oriented forks; do not recommend Branching or a second hosted dev project until local development has a concrete gap.
 - Use official Supabase docs or Context7 for current MCP, custom domain, self-hosting, and Auth provider setup details.
 - Put public `supabase.url` and `supabase.publishableKey` in deployment config only after RLS, grants, and Storage policy review.
 - Supabase MCP can deploy Edge Functions, but Edge Function secrets and Auth provider redirect URLs may still require the Supabase dashboard, CLI with access token, or another approved management path.

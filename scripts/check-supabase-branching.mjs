@@ -14,7 +14,11 @@ const requiredSections = [
 ];
 
 const requiredPhrases = [
-  "2026-05-05 Context7 reviews",
+  "2026-05-06 Context7 and official Supabase documentation reviews",
+  "not the default development path for free-account-oriented forks",
+  "use [Local Supabase Development](local-supabase-development.md) first",
+  "separate Supabase environments with their own database, Auth, Storage, API credentials, Edge Functions, usage, and billing surface",
+  "Default local app development uses the local Supabase CLI stack",
   "development or preview branches",
   "persistent branches",
   "isolated project copies for database, Edge Function, and configuration changes",
@@ -39,7 +43,7 @@ const requiredPhrases = [
   "SUPABASE_ACCESS_TOKEN",
   "Production deployment secrets point at the production Supabase project.",
   "Local `.env.local` for app development points at a persistent Supabase development branch",
-  "The Supabase CLI is linked to the development branch ref",
+  "Supabase CLI is linked to the development branch ref",
   "Production data is not cloned into the branch by default.",
   "no real row inspection without explicit approval",
   "Repository migrations remain the canonical change record.",
@@ -52,6 +56,8 @@ const requiredPhrases = [
 
 const requiredCheckboxes = [
   "Confirm the production Supabase project ref",
+  "Confirm that the local Supabase CLI stack is insufficient for the current workflow.",
+  "Confirm that the operator accepts the usage and billing behavior of Supabase branches.",
   "Confirm whether development branches are enabled for the project plan.",
   "Choose the branch name, defaulting to `dev`",
   "Confirm whether the development branch should clone production data, start schema-only, or use seed/fixture data.",

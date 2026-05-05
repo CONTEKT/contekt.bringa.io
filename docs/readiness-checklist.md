@@ -43,12 +43,13 @@ As of 2026-05-05, GitHub API checks confirm the merge settings above. The reposi
 - [x] Browser mutations for invite, item CRUD, borrow/return, admin roles, deletion request, and moderation use RPC boundaries.
 - [x] Direct writes to core item state, borrow history, item versions, item images, deletion requests, and moderation queues are blocked by RLS.
 - [x] Storage bucket MIME and size limits are checked against deployment config.
-- [x] Supabase development-branch transition tasks are documented and checked.
+- [x] Local Supabase CLI development path is documented and checked for free-account-oriented forks.
+- [x] Optional Supabase development-branch transition tasks are documented and checked.
 - [x] Repo-local Supabase CLI dependency and invocation are documented and checked.
 - [x] Live Supabase schema, RLS, functions, triggers, Storage, and Edge Functions have been reviewed and baseline-applied with approved access.
-- [ ] Local app development is linked to a Supabase development branch from production.
+- [x] Local app development has a no-hosted-quota backend path through the local Supabase CLI stack.
 
-As of 2026-05-05, Supabase MCP can see the `app.bringa.io` project in `eu-central-1` with `ACTIVE_HEALTHY` status. The live baseline now has the repository schema applied, RLS enabled on app tables, the `items` Storage bucket configured with the expected image MIME and size limits, both Telegram Edge Functions deployed with `verify_jwt=true`, anon/PUBLIC SECURITY DEFINER execution removed, and a verified empty backup recorded. `pnpm check:supabase-maintenance-key` confirmed the modern `SUPABASE_SECRET_KEY` can reach Storage Admin and Auth Admin APIs, so the legacy service-role key is only a fallback for this project. Edge Function logs had no invocations in the last 24 hours when checked on 2026-05-05. Remaining blockers are Auth provider/redirect setup, Edge Function secrets, Telegram webhook URL settings, live notification delivery log review, restore drills, and branch setup; the MCP `list_branches` call still returns a permission-validation error.
+As of 2026-05-05, Supabase MCP can see the `app.bringa.io` project in `eu-central-1` with `ACTIVE_HEALTHY` status. The live baseline now has the repository schema applied, RLS enabled on app tables, the `items` Storage bucket configured with the expected image MIME and size limits, both Telegram Edge Functions deployed with `verify_jwt=true`, anon/PUBLIC SECURITY DEFINER execution removed, and a verified empty backup recorded. `pnpm check:supabase-maintenance-key` confirmed the modern `SUPABASE_SECRET_KEY` can reach Storage Admin and Auth Admin APIs, so the legacy service-role key is only a fallback for this project. Edge Function logs had no invocations in the last 24 hours when checked on 2026-05-05. Remaining blockers are Auth provider/redirect setup, Edge Function secrets, Telegram webhook URL settings, live notification delivery log review, and restore drills. Supabase Branching is no longer a release blocker for the free-account default path; it remains an optional paid remote-preview workflow.
 
 ## User Experience
 
@@ -67,7 +68,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 - [x] Admin dashboard shows item counts, visibility states, media stats, and system-readiness placeholders.
 - [x] Admin dashboard shows pending suggestions, flags, account deletion requests, and unvalidated users.
 - [x] Admin dashboard shows recent borrow/return activity and recent image uploads.
-- [x] Admin dashboard links config, Supabase contract, Storage contract, development branch setup, backups, docs, and Telegram health to source-of-truth docs.
+- [x] Admin dashboard links config, Supabase contract, Storage contract, local backend setup, backups, docs, and Telegram health to source-of-truth docs.
 - [x] Admin dashboard shows latest backup run freshness when the `backup_runs` migration is present.
 - [x] Admin users route supports user validation, access revocation with self-protection, admin promotion, and admin demotion with self-demotion protection.
 - [x] Admin moderation route lists pending visibility requests, suggestions, and flags, and reviews status through RPCs with notes for final decisions.
@@ -131,6 +132,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 - [ ] `pnpm test:copy`
 - [ ] `pnpm test:docs-index`
 - [ ] `pnpm test:browser-testing`
+- [ ] `pnpm test:local-supabase`
 - [ ] `pnpm test:supabase-mcp`
 - [ ] `pnpm test:supabase-cli`
 - [ ] `pnpm test:supabase-branching`
@@ -157,6 +159,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 - [ ] `pnpm check:copy`
 - [ ] `pnpm check:docs-index`
 - [ ] `pnpm check:browser-testing`
+- [ ] `pnpm check:local-supabase`
 - [ ] `pnpm check:supabase-mcp`
 - [ ] `pnpm check:supabase-cli`
 - [ ] `pnpm check:supabase-branching`

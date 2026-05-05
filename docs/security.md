@@ -79,7 +79,7 @@ Agents setting up a fork should use `.agents/skills/fork-operator-onboarding/`, 
 Important security ideas that are not ready to implement yet belong in [Optimization Options](optimization-options.md), especially:
 
 - Storage upload hardening and cleanup semantics;
-- Supabase development branch Storage/Auth/secret isolation proof;
+- optional Supabase development branch Storage/Auth/secret isolation proof before any paid branch workflow is used;
 - restore drill and encrypted retention policy evidence;
 - Auth diagnostics follow-up after provider setup;
 - browser evidence for auth, admin, settings, upload, responsive, and PWA flows;

@@ -2,7 +2,7 @@
 
 Open source sharing and borrowing software for communities, clubs, associations, and local operators.
 
-[Configuration](docs/configuration.md) | [Open source release](docs/open-source-release.md) | [Supabase](docs/supabase.md) | [Repository settings](docs/repository-settings.md) | [Roadmap](docs/roadmap.md) | [Contributing](CONTRIBUTING.md) | [Security](SECURITY.md)
+[Configuration](docs/configuration.md) | [Open source release](docs/open-source-release.md) | [Supabase](docs/supabase.md) | [Local Supabase Development](docs/local-supabase-development.md) | [Repository settings](docs/repository-settings.md) | [Roadmap](docs/roadmap.md) | [Contributing](CONTRIBUTING.md) | [Security](SECURITY.md)
 
 ## Fork It, Configure It, Use It
 
@@ -81,13 +81,18 @@ For local backend work:
 ```bash
 pnpm exec supabase start
 pnpm exec supabase status
+pnpm seed:local-supabase
 ```
+
+Use the local Supabase stack as the default backend path for schema, RLS, RPC, Auth, Storage, and Edge Function work. It is the preferred development path for free-account-oriented forks; Supabase Branching remains optional for paid remote preview or staging workflows.
 
 Use `pnpm exec supabase status -o env` to inspect the local API URL and anon key. To use the local Supabase stack instead of the browser demo, create an ignored `config/local.config.jsonc`, set `development.localDemoMode` to `false`, add the local public Supabase values there, then run:
 
 ```bash
 BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
 ```
+
+See [Local Supabase Development](docs/local-supabase-development.md) for the local seed users, reset flow, and limits of what local testing can prove.
 
 When a server-side Supabase maintenance key is available, table backups can be created with:
 

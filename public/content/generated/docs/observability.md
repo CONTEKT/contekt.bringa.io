@@ -23,7 +23,7 @@ This runbook is the source of truth for privacy-preserving observability in the 
 - `pnpm check:config` verifies generated public config.
 - `pnpm check:supabase-contract` verifies committed schema, RPC, RLS, and Storage contracts.
 - `pnpm check:github-workflows` verifies manual-only workflows.
-- Admin dashboard system health links config, Supabase, Storage, development branch setup, backups, docs, and Telegram health back to source-of-truth docs.
+- Admin dashboard system health links config, Supabase, Storage, local backend setup, backups, docs, and Telegram health back to source-of-truth docs.
 - `backup_runs` records compact backup freshness metadata for admins without exposing backup files.
 - `notification_events` records Telegram status, attempts, next retry planning, and seen-state.
 - `notification_mutes` records mute windows without exposing row bodies.

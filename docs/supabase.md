@@ -9,7 +9,8 @@ Supabase is the current backend for Auth, Postgres, Storage, RLS, and Edge Funct
 Before changing schema or policies, read [Supabase Contract Audit](supabase-contract-audit.md).
 The repository-level Supabase source-of-truth notes live in `supabase/README.md`.
 Agent and maintainer setup for Supabase MCP lives in [Supabase MCP Agent Setup](supabase-mcp.md).
-Future development-branch setup tasks live in [Supabase Branching](supabase-branching.md).
+Default local backend development lives in [Local Supabase Development](local-supabase-development.md).
+Optional remote-preview branch setup tasks live in [Supabase Branching](supabase-branching.md).
 Restore rehearsal and encrypted retention evidence live in [Restore Drills](restore-drills.md).
 Privacy-preserving diagnostics and live log boundaries live in [Observability](observability.md).
 Run `pnpm check:supabase-contract` after changing RPCs, item write policies, or Storage bucket limits.
@@ -32,6 +33,21 @@ For a fork that wants to run the app:
 The public project URL and publishable key are expected to reach the browser. They are safe only when Row Level Security, Storage policies, and RPC boundaries are correct. Run `pnpm check:supabase-contract` after schema or policy changes.
 
 Hosted Supabase is the default documented path. Self-hosted Supabase is possible, but currently needs operator-owned documentation for backups, upgrades, SMTP/Auth provider configuration, Storage, Edge Functions, and observability.
+
+## Local Development Default
+
+For contributors and free-account-oriented forks, use the repo-local Supabase CLI stack before considering a second hosted dev project or Supabase Branching:
+
+```bash
+pnpm exec supabase start
+pnpm seed:local-supabase
+pnpm exec supabase status -o env
+BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
+```
+
+The local stack is sufficient for normal schema, RLS, RPC, Auth, Storage, and Edge Function development. It does not replace final hosted checks for OAuth redirects, custom domains, live secrets, backups, advisors, logs, and Telegram delivery. See [Local Supabase Development](local-supabase-development.md).
+
+Supabase Branching is optional for paid remote preview, staging, or QA workflows. It is not the default path for forks that target free Supabase accounts.
 
 ## Before MCP Access
 
@@ -82,7 +98,7 @@ As of 2026-05-05, the upstream `app.bringa.io` Supabase project in `eu-central-1
 - both Telegram Edge Functions are deployed with `verify_jwt=true`;
 - `pnpm backup:supabase` and `pnpm verify:backup` completed against the empty live baseline.
 
-Known remaining live setup items are Auth provider configuration, Site URL and redirect URL confirmation, Edge Function secrets, Telegram webhook URL settings, live log review, restore drill evidence, and Supabase development branch activation. The MCP `list_branches` call still returns `Project reference is missing when validating permissions`, so branch activation remains a documented follow-up.
+Known remaining live setup items are Auth provider configuration, Site URL and redirect URL confirmation, Edge Function secrets, Telegram webhook URL settings, live log review, and restore drill evidence. Supabase Branching is no longer a release blocker for the free-account default path; it remains an optional paid remote-preview follow-up.
 
 ## Edge Function Runtime
 

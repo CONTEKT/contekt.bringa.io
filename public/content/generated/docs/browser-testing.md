@@ -1,6 +1,6 @@
 # Browser Testing
 
-Use this runbook for manual or agentic browser checks before release work, large UI changes, PWA changes, or Supabase branch testing. The detailed agent scenario source is `.agents/skills/agentic-browser-testing/SKILL.md`; this page is the maintainer-facing checklist and evidence format.
+Use this runbook for manual or agentic browser checks before release work, large UI changes, PWA changes, local Supabase backend testing, or optional Supabase branch testing. The detailed agent scenario source is `.agents/skills/agentic-browser-testing/SKILL.md`; this page is the maintainer-facing checklist and evidence format.
 
 ## Scope
 

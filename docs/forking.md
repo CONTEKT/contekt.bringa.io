@@ -110,15 +110,16 @@ Fork operators can keep upstream workflows if they configure their own repositor
 
 `pnpm dev` starts with local demo mode enabled by default, so contributors can inspect the app without OAuth or a live Supabase project.
 
-When a fork needs the local Supabase CLI stack:
+For free-account-oriented forks, prefer the local Supabase CLI stack over Supabase Branching or a second hosted dev project. When a fork needs a real local backend:
 
 ```bash
 pnpm exec supabase start
+pnpm seed:local-supabase
 pnpm exec supabase status -o env
 BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
 ```
 
-Use `config/local.config.jsonc` for ignored local overrides, including `"development": { "localDemoMode": false }` and local public Supabase values.
+Use `config/local.config.jsonc` for ignored local overrides, including `"development": { "localDemoMode": false }` and local public Supabase values. See [Local Supabase Development](local-supabase-development.md) before creating any remote dev project or paid branch workflow.
 
 ## Agent-Assisted Setup
 

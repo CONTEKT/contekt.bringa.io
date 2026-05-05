@@ -96,6 +96,9 @@ export function checkWorkflowContent(filePath, content) {
     if (!content.includes("pnpm check:supabase-cli")) {
       throw new Error(`${filePath} must run pnpm check:supabase-cli so repo-local Supabase CLI usage is checked in CI.`);
     }
+    if (!content.includes("pnpm check:local-supabase")) {
+      throw new Error(`${filePath} must run pnpm check:local-supabase so local Supabase development remains the default free-account path.`);
+    }
     if (!content.includes("pnpm check:security-maintenance")) {
       throw new Error(`${filePath} must run pnpm check:security-maintenance so security maintenance guardrails are checked in CI.`);
     }
