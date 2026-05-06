@@ -67,6 +67,11 @@ export async function checkStaticExportContract({ root } = {}) {
     if (!/images\s*:\s*{[\s\S]*?unoptimized\s*:\s*true/.test(nextConfig)) {
       errors.push("next.config.ts must set images.unoptimized: true for static export image usage.");
     }
+    if (/webpack\s*:\s*\(/.test(nextConfig) && !/turbopack\s*:\s*{/.test(nextConfig)) {
+      errors.push(
+        "next.config.ts must set top-level turbopack config when webpack is customized so Next 16 dev/build defaults stay explicit.",
+      );
+    }
   }
 
   for (const middlewarePath of ["middleware.ts", "middleware.js"]) {

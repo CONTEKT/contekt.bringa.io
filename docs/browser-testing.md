@@ -80,6 +80,13 @@ When the browser supports installation, install or simulate installed mode and t
 - `pnpm test:local-demo-mode` now checks that the committed generated config enables local demo mode in development and remains disabled in production through the `NODE_ENV` guard.
 - Browser Use could not attach to a Codex in-app browser in this session because no `iab` backend was discoverable, so this is not a replacement for visual browser evidence.
 
+2026-05-06 Next 16 local dev-server regression check:
+
+- `pnpm dev --hostname 127.0.0.1 --port 4324` initially failed because Next 16 starts with Turbopack by default and the custom `webpack` config had no explicit development `turbopack` config.
+- `next.config.ts` now keeps Turbopack explicit in development and applies the local-demo production alias only for production builds.
+- `pnpm dev --hostname 127.0.0.1 --port 4324` started successfully with Turbopack after the fix.
+- `http://127.0.0.1:4324/bringa.config.json` returned `localDemoMode=true`, `http://127.0.0.1:4324/login` contained **Open local demo**, and `/manifest.webmanifest` returned the configured `bringa.io` PWA name, start URL, and icon set.
+
 Remaining release evidence still needs connected Supabase auth persistence, logout, PWA install behavior, slow-network review, target-browser coverage, and approved live/staging data boundaries.
 
 ## Reporting

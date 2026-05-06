@@ -12,13 +12,15 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true, // Required for static export if using Next/Image
   },
-  turbopack: isProductionBuild
-    ? {
-        resolveAlias: {
-          "@/lib/local-demo-supabase": productionLocalDemoStubForTurbopack,
-        },
-      }
-    : undefined,
+  turbopack: {
+    ...(isProductionBuild
+      ? {
+          resolveAlias: {
+            "@/lib/local-demo-supabase": productionLocalDemoStubForTurbopack,
+          },
+        }
+      : {}),
+  },
   webpack: (config) => {
     if (isProductionBuild) {
       config.resolve = config.resolve ?? {};

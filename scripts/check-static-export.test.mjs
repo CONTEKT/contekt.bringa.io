@@ -51,3 +51,16 @@ test("reports config and unsupported app-router server surfaces", async () => {
     },
   );
 });
+
+test("reports webpack customization without explicit top-level turbopack config", async () => {
+  await withFixture(
+    {
+      "next.config.ts": "export default { output: 'export', images: { unoptimized: true }, webpack: (config) => config };\n",
+    },
+    async (root) => {
+      assert.deepEqual(await checkStaticExportContract({ root }), [
+        "next.config.ts must set top-level turbopack config when webpack is customized so Next 16 dev/build defaults stay explicit.",
+      ]);
+    },
+  );
+});
