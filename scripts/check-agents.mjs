@@ -1,3 +1,11 @@
+/**
+ * Verifies repository-local agent rules, workflows, and skills stay discoverable and canonical.
+ *
+ * Source of truth: `AGENTS.md` and `.agents/`.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-agents
+ */
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

@@ -1,3 +1,11 @@
+/**
+ * Verifies naming conventions remain documented and aligned with repository rules.
+ *
+ * Source of truth: `docs/conventions.md` and repository naming patterns.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-naming-conventions
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

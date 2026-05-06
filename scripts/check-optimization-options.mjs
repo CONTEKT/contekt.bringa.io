@@ -1,3 +1,11 @@
+/**
+ * Validates the optimization register stays compact, structured, and aligned with roadmap rules.
+ *
+ * Source of truth: `docs/optimization-options.md`.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-optimization-options
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

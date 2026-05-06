@@ -1,3 +1,11 @@
+/**
+ * Checks whether local environment values provide a usable Supabase maintenance URL and secret key.
+ *
+ * Source of truth: Trusted local environment variables and `.env*` files loaded by backup helpers.
+ * Side effects: Reads local environment files and prints only key descriptions, never secret values.
+ *
+ * @module scripts/check-supabase-maintenance-key
+ */
 import { createClient } from "@supabase/supabase-js";
 
 import { loadEnvFile } from "./backup-supabase.mjs";
@@ -28,6 +36,13 @@ export function resolveSupabaseMaintenanceUrl(env = process.env) {
   throw new Error("Set SUPABASE_URL or SUPABASE_PROJECT_REF before checking Supabase maintenance keys.");
 }
 
+/**
+ * Selects candidate trusted Supabase keys without printing or mutating the secret values.
+ *
+ * @param {NodeJS.ProcessEnv} env Environment map to inspect.
+ * @param {{includeLegacy?: boolean}} options Whether to include legacy service-role keys even when modern keys exist.
+ * @returns {Array<{name: string, value: string}>} Candidate maintenance keys.
+ */
 export function candidateMaintenanceKeys(env = process.env, { includeLegacy = false } = {}) {
   const candidates = [];
 
@@ -51,6 +66,13 @@ export function candidateMaintenanceKeys(env = process.env, { includeLegacy = fa
   return candidates;
 }
 
+/**
+ * Describes a Supabase maintenance key by source and shape without revealing the secret.
+ *
+ * @param {string} name Environment variable or mapped key name.
+ * @param {string} value Secret value to classify without printing.
+ * @returns {string} Safe human-readable key description.
+ */
 export function describeMaintenanceKey(name, value) {
   const kind = String(value || "").startsWith("sb_secret_")
     ? "modern secret"

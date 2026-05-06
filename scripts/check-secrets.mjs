@@ -1,3 +1,11 @@
+/**
+ * Scans committed text for obvious secret-like values while preserving the public config boundary.
+ *
+ * Source of truth: Checked repository paths, allowlists, and secret-handling conventions.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-secrets
+ */
 import { execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import path from "node:path";

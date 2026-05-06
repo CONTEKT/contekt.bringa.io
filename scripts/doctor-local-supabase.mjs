@@ -1,3 +1,11 @@
+/**
+ * Diagnoses whether the local Supabase CLI stack can satisfy this repository's development workflow.
+ *
+ * Source of truth: Supabase CLI status output, local environment, and configured local project schema.
+ * Side effects: Reads local Supabase state and prints diagnostic guidance; it does not mutate data.
+ *
+ * @module scripts/doctor-local-supabase
+ */
 import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { stdout as defaultOutput } from "node:process";
@@ -119,6 +127,12 @@ Then: BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
 `);
 }
 
+/**
+ * Checks the running local Supabase stack against ignored local app config.
+ *
+ * @param {object} options IO, env, root, and optional status injection for tests.
+ * @returns {Promise<{ok: boolean, apiUrl: string, localConfig: object}>}
+ */
 export async function doctorLocalSupabase({
   root = defaultRoot,
   env = process.env,

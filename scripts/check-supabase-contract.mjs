@@ -1,3 +1,11 @@
+/**
+ * Verifies committed Supabase schema and Edge Function code preserve the expected app contract.
+ *
+ * Source of truth: `supabase/schema.sql`, deployment config, and Supabase Edge Functions.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-supabase-contract
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

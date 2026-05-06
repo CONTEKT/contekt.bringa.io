@@ -1,3 +1,11 @@
+/**
+ * Checks the production readiness audit stays explicit about evidence, gaps, and local-only proxies.
+ *
+ * Source of truth: Production readiness docs and release evidence docs.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-production-readiness-audit
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

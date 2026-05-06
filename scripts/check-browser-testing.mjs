@@ -1,3 +1,11 @@
+/**
+ * Checks that browser testing runbooks and agentic browser skill guidance stay aligned.
+ *
+ * Source of truth: Browser testing docs and `.agents/skills/agentic-browser-testing/`.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-browser-testing
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

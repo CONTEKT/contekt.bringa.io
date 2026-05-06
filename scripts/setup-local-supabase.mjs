@@ -1,3 +1,11 @@
+/**
+ * Writes local public Supabase config from the running Supabase CLI stack.
+ *
+ * Source of truth: Supabase CLI status output and local-only public Supabase environment values.
+ * Side effects: Writes `config/local.config.jsonc` and may seed local Supabase data when `--seed` is used.
+ *
+ * @module scripts/setup-local-supabase
+ */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { stdout as defaultOutput } from "node:process";
@@ -130,6 +138,12 @@ export function resolveLocalPublicSupabaseConfig({ env = process.env, statusEnv 
   };
 }
 
+/**
+ * Serializes the ignored local config file using only public Supabase browser values.
+ *
+ * @param {{supabase: {url: string, publishableKey: string}}} config Local public Supabase config.
+ * @returns {string} JSON config content with trailing newline.
+ */
 export function buildLocalConfigContent(config) {
   return `${JSON.stringify({
     supabase: {
@@ -152,6 +166,12 @@ async function readExistingLocalConfig(filePath) {
   }
 }
 
+/**
+ * Writes or previews the ignored local Supabase public config and optionally seeds local data.
+ *
+ * @param {object} options IO, env, force, dry-run, seed, and status-env options.
+ * @returns {Promise<{config: object, filePath: string, seeded: boolean}>}
+ */
 export async function setupLocalSupabase({
   root = defaultRoot,
   env = process.env,

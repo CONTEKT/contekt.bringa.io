@@ -1,3 +1,11 @@
+/**
+ * Finds configured copy terms that should not appear in upstream English documentation or source text.
+ *
+ * Source of truth: This script's forbidden term list and checked repository paths.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-copy
+ */
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

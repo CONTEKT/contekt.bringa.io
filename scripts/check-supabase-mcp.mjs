@@ -1,3 +1,11 @@
+/**
+ * Checks Supabase MCP setup guidance and skill boundaries for repository agents.
+ *
+ * Source of truth: Supabase MCP docs and `.agents/skills/supabase-mcp/`.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-supabase-mcp
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

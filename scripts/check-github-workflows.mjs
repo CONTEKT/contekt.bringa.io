@@ -1,3 +1,11 @@
+/**
+ * Verifies GitHub Actions workflows stay manual-only and preserve the repository CI contract.
+ *
+ * Source of truth: `.github/workflows/*.yml` and `docs/conventions.md`.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-github-workflows
+ */
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

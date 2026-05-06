@@ -1,3 +1,11 @@
+/**
+ * Checks local Supabase development documentation and helper command coverage.
+ *
+ * Source of truth: Local Supabase docs, package scripts, and related setup helpers.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-local-supabase-development
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

@@ -1,3 +1,11 @@
+/**
+ * Checks the committed environment template for required keys, placeholders, and safe blank secret values.
+ *
+ * Source of truth: `.env.example` and the public/private environment contract.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-env-example
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

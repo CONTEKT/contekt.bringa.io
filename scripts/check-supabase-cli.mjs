@@ -1,3 +1,11 @@
+/**
+ * Checks Supabase CLI guidance, scripts, and docs stay aligned for local and hosted workflows.
+ *
+ * Source of truth: Supabase CLI docs in this repository and package script names.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-supabase-cli
+ */
 import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import path from "node:path";

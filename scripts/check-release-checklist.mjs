@@ -1,3 +1,11 @@
+/**
+ * Verifies the release checklist mirrors CI commands and readiness documentation.
+ *
+ * Source of truth: Release docs, package scripts, and GitHub workflow command lists.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-release-checklist
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

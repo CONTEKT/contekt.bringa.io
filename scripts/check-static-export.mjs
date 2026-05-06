@@ -1,3 +1,11 @@
+/**
+ * Enforces the static-export architecture boundary for App Router files and route handlers.
+ *
+ * Source of truth: `next.config.ts`, `src/app/`, and static export conventions.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-static-export
+ */
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

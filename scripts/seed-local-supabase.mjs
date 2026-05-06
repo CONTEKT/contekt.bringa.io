@@ -1,8 +1,17 @@
+/**
+ * Seeds deterministic local-only Supabase Auth users and app data for development and tests.
+ *
+ * Source of truth: Fixture arrays in this script and local Supabase credentials.
+ * Side effects: Writes to local Supabase Auth and application tables; refuses non-local Supabase URLs.
+ *
+ * @module scripts/seed-local-supabase
+ */
 import { spawnSync } from "node:child_process";
 import { createClient } from "@supabase/supabase-js";
 
 const defaultLocalUrl = "http://127.0.0.1:54321";
 
+/** @type {Array<{key: string, email: string, password: string, display_name: string, display_surname: string, description: string, profile_valid: boolean, invited_by_code: string}>} */
 export const localSeedUsers = [
   {
     key: "admin",
@@ -26,6 +35,7 @@ export const localSeedUsers = [
   },
 ];
 
+/** @type {Array<{id: string, name: string, description: string, status: string, owner_kind: string, owner_label: string, visibility_state: string, handoff_policy: string}>} */
 export const localSeedItems = [
   {
     id: "11111111-1111-4111-8111-111111111111",
@@ -63,6 +73,12 @@ export function normalizeEnvValue(value) {
   return String(value || "").trim().replace(/^["']|["']$/g, "");
 }
 
+/**
+ * Parses `supabase status -o env` output into a process-env-like map.
+ *
+ * @param {string} output Supabase CLI env output.
+ * @returns {Map<string, string>} Parsed env values.
+ */
 export function parseSupabaseStatusEnv(output) {
   const values = new Map();
 
@@ -84,6 +100,13 @@ export function isLocalSupabaseUrl(value) {
   }
 }
 
+/**
+ * Resolves local-only Supabase URL and trusted seed key from env or Supabase CLI status output.
+ *
+ * @param {NodeJS.ProcessEnv} env Environment map to read.
+ * @param {Map<string, string>} statusEnv Parsed `supabase status -o env` output.
+ * @returns {{url: string, secretKey: string}} Local Supabase credentials.
+ */
 export function resolveLocalSupabaseCredentials(env = process.env, statusEnv = new Map()) {
   const url = normalizeEnvValue(
     env.BRINGA_LOCAL_SUPABASE_URL ||
@@ -226,6 +249,12 @@ async function seedLocalData(supabase) {
   };
 }
 
+/**
+ * Seeds the deterministic local fixture set into a local Supabase project.
+ *
+ * @param {object} options Environment and optional parsed Supabase CLI status values.
+ * @returns {Promise<{users: string[], items: string[], inviteCode: string}>}
+ */
 export async function seedLocalSupabase({ env = process.env, statusEnv } = {}) {
   const credentials = resolveLocalSupabaseCredentials(env, statusEnv || getStatusEnvFromCli());
   assertLocalCredentials(credentials);

@@ -1,3 +1,11 @@
+/**
+ * Performs the trusted final cleanup step for a completed account deletion request.
+ *
+ * Source of truth: Supabase `account_deletion_requests`, trusted maintenance credentials, and explicit CLI confirmation.
+ * Side effects: With `--execute`, removes requested Storage objects and deletes the Auth user.
+ *
+ * @module scripts/cleanup-account-deletion
+ */
 import { createClient } from "@supabase/supabase-js";
 
 import { loadEnvFile, resolveSupabaseMaintenanceKey, resolveSupabaseMaintenanceUrl } from "./backup-supabase.mjs";
@@ -76,6 +84,12 @@ export function parseAccountDeletionCleanupArgs(argv) {
   return parsed;
 }
 
+/**
+ * Parses trusted Storage cleanup specs from `bucket:path[,path]` CLI values.
+ *
+ * @param {string[]} specs CLI `--storage` values.
+ * @returns {Array<{bucket: string, paths: string[]}>} Bucket-grouped object paths safe for Supabase Storage removal.
+ */
 export function parseStorageObjectSpecs(specs = []) {
   const byBucket = new Map();
 
@@ -108,6 +122,12 @@ export function parseStorageObjectSpecs(specs = []) {
   return [...byBucket.entries()].map(([bucket, paths]) => ({ bucket, paths }));
 }
 
+/**
+ * Builds the dry-run or execute plan and enforces the destructive confirmation boundary.
+ *
+ * @param {object} options Cleanup request, user, Storage object, and execution options.
+ * @returns {{userId: string, requestId: string, execute: boolean, storage: Array<{bucket: string, objectCount: number, paths: string[]}>, storageObjectCount: number, authUserDeletion: boolean}}
+ */
 export function buildAccountDeletionCleanupPlan({
   userId,
   requestId,
@@ -142,6 +162,13 @@ export function buildAccountDeletionCleanupPlan({
   };
 }
 
+/**
+ * Requires the matching account deletion request to be completed before trusted cleanup runs.
+ *
+ * @param {import("@supabase/supabase-js").SupabaseClient} supabase Trusted maintenance Supabase client.
+ * @param {{requestId: string, userId: string}} identifiers Completed deletion request identifiers.
+ * @returns {Promise<object>} The verified deletion request row.
+ */
 export async function verifyCompletedDeletionRequest(supabase, { requestId, userId }) {
   const { data, error } = await supabase
     .from("account_deletion_requests")
@@ -165,6 +192,13 @@ export async function verifyCompletedDeletionRequest(supabase, { requestId, user
   return data;
 }
 
+/**
+ * Executes or dry-runs final Auth and Storage cleanup for a completed account deletion request.
+ *
+ * @param {import("@supabase/supabase-js").SupabaseClient} supabase Trusted maintenance Supabase client.
+ * @param {object} options Cleanup options parsed from the CLI.
+ * @returns {Promise<object>} Cleanup plan plus execution counters.
+ */
 export async function runAccountDeletionCleanup(supabase, options) {
   const storageObjects = options.storageObjects || [];
   const plan = buildAccountDeletionCleanupPlan({ ...options, storageObjects });

@@ -1,3 +1,11 @@
+/**
+ * Verifies security maintenance docs, skills, and commands stay aligned.
+ *
+ * Source of truth: Security docs, maintenance docs, package scripts, and `.agents/skills/security-maintenance/`.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-security-maintenance
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

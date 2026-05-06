@@ -1,3 +1,11 @@
+/**
+ * Builds the operator setup checklist and optional deployment profile for a fork operator.
+ *
+ * Source of truth: Operator setup docs, deployment profile conventions, and package script names.
+ * Side effects: May write a deployment profile through `createDeploymentProfile`; does not write secrets.
+ *
+ * @module scripts/setup-operator
+ */
 import { createInterface } from "node:readline/promises";
 import { stdin as defaultInput, stdout as defaultOutput } from "node:process";
 import path from "node:path";
@@ -66,6 +74,12 @@ export function resolveOperatorSetupAnswers(answers, env = process.env) {
   };
 }
 
+/**
+ * Builds the post-scaffold checklist without writing files or secrets.
+ *
+ * @param {{slug: string, useDeployBranch: boolean}} options Operator setup choices.
+ * @returns {string[]} Ordered next-step lines for the operator.
+ */
 export function buildOperatorSetupChecklist({ slug, useDeployBranch }) {
   const branch = `deploy/${slug}`;
   const lines = [
@@ -92,6 +106,12 @@ export function buildOperatorSetupChecklist({ slug, useDeployBranch }) {
   return lines;
 }
 
+/**
+ * Creates or previews the deployment profile from already-collected operator answers.
+ *
+ * @param {object} options Raw answers plus IO, env, and file-writing controls.
+ * @returns {Promise<object>} Deployment profile result plus branch preference.
+ */
 export async function createOperatorSetupFromAnswers({
   root = defaultRoot,
   rawAnswers,
@@ -131,6 +151,12 @@ export async function createOperatorSetupFromAnswers({
   };
 }
 
+/**
+ * Runs the interactive operator setup prompt and delegates profile creation.
+ *
+ * @param {object} options IO, env, and file-writing options.
+ * @returns {Promise<object>} Deployment profile result plus branch preference.
+ */
 export async function runOperatorSetup({
   root = defaultRoot,
   input = defaultInput,

@@ -1,3 +1,11 @@
+/**
+ * Checks generated production chunks for development-only local demo markers.
+ *
+ * Source of truth: Next.js build output and the marker list in this script.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-production-bundle
+ */
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

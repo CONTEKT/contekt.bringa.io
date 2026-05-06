@@ -1,3 +1,11 @@
+/**
+ * Checks backup restore drill documentation covers verification and evidence requirements.
+ *
+ * Source of truth: Restore drill docs and backup operation docs.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-restore-drills
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

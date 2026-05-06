@@ -1,3 +1,11 @@
+/**
+ * Checks privacy-preserving observability documentation and release evidence boundaries.
+ *
+ * Source of truth: Observability docs, release docs, and related agent guidance.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-observability
+ */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

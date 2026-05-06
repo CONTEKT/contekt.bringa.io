@@ -1,3 +1,11 @@
+/**
+ * Verifies top-level docs are linked from the docs index and generated docs artifacts exist.
+ *
+ * Source of truth: `docs/*.md` and generated public docs content.
+ * Side effects: None beyond CLI output and exit status.
+ *
+ * @module scripts/check-docs-index
+ */
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

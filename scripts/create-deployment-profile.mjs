@@ -1,3 +1,11 @@
+/**
+ * Scaffolds a fork/operator deployment profile for layered app configuration.
+ *
+ * Source of truth: Deployment config conventions and the `config/deployments/` profile schema.
+ * Side effects: Writes `config/deployments/<slug>.jsonc` unless `--dry-run` is used.
+ *
+ * @module scripts/create-deployment-profile
+ */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -68,6 +76,12 @@ export function normalizeDeploymentSlug(value) {
   return slug;
 }
 
+/**
+ * Builds the JSONC deployment profile for a fork/operator without writing it.
+ *
+ * @param {object} options Deployment profile inputs.
+ * @returns {string} JSONC profile content.
+ */
 export function buildDeploymentProfileContent({
   slug,
   githubOwner = defaultGithubOwner(),
@@ -129,6 +143,12 @@ export function buildDeploymentProfileContent({
 `;
 }
 
+/**
+ * Creates or previews `config/deployments/<slug>.jsonc` for a fork/operator.
+ *
+ * @param {object} options File-system and profile creation options.
+ * @returns {Promise<{slug: string, filePath: string, relativePath: string, content: string, dryRun: boolean}>}
+ */
 export async function createDeploymentProfile({
   root = defaultRoot,
   slug,
@@ -171,6 +191,13 @@ export async function createDeploymentProfile({
   };
 }
 
+/**
+ * Parses `pnpm create:deployment -- ...` arguments into deployment profile options.
+ *
+ * @param {string[]} args CLI arguments after the script name.
+ * @param {NodeJS.ProcessEnv} env Environment defaults for GitHub owner/repo.
+ * @returns {object} Parsed options or `{help: true}`.
+ */
 export function parseArgs(args, env = process.env) {
   const options = {
     githubOwner: defaultGithubOwner(env),

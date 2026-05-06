@@ -1,3 +1,11 @@
+/**
+ * Generates resolved app config plus public content and docs artifacts from layered repository config.
+ *
+ * Source of truth: `config/`, `content/`, `docs/`, and referenced public assets.
+ * Side effects: Writes generated config/content/docs artifacts unless `--check` is used.
+ *
+ * @module scripts/generate-config
+ */
 import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,6 +20,12 @@ function getOutputs(root) {
   ];
 }
 
+/**
+ * Removes `//` and block comments from JSONC-like config while preserving quoted strings.
+ *
+ * @param {string} input JSONC-like source text.
+ * @returns {string} JSON-compatible source text without comments.
+ */
 export function stripComments(input) {
   let output = "";
   let inString = false;
@@ -75,6 +89,12 @@ export function stripComments(input) {
   return output;
 }
 
+/**
+ * Removes JSON trailing commas while preserving string contents.
+ *
+ * @param {string} input JSONC-like source text.
+ * @returns {string} JSON-compatible source text.
+ */
 export function removeTrailingCommas(input) {
   let output = "";
   let inString = false;
@@ -185,6 +205,13 @@ function isPlainObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+/**
+ * Deep-merges config layers while allowing later layers to replace arrays and scalar values.
+ *
+ * @param {object} base Lower-priority config layer.
+ * @param {object} override Higher-priority config layer.
+ * @returns {object} Merged config object.
+ */
 export function mergeConfigLayers(base, override) {
   const merged = { ...base };
 
@@ -204,6 +231,12 @@ export function mergeConfigLayers(base, override) {
   return merged;
 }
 
+/**
+ * Resolves and validates the active deployment slug from the environment.
+ *
+ * @param {NodeJS.ProcessEnv} env Environment map to read.
+ * @returns {string} Deployment slug.
+ */
 export function resolveDeploymentSlug(env = process.env) {
   const slug = env.BRINGA_DEPLOYMENT?.trim() || defaultDeploymentSlug;
 
@@ -405,6 +438,14 @@ function docsPublicPath(config, relativePath) {
   return `${config.content.docsPublicPath}/${relativePath}`;
 }
 
+/**
+ * Builds public content file records from default content plus deployment-specific overrides.
+ *
+ * @param {string} root Repository root.
+ * @param {string} deploymentSlug Active deployment slug.
+ * @param {object} config Resolved app config.
+ * @returns {Promise<Array<{relativePath: string, publicPath: string, outputPath: string, content: string}>>}
+ */
 export async function buildContentFiles(root, deploymentSlug, config) {
   const defaultContentRoot = resolveRepoPath(root, config.content.sourcePath, "content.sourcePath");
   const deploymentContentRoot = path.join(
@@ -466,6 +507,13 @@ function titleFromMarkdown(fileName, content) {
     .join(" ");
 }
 
+/**
+ * Builds generated public docs files from top-level Markdown docs.
+ *
+ * @param {string} root Repository root.
+ * @param {object} config Resolved app config.
+ * @returns {Promise<Array<{relativePath: string, publicPath: string, outputPath: string, content: string}>>}
+ */
 export async function buildDocsFiles(root, config) {
   const docsRoot = path.join(root, "docs");
   const entries = await readdir(docsRoot, { withFileTypes: true });
@@ -544,6 +592,12 @@ async function syncGeneratedContent(root, contentFiles, checkOnly) {
   }
 }
 
+/**
+ * Builds all generated config, public content, and public docs artifacts without writing them.
+ *
+ * @param {object} options Build options including root, deployment slug, and local config inclusion.
+ * @returns {Promise<{configJson: string, contentFiles: Array<object>, docsFiles: Array<object>}>}
+ */
 export async function buildConfigArtifacts(options = {}) {
   const root = options.root ?? defaultRoot;
   const deploymentSlug = options.deploymentSlug ?? resolveDeploymentSlug();
@@ -573,6 +627,12 @@ async function validateReferencedGeneratedFiles(root, config) {
   ]);
 }
 
+/**
+ * Loads, merges, and validates layered deployment config.
+ *
+ * @param {object} options Config loading options.
+ * @returns {Promise<object>} Resolved app config object.
+ */
 export async function loadConfigObject({
   root = defaultRoot,
   deploymentSlug = resolveDeploymentSlug(),
@@ -597,6 +657,12 @@ export async function loadConfigObject({
   return config;
 }
 
+/**
+ * Builds the public config JSON string without writing generated artifacts.
+ *
+ * @param {object} options Config loading options.
+ * @returns {Promise<string>} Pretty-printed config JSON with trailing newline.
+ */
 export async function buildConfigJson(options = {}) {
   const config = await loadConfigObject(options);
   return `${JSON.stringify(config, null, 2)}\n`;

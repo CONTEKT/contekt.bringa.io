@@ -1,3 +1,11 @@
+/**
+ * Creates a trusted Supabase backup for configured tables, Storage buckets, and optional Auth metadata.
+ *
+ * Source of truth: Supabase project state plus backup-related environment variables.
+ * Side effects: Writes backup files under `backups/supabase` by default and may insert a `backup_runs` row.
+ *
+ * @module scripts/backup-supabase
+ */
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -22,6 +30,12 @@ export const defaultTables = [
 ];
 export const defaultStorageBuckets = ["items"];
 
+/**
+ * Loads a local env file into `process.env` without overriding already-set values.
+ *
+ * @param {string} fileName Repository-root-relative env file name.
+ * @returns {Promise<void>}
+ */
 export async function loadEnvFile(fileName) {
   const filePath = path.join(root, fileName);
 
@@ -49,6 +63,12 @@ export async function loadEnvFile(fileName) {
   }
 }
 
+/**
+ * Reads a required process environment variable without logging its value.
+ *
+ * @param {string} name Environment variable name.
+ * @returns {string} Non-empty environment value.
+ */
 export function requiredEnv(name) {
   const value = process.env[name];
   if (!value) {
@@ -69,6 +89,12 @@ function secretKeyFromMap(value) {
   }
 }
 
+/**
+ * Resolves the Supabase project URL used by trusted maintenance scripts.
+ *
+ * @param {NodeJS.ProcessEnv} env Environment map to read.
+ * @returns {string} Supabase project URL without a trailing slash.
+ */
 export function resolveSupabaseMaintenanceUrl(env = process.env) {
   const explicitUrl = String(env.SUPABASE_URL || "").trim().replace(/\/$/, "");
   if (explicitUrl) return explicitUrl;
@@ -79,6 +105,12 @@ export function resolveSupabaseMaintenanceUrl(env = process.env) {
   throw new Error("Missing required environment variable: SUPABASE_URL or SUPABASE_PROJECT_REF");
 }
 
+/**
+ * Resolves the preferred Supabase maintenance secret without exposing the secret value.
+ *
+ * @param {NodeJS.ProcessEnv} env Environment map to read.
+ * @returns {string} Modern secret key, mapped default key, or legacy service-role key.
+ */
 export function resolveSupabaseMaintenanceKey(env = process.env) {
   const secretKey = env.SUPABASE_SECRET_KEY;
   if (secretKey) return secretKey;
@@ -122,6 +154,13 @@ export function parsePositiveInteger(value, fallback, name) {
   return parsed;
 }
 
+/**
+ * Resolves a relative backup path while blocking absolute paths and parent traversal.
+ *
+ * @param {string} rootDir Root directory the path must stay within.
+ * @param {string} relativePath Relative backup path.
+ * @returns {string} Safe absolute path.
+ */
 export function safeBackupPath(rootDir, relativePath) {
   if (!relativePath || path.isAbsolute(relativePath)) {
     throw new Error(`Unsafe backup path: ${relativePath}`);
@@ -140,6 +179,14 @@ export function safeBackupPath(rootDir, relativePath) {
   return target;
 }
 
+/**
+ * Fetches every row from a Supabase table using range pagination.
+ *
+ * @param {import("@supabase/supabase-js").SupabaseClient} supabase Trusted Supabase client.
+ * @param {string} tableName Table to export.
+ * @param {number} pageSize Positive page size.
+ * @returns {Promise<object[]>} Exported table rows.
+ */
 export async function fetchTable(supabase, tableName, pageSize) {
   const rows = [];
   let page = 0;
@@ -163,6 +210,14 @@ export async function fetchTable(supabase, tableName, pageSize) {
   }
 }
 
+/**
+ * Recursively lists file objects in a Supabase Storage bucket path.
+ *
+ * @param {object} bucketClient Supabase Storage bucket client.
+ * @param {string} prefix Storage prefix to list.
+ * @param {number} pageSize Positive page size.
+ * @returns {Promise<Array<{path: string, id: string | null, created_at: string | null, updated_at: string | null, metadata: object | null}>>}
+ */
 export async function listStorageFiles(bucketClient, prefix = "", pageSize = 1000) {
   const normalizedPrefix = prefix.replace(/^\/+|\/+$/g, "");
   const files = [];
@@ -213,6 +268,15 @@ async function downloadToBuffer(data) {
   throw new Error("Unsupported Storage download payload.");
 }
 
+/**
+ * Downloads every object in a Storage bucket and writes a hash manifest beside the copied files.
+ *
+ * @param {object} bucketClient Supabase Storage bucket client.
+ * @param {string} bucketName Storage bucket name.
+ * @param {string} outputDir Backup output directory.
+ * @param {number} pageSize Positive Storage list page size.
+ * @returns {Promise<{objects: number, bytes: number}>} Bucket backup summary.
+ */
 export async function backupStorageBucket(bucketClient, bucketName, outputDir, pageSize) {
   const storageRoot = path.join(outputDir, "storage");
   const bucketDir = safeBackupPath(storageRoot, bucketName);
@@ -252,6 +316,13 @@ export async function backupStorageBucket(bucketClient, bucketName, outputDir, p
   return { objects: objects.length, bytes };
 }
 
+/**
+ * Fetches Supabase Auth user metadata through the Admin API when explicitly enabled.
+ *
+ * @param {object} authAdmin Supabase Auth Admin client.
+ * @param {number} pageSize Positive page size.
+ * @returns {Promise<object[]>} Auth user metadata rows.
+ */
 export async function fetchAuthUsers(authAdmin, pageSize) {
   const users = [];
   let page = 1;
@@ -274,6 +345,12 @@ export async function fetchAuthUsers(authAdmin, pageSize) {
   }
 }
 
+/**
+ * Converts a backup manifest into the compact `backup_runs` database row shape.
+ *
+ * @param {{manifest: object, startedAt: string, finishedAt: string, status?: string}} options Backup manifest and timing.
+ * @returns {object} Row suitable for inserting into `backup_runs`.
+ */
 export function buildBackupRunRecord({ manifest, startedAt, finishedAt, status = "completed" }) {
   const tableRows = Object.values(manifest.tables || {}).reduce((total, value) => total + Number(value || 0), 0);
   const storageSummaries = Object.values(manifest.storage || {});
@@ -298,6 +375,13 @@ export function buildBackupRunRecord({ manifest, startedAt, finishedAt, status =
   };
 }
 
+/**
+ * Inserts a completed backup run summary into Supabase for admin freshness checks.
+ *
+ * @param {import("@supabase/supabase-js").SupabaseClient} supabase Trusted Supabase client.
+ * @param {{manifest: object, startedAt: string, finishedAt: string, status?: string}} options Backup manifest and timing.
+ * @returns {Promise<object>} Inserted backup run row payload.
+ */
 export async function recordBackupRun(supabase, { manifest, startedAt, finishedAt, status = "completed" }) {
   const record = buildBackupRunRecord({ manifest, startedAt, finishedAt, status });
   const { error } = await supabase.from("backup_runs").insert(record);

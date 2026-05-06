@@ -72,7 +72,8 @@ Scripts are operational tooling, so optimize them for reviewability and predicta
 
 - Prefer small pure helper functions that can be imported by matching `.test.mjs` files.
 - Use CLI output that names the failing file, key, command, or missing artifact directly.
-- Add JSDoc only where it clarifies a non-obvious contract, exported helper shape, side effect, environment variable, or security boundary.
+- Add file-level JSDoc to production `scripts/*.mjs` entry points so maintainers and agents can identify the contract, source of truth, and side effects before editing.
+- Add function-level JSDoc to exported helpers, destructive or write-capable routines, environment resolvers, and security-sensitive boundaries when the signature alone does not explain the contract.
 - Do not add decorative comments to simple one-off checks; tests and command names should carry the routine documentation.
 - Keep secret-handling scripts explicit about which environment variables are read and never print secret values.
 - Pair any new checker that protects a durable contract with a `pnpm check:*` script and, when useful, a `pnpm test:*` script.

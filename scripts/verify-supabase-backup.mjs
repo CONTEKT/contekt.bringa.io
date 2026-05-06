@@ -1,3 +1,11 @@
+/**
+ * Verifies a Supabase backup directory against its manifest, table dumps, Storage manifests, and hashes.
+ *
+ * Source of truth: A backup directory produced by `scripts/backup-supabase.mjs`.
+ * Side effects: Reads backup files and prints a verification summary; it does not contact Supabase.
+ *
+ * @module scripts/verify-supabase-backup
+ */
 import { createHash } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
@@ -95,6 +103,12 @@ async function verifyAuthUsers(backupDir, authUsers) {
   return { exported: true, users: users.length };
 }
 
+/**
+ * Verifies table row counts, Storage object hashes, and optional Auth metadata for a backup directory.
+ *
+ * @param {string} backupDirInput Repository-relative or absolute backup directory path.
+ * @returns {Promise<{tableCount: number, tableRows: number, storageBucketCount: number, storageObjectCount: number, storageBytes: number, authUsersExported: boolean, authUserCount: number | null}>}
+ */
 export async function verifyBackupDirectory(backupDirInput) {
   const backupDir = path.resolve(root, backupDirInput);
   const manifest = await readJson(path.join(backupDir, "manifest.json"), "manifest.json");
