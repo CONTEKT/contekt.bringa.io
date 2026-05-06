@@ -41,6 +41,18 @@ Potential stronger header policy for capable hosts:
 - `X-Content-Type-Options: nosniff`;
 - cache headers that preserve static asset performance without making generated config or HTML stale.
 
+## Abuse Controls
+
+Abuse controls are part of release readiness, not a post-launch cleanup task. The upstream default should stay conservative, documented, and cheap for free-account-oriented forks. Do not claim live abuse protection from local tests alone; verify the operator's Supabase project, Auth settings, Storage bucket settings, Edge Function secrets, and deployment host before public use.
+
+- Authentication abuse: review Supabase Auth rate limits before public signup, invite testing, or OAuth provider launch. For public sign-in, consider Supabase CAPTCHA support on signup, sign-in, and recovery endpoints when the operator expects open traffic. Record the chosen limits or dashboard defaults without committing access tokens.
+- Storage upload abuse: keep browser MIME and size validation aligned with Supabase Storage bucket `allowed_mime_types` and `file_size_limit`; treat client-side compression as user experience, not enforcement. Reject unexpected media types server-side through bucket settings or a trusted upload path before supporting animated or larger files.
+- RPC mutation abuse: keep invite application, borrow/return, item visibility, moderation, account deletion, and admin role changes behind authenticated RPCs with internal authorization checks. Add per-user or per-item throttling only where real traffic or logs show repeated pressure, and document any dashboard or database limit that cannot be checked locally.
+- Moderation abuse: keep user-submitted suggestions, flags, visibility requests, and deletion requests queued with status history, reviewer notes, and admin-only finalization. Do not let broad client writes bypass the queue, even for apparently harmless text changes.
+- Telegram notification abuse: keep notification dedupe, mute windows, retry state, and `verify_jwt=true` Edge Functions in place. Configure function secrets and webhook URLs per deployment, then review Edge Function logs after the first live notification without copying personal data into Git or public discussions.
+
+Use Supabase project settings, Management API evidence, advisor output, and redacted logs when a release claim depends on hosted abuse controls. Keep unresolved rate-limit, upload, queue, or notification risks in [Optimization Options](optimization-options.md).
+
 ## Security Maintenance Workflow
 
 Use `.agents/skills/security-maintenance/` after dependency upgrades, Supabase schema or policy changes, Edge Function changes, Auth changes, deployment workflow changes, or before release-readiness claims.

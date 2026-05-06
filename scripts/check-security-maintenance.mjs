@@ -53,6 +53,12 @@ const requiredSecurityPhrases = [
   "do not treat it as a configurable security-header layer",
   "Do not promise repository-managed CSP, Referrer-Policy, Permissions-Policy, or Cache-Control headers on GitHub Pages.",
   "Cloudflare Pages with a `_headers` file",
+  "## Abuse Controls",
+  "Authentication abuse",
+  "Storage upload abuse",
+  "RPC mutation abuse",
+  "Moderation abuse",
+  "Telegram notification abuse",
 ];
 
 const requiredMaintenancePhrases = [

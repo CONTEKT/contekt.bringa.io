@@ -68,6 +68,14 @@ Passing local checks is not enough for a production-readiness claim unless those
 GitHub Pages is the default deployment path and provides HTTPS enforcement, but do not treat it as a configurable security-header layer.
 Do not promise repository-managed CSP, Referrer-Policy, Permissions-Policy, or Cache-Control headers on GitHub Pages.
 If an operator requires custom HTTP security headers, use a host that supports them, such as Cloudflare Pages with a \`_headers\` file, Netlify headers, or a reverse proxy or Worker.
+
+## Abuse Controls
+
+- Authentication abuse: review Supabase Auth rate limits and CAPTCHA before opening public signup.
+- Storage upload abuse: keep bucket MIME and file-size limits aligned with deployment config.
+- RPC mutation abuse: keep state-changing RPCs authenticated and authorization-checked.
+- Moderation abuse: require admin review and notes for queue actions.
+- Telegram notification abuse: keep dedupe, mute windows, and retry boundaries documented.
 `;
 
 const validMaintenanceDoc = `
@@ -144,5 +152,18 @@ test("requires local-check caveats and live evidence surfaces", () => {
       optimizationMarkdown: validOptimizationOptions.replace("green local-only proxy", "green proxy"),
     }),
     /green local-only proxy/,
+  );
+});
+
+test("requires abuse-control guidance for public operator surfaces", () => {
+  assert.throws(
+    () => checkSecurityMaintenanceContract({
+      packageJson: validPackageJson,
+      skillMarkdown: validSkill,
+      securityMarkdown: validSecurityDoc.replace("## Abuse Controls", "## Abuse Control Gaps"),
+      maintenanceMarkdown: validMaintenanceDoc,
+      optimizationMarkdown: validOptimizationOptions,
+    }),
+    /Abuse Controls/,
   );
 });
