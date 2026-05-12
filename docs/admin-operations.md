@@ -17,6 +17,17 @@ This page describes the current upstream admin surfaces. Keep operational detail
 - `/admin/invite-code`: current admin invite code display and update flow.
 - `/admin/moderation`: pending visibility requests, item suggestions, and flags, with admin review and content, image metadata, and owner suggestion application routed through RPCs.
 
+## First Admin Bootstrap
+
+Fresh hosted projects start with zero admins. After the intended first admin signs in once and creates a profile, use the trusted dry-run-first helper:
+
+```bash
+pnpm bootstrap:first-admin --confirm-project-ref <project-ref>
+pnpm bootstrap:first-admin --confirm-project-ref <project-ref> --execute
+```
+
+The helper validates that there are zero existing admins and either exactly one profile or an explicit `--profile-id <uuid>`. It prints only safe counts and the generated first-admin invite code after execution. Treat invite codes as access-granting values: do not commit them, post them publicly, paste them into issues, or include them in screenshots. Admins can rotate their invite code later at `/admin/invite-code`.
+
 ## Review Queues
 
 Moderation queue records live in Supabase:

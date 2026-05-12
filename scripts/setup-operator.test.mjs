@@ -64,6 +64,9 @@ test("builds a concrete first-run checklist", () => {
   assert.match(checklist.join("\n"), /SUPABASE_PROJECT_REF or SUPABASE_URL/);
   assert.match(checklist.join("\n"), /SUPABASE_SECRET_KEY/);
   assert.match(checklist.join("\n"), /SUPABASE_SECRET_KEYS/);
+  assert.match(checklist.join("\n"), /pnpm bootstrap:first-admin/);
+  assert.match(checklist.join("\n"), /Enforce HTTPS/);
+  assert.match(checklist.join("\n"), /up to 24 hours/);
   assert.doesNotMatch(checklist.join("\n"), /service role/i);
 });
 

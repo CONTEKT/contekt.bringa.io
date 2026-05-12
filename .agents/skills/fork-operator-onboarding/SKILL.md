@@ -10,6 +10,7 @@ Help operators get from fork to usable app without leaking secrets or making ups
 ## Read First
 
 - `docs/forking.md`
+- `docs/fork-launch-runbook.md`
 - `docs/configuration.md`
 - `docs/open-source-release.md`
 - `docs/supabase.md`
@@ -38,9 +39,10 @@ Help operators get from fork to usable app without leaking secrets or making ups
 
 7. For development, prefer local demo mode or the local Supabase CLI stack before creating any hosted dev project or paid Supabase branch. Run `pnpm exec supabase start`, `pnpm setup:local-supabase --seed`, `pnpm doctor:local-supabase`, and `pnpm dev:docker` when backend behavior needs real Supabase services.
 8. For hosted Supabase setup, prefer a fresh project, apply the committed schema/migrations, configure Auth Site URL and redirect URLs, then verify RLS, Storage, Edge Functions, and maintenance-key access before disabling local demo mode.
-9. For GitHub Pages, keep workflows manual-only and use Pages source `GitHub Actions`; use `deploy/<slug>` only for fork-owned publication branches, not upstream contribution PRs.
-10. Run the local quality gates before pushing fork setup changes.
-11. Record deployment-specific open items in fork docs or operator notes; add generic reusable ideas to `docs/optimization-options.md`.
+9. After the intended first admin signs in once, use `pnpm bootstrap:first-admin --confirm-project-ref <ref>` for a dry run and add `--execute` only after confirming the target.
+10. For GitHub Pages, keep workflows manual-only and use Pages source `GitHub Actions`; use `deploy/<slug>` only for fork-owned publication branches, not upstream contribution PRs. Remind operators that GitHub Pages certificates can take a few minutes, and GitHub documents that **Enforce HTTPS** can take up to 24 hours to become available.
+11. Run the local quality gates before pushing fork setup changes.
+12. Record deployment-specific open items in fork docs or operator notes; add generic reusable ideas to `docs/optimization-options.md`.
 
 ## Default Answer To "Set Up This Fork"
 
@@ -50,5 +52,7 @@ If a user asks an agent to set up a fork, the agent should:
 - keep local demo mode available until the fork's Supabase project is verified;
 - use the local Supabase CLI stack for backend development before recommending Supabase Branching or a second hosted dev project;
 - guide the operator through public Supabase URL/publishable-key config and server-only maintenance keys separately;
+- guide first-admin bootstrap through `pnpm bootstrap:first-admin` instead of ad hoc SQL;
+- remind operators to enable GitHub Pages **Enforce HTTPS** after the certificate is issued;
 - run config, secret, workflow, Supabase contract, lint, typecheck, Edge Function, and build checks;
 - push changes on an appropriate branch when the repo remote is available.

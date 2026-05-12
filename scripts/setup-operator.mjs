@@ -97,10 +97,13 @@ export function buildOperatorSetupChecklist({ slug, useDeployBranch }) {
     `3. Check config: BRINGA_DEPLOYMENT=${slug} pnpm check:config`,
     "4. Apply the committed Supabase schema and migrations to your Supabase project.",
     "5. Set Supabase Auth Site URL to your app URL and add the exact /dashboard redirect URL.",
-    "6. For backups and trusted cleanup only, copy .env.example to .env.local, set SUPABASE_PROJECT_REF or SUPABASE_URL, and set SUPABASE_SECRET_KEY or SUPABASE_SECRET_KEYS after confirming the target project.",
-    "7. In GitHub, set Pages source to GitHub Actions and configure your custom domain if you use one.",
-    `8. Run the manual Pages workflow with deployment=${slug}.`,
-    "9. Run pnpm build before publishing changes.",
+    "6. For first-admin bootstrap, backups, and trusted cleanup only, copy .env.example to .env.local, set SUPABASE_PROJECT_REF or SUPABASE_URL, and set SUPABASE_SECRET_KEY or SUPABASE_SECRET_KEYS after confirming the target project.",
+    "7. After the intended first admin signs in once, run pnpm bootstrap:first-admin --confirm-project-ref <ref> to dry-run, then add --execute when the target is correct.",
+    "8. In GitHub, set Pages source to GitHub Actions and configure your custom domain if you use one.",
+    "9. In DNS, point the subdomain CNAME to <github-owner>.github.io without the repository name.",
+    `10. Run the manual Pages workflow with deployment=${slug}.`,
+    "11. After DNS resolves, wait for the GitHub Pages certificate, then enable Enforce HTTPS. GitHub says this can take up to 24 hours, so a pending certificate is normal.",
+    "12. Run pnpm build before publishing changes.",
   );
 
   return lines;

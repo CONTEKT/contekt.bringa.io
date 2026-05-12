@@ -49,7 +49,11 @@ For first deployment, the normal operator flow is:
 4. generate config;
 5. configure Supabase Auth redirect URLs for the final app domain;
 6. copy `.env.example` to `.env.local`, set `SUPABASE_PROJECT_REF` or `SUPABASE_URL`, and set `SUPABASE_SECRET_KEY` or `SUPABASE_SECRET_KEYS` only for trusted local maintenance after confirming the target project;
-7. run the manual Pages workflow from `main` or `deploy/<slug>`.
+7. after the intended first admin signs in once, dry-run and execute `pnpm bootstrap:first-admin --confirm-project-ref <ref>`;
+8. run the manual Pages workflow from `main` or `deploy/<slug>`;
+9. after DNS resolves and GitHub issues the Pages certificate, enable **Enforce HTTPS**.
+
+Use [Fork Launch Runbook](fork-launch-runbook.md) for the operator-friendly step-by-step path.
 
 This writes:
 

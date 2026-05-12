@@ -2,25 +2,35 @@
 
 Open source sharing and borrowing software for communities, clubs, associations, and local operators.
 
-[Configuration](docs/configuration.md) | [Open source release](docs/open-source-release.md) | [Supabase](docs/supabase.md) | [Local Supabase Development](docs/local-supabase-development.md) | [Repository settings](docs/repository-settings.md) | [Roadmap](docs/roadmap.md) | [Contributing](CONTRIBUTING.md) | [Security](SECURITY.md)
+[Fork launch](docs/fork-launch-runbook.md) | [Configuration](docs/configuration.md) | [Open source release](docs/open-source-release.md) | [Supabase](docs/supabase.md) | [Local Supabase Development](docs/local-supabase-development.md) | [Repository settings](docs/repository-settings.md) | [Roadmap](docs/roadmap.md) | [Contributing](CONTRIBUTING.md) | [Security](SECURITY.md)
 
-## Fork It, Configure It, Use It
+## Fork In 3 Steps
 
-Bringa is meant to be easy to operate for your own community:
+Bringa is meant to be pleasant to operate for your own community.
 
-1. Fork this repository.
-2. Create a Supabase project.
-3. Create a deployment profile and add your public app/Supabase values.
-4. Deploy the static app through GitHub Pages.
+1. Configure the fork with a deployment profile.
 
-```bash
-pnpm install
-pnpm setup:operator
-BRINGA_DEPLOYMENT=share.example.org pnpm generate:config
-BRINGA_DEPLOYMENT=share.example.org pnpm check:config
-```
+   ```bash
+   pnpm install
+   pnpm setup:operator
+   BRINGA_DEPLOYMENT=share.example.org pnpm generate:config
+   BRINGA_DEPLOYMENT=share.example.org pnpm check:config
+   ```
 
-Then set up Supabase from the committed schema and migrations, configure Auth redirect URLs for your app domain, and run the manual **Pages** workflow from `main` or `deploy/<slug>`. Start with [Open Source Release](docs/open-source-release.md), then use [Configuration](docs/configuration.md), [Supabase](docs/supabase.md), [Forking](docs/forking.md), and [Repository Settings](docs/repository-settings.md) as the detailed setup path.
+2. Connect Supabase, OAuth, and the first admin.
+
+   Apply the committed schema or migrations, set Supabase Auth URLs, enable Google or GitHub OAuth, let the intended first admin sign in once, then run the guarded first-admin helper:
+
+   ```bash
+   pnpm bootstrap:first-admin --confirm-project-ref <project-ref>
+   pnpm bootstrap:first-admin --confirm-project-ref <project-ref> --execute
+   ```
+
+3. Publish with GitHub Pages.
+
+   Set Pages source to **GitHub Actions**, add your custom domain, point DNS to `<github-owner>.github.io`, run the manual **Pages** workflow, wait calmly for GitHub to issue the certificate, then enable **Enforce HTTPS**. GitHub says the HTTPS option can take up to 24 hours to become available, so a pending certificate is normal.
+
+Use [Fork Launch Runbook](docs/fork-launch-runbook.md) for the full step-by-step guide. It covers Cloudflare DNS, GitHub Pages HTTPS timing, Supabase Auth redirect URLs, Google/GitHub OAuth callbacks, first-admin bootstrap, invite-gate verification, and agent-assisted setup.
 
 GitHub Pages plus hosted Supabase is the default documented path because it keeps the first deployment simple. The app is a static Next.js export backed by Supabase, so other hosts such as Cloudflare Pages and self-hosted Supabase are possible too; detailed runbooks can be added when an operator actually needs them.
 

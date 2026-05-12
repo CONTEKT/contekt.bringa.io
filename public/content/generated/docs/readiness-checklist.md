@@ -105,6 +105,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 - [ ] `pnpm test:config`
 - [ ] `pnpm test:create-deployment`
 - [ ] `pnpm test:operator-setup`
+- [ ] `pnpm test:bootstrap-first-admin`
 - [ ] `pnpm test:auth-redirect`
 - [ ] `pnpm test:app-config`
 - [ ] `pnpm test:admin-route-gate`

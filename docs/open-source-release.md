@@ -21,7 +21,9 @@ Fast path: fork it, configure it, use it.
 
 1. Fork the repository.
 2. Create a Supabase project.
-3. Create a deployment profile instead of copying the upstream profile by hand:
+3. Create a deployment profile instead of copying the upstream profile by hand.
+4. Connect Supabase Auth providers and bootstrap the first admin.
+5. Deploy through GitHub Pages, wait for the certificate, then enforce HTTPS.
 
 ```bash
 pnpm setup:operator --dry-run
@@ -41,6 +43,8 @@ BRINGA_DEPLOYMENT=share.example.org pnpm generate:config
 BRINGA_DEPLOYMENT=share.example.org pnpm check:config
 ```
 
+Use [Fork Launch Runbook](fork-launch-runbook.md) for the complete operator path. It includes DNS, GitHub Pages HTTPS timing, Supabase Auth redirect URLs, Google/GitHub OAuth callback URLs, first-admin bootstrap, and invite-gate verification.
+
 Public Supabase URL and publishable key belong in the deployment profile. Secrets belong in ignored env files, GitHub secrets, OAuth provider dashboards, or Supabase function secrets.
 For trusted local maintenance such as backups or account cleanup, copy `.env.example` to `.env.local` after confirming the target project, set `SUPABASE_PROJECT_REF` or `SUPABASE_URL`, and set `SUPABASE_SECRET_KEY` or `SUPABASE_SECRET_KEYS` there. Legacy service-role keys remain fallback-only.
 
@@ -58,7 +62,7 @@ For a custom subdomain:
 2. Set the repository Pages source to GitHub Actions.
 3. Add the custom domain in the repository Pages settings.
 4. Point the subdomain CNAME to `<github-owner>.github.io`.
-5. Enable HTTPS after DNS verifies.
+5. Wait for GitHub to issue the Pages certificate, then enable HTTPS. This often takes a few minutes and GitHub documents that the option can take up to 24 hours to become available.
 6. In Supabase Auth settings, set the Site URL and exact production redirect URL for the app domain.
 7. Run the manual **Pages** workflow from `main` or `deploy/<slug>` with the deployment slug.
 

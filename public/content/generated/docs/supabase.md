@@ -24,11 +24,14 @@ For a fork that wants to run the app:
 7. Copy the public project URL and publishable key into `config/deployments/<slug>.jsonc`.
 8. Copy `.env.example` to `.env.local`, set `SUPABASE_URL` or `SUPABASE_PROJECT_REF`, and set `SUPABASE_SECRET_KEY` or `SUPABASE_SECRET_KEYS` only for trusted local maintenance after confirming the target project.
 9. Keep Supabase secret keys, service role keys, OAuth secrets, and provider secrets outside Git.
-10. Run `pnpm check:supabase-maintenance-key` to verify server-side maintenance access without printing key values.
+10. After the intended first admin signs in once, run `pnpm bootstrap:first-admin --confirm-project-ref <project-ref>` as a dry run, then rerun with `--execute` when the target is correct.
+11. Run `pnpm check:supabase-maintenance-key` to verify server-side maintenance access without printing key values.
 
 The public project URL and publishable key are expected to reach the browser. They are safe only when Row Level Security, Storage policies, and RPC boundaries are correct. Run `pnpm check:supabase-contract` after schema or policy changes.
 
 Hosted Supabase is the default documented path. Self-hosted Supabase is possible, but currently needs operator-owned documentation for backups, upgrades, SMTP/Auth provider configuration, Storage, Edge Functions, and observability.
+
+Use [Fork Launch Runbook](fork-launch-runbook.md) for the full fork setup path, including Google/GitHub OAuth callback URLs and first-admin invite handling.
 
 ## Local Development Default
 

@@ -2,6 +2,8 @@
 
 This runbook is the operator sequence for publishing the upstream `app.bringa.io` application from the public mother repository on GitHub Pages with Supabase Auth and the hosted `app.bringa.io` Supabase project.
 
+For forks, use [Fork Launch Runbook](fork-launch-runbook.md). This page is the upstream worked example and should not contain private invite codes or provider secrets.
+
 Use `main` for the upstream `app.bringa.io` deployment. Reserve `deploy/<slug>` branches for forks or long-lived operator-specific deployment branches.
 
 ## Verified State
@@ -15,13 +17,15 @@ As of 2026-05-12:
 - GitHub security switches: secret scanning, secret scanning push protection, vulnerability alerts, and Dependabot security updates enabled
 - GitHub Pages source: GitHub Actions
 - GitHub Pages custom domain: `app.bringa.io`
-- Manual Pages workflow evidence: initial public deploy `25755567245`, docs redeploy `25756046085`, and Node 24 actions opt-in verification `25756158964`, all successful on `main`
+- Manual Pages workflow evidence: initial public deploy `25755567245`, docs redeploy `25756046085`, Node 24 actions opt-in verification `25756158964`, and Next.js security patch deploy `25756419770`, all successful on `main`
+- Cloudflare DNS: `app CNAME bringaio.github.io` resolved after the operator added the record
 - Supabase project: `app.bringa.io`, ref `bqotcfejqljfcfjhavwh`, region `eu-central-1`, status `ACTIVE_HEALTHY`
 - Supabase CLI: available through `pnpm exec supabase`, verified with CLI `2.98.2`
 - Supabase MCP: not available in this Codex session; use the CLI and dashboard until MCP tools are installed
 - Edge Functions: `notifiy-telegram` and `notifiy-telegram-user`, both active with `verify_jwt=true`
+- First admin: bootstrapped and validated with one admin row; the invite code is intentionally not documented
 
-GitHub now redirects the default Pages URL to `http://app.bringa.io/` because the custom domain is configured. Public DNS for `app.bringa.io` was not resolving during the 2026-05-12 verification, so Cloudflare DNS is the next required step before GitHub can issue a certificate and HTTPS can be enforced. The Pages workflow opts JavaScript actions into Node 24 with `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`; GitHub may still annotate upstream actions that target Node 20 until those actions retarget Node 24, but the launch workflow has been verified under the forced Node 24 runtime.
+GitHub now serves `http://app.bringa.io/` through Pages. HTTPS enforcement is still waiting on GitHub's custom-domain certificate. This can take a few minutes, and GitHub documents that **Enforce HTTPS** can take up to 24 hours to become available. The Pages workflow opts JavaScript actions into Node 24 with `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`; GitHub may still annotate upstream actions that target Node 20 until those actions retarget Node 24, but the launch workflow has been verified under the forced Node 24 runtime.
 
 ## Cloudflare DNS
 
@@ -41,6 +45,19 @@ curl -I https://app.bringa.io/
 ```
 
 The CNAME should resolve to `bringaio.github.io.`. HTTPS may fail until GitHub finishes certificate provisioning.
+
+## First Admin Bootstrap
+
+The first admin for `app.bringa.io` has already been bootstrapped. Do not write the live invite code into this repository, generated docs, issues, screenshots, or chat. Rotate it later through `/admin/invite-code` if needed.
+
+Forks should use:
+
+```bash
+pnpm bootstrap:first-admin --confirm-project-ref <project-ref>
+pnpm bootstrap:first-admin --confirm-project-ref <project-ref> --execute
+```
+
+See [Fork Launch Runbook](fork-launch-runbook.md) for the generic procedure.
 
 ## GitHub Pages Finalization
 

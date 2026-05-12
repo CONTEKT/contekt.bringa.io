@@ -55,8 +55,10 @@ For `app.bringa.io` or a fork-owned subdomain:
 4. Run `BRINGA_DEPLOYMENT=<slug> pnpm generate:config` and commit the generated app config/content in the deployment branch.
 5. In GitHub repository settings, set Pages source to GitHub Actions and set the custom domain.
 6. In DNS, create a `CNAME` record from the subdomain to `<github-owner>.github.io`. For subdomains, do not include the repository name in the CNAME target. For `app.bringa.io`, create `app CNAME bringaio.github.io` in Cloudflare and keep it DNS-only until GitHub issues the Pages certificate.
-7. After DNS verifies, enable HTTPS in GitHub Pages.
+7. After DNS verifies, wait for GitHub Pages to issue the certificate, then enable **Enforce HTTPS**. This often takes a few minutes; GitHub documents that the option can take up to 24 hours to become available, so a pending certificate is normal.
 8. Run the manual **Pages** workflow from `main` or `deploy/<slug>`.
+
+For a complete fork setup sequence, use [Fork Launch Runbook](fork-launch-runbook.md).
 
 ## Supabase Auth URLs
 

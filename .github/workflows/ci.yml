@@ -44,6 +44,9 @@ jobs:
       - name: Test operator setup helper
         run: pnpm test:operator-setup
 
+      - name: Test first admin bootstrap helper
+        run: pnpm test:bootstrap-first-admin
+
       - name: Test auth redirect helpers
         run: pnpm test:auth-redirect
 
