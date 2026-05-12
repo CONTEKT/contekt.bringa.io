@@ -94,6 +94,8 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm test:app-config`
 - `pnpm test:admin-route-gate`
 - `pnpm test:media-policy`
+- `pnpm test:item-image-upload`
+- `pnpm test:item-detail-images`
 - `pnpm test:protected-route`
 - `pnpm test:env-example`
 - `pnpm test:secrets`
