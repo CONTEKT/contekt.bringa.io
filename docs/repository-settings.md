@@ -8,7 +8,7 @@ Some GitHub settings are repository state, not code. Keep this checklist aligned
 
 ## Current Repository State
 
-As of 2026-05-05, GitHub API checks confirmed that rebase merging is enabled, merge commits and squash merges are disabled, pull request branch updates are allowed, and merged head branches are deleted automatically. The repository description and topics are configured for open-source discovery. Private forking is currently blocked by organization policy: attempting to set `allow_forking=true` returned `422 This organization does not allow private repository forking`. Branch protection still needs repository UI or plan access while the repository is private. Creating the GitHub Pages site with `build_type=workflow` currently returns `422 Your current plan does not support GitHub Pages for this repository`; enable Pages after the repository visibility or plan decision, then run the first manual Pages workflow from `main` or an intentional `deploy/<slug>` branch.
+As of 2026-05-12, GitHub API checks confirmed that the repository is public, forking is enabled, rebase merging is enabled, merge commits and squash merges are disabled, pull request branch updates are allowed, and merged head branches are deleted automatically. The repository description, topics, and homepage are configured for open-source discovery. Secret scanning, secret scanning push protection, vulnerability alerts, and Dependabot security updates are enabled. GitHub Pages is enabled with GitHub Actions as the source, `app.bringa.io` is set as the custom domain, and manual Pages run `25755567245` deployed successfully from `main`. Cloudflare DNS still needs the `app` CNAME before GitHub can issue the custom-domain certificate and HTTPS can be enforced. Use [Public Launch Runbook](public-launch-runbook.md) for the current operator sequence.
 
 ## Pull Requests
 
@@ -37,11 +37,12 @@ Recommended rules:
 
 ## GitHub Pages
 
-- Set GitHub Pages source to GitHub Actions.
+- Keep GitHub Pages source set to GitHub Actions.
 - Use the `github-pages` environment.
 - Protect the `github-pages` environment if deployments should require approval.
 - Keep app deployment secret-free and run it manually from `main` or an intentional `deploy/<slug>` branch when deployment is needed.
 - Use `.github/workflows/pages.yml` to build `out/` and deploy the artifact with GitHub Pages Actions from `main` or `deploy/*`.
+- For the upstream `app.bringa.io` deployment, run the manual **Pages** workflow from `main` with deployment slug `app.bringa.io`.
 - Do not rely on GitHub Pages for repository-managed CSP, Referrer-Policy, Permissions-Policy, or Cache-Control headers. Use [Security](security.md) when deciding whether a fork needs Cloudflare Pages, Netlify, or a reverse proxy/Worker for custom HTTP security headers.
 
 ## Custom App Domain
@@ -53,7 +54,7 @@ For `app.bringa.io` or a fork-owned subdomain:
 3. Set `supabase.url` and `supabase.publishableKey` to that deployment's public Supabase API values.
 4. Run `BRINGA_DEPLOYMENT=<slug> pnpm generate:config` and commit the generated app config/content in the deployment branch.
 5. In GitHub repository settings, set Pages source to GitHub Actions and set the custom domain.
-6. In DNS, create a `CNAME` record from the subdomain to `<github-owner>.github.io`. For subdomains, do not include the repository name in the CNAME target.
+6. In DNS, create a `CNAME` record from the subdomain to `<github-owner>.github.io`. For subdomains, do not include the repository name in the CNAME target. For `app.bringa.io`, create `app CNAME bringaio.github.io` in Cloudflare and keep it DNS-only until GitHub issues the Pages certificate.
 7. After DNS verifies, enable HTTPS in GitHub Pages.
 8. Run the manual **Pages** workflow from `main` or `deploy/<slug>`.
 
@@ -72,4 +73,4 @@ OAuth providers still need their provider-side callback URL configured to the Su
 
 Fork operators can keep these workflows without upstream secrets. Deployment-specific app hosting, Supabase secrets, custom domains, and legal text belong in fork-owned repository settings, environment variables, and config files. Use a long-lived `deploy/<slug>` branch when a fork wants generated deployment artifacts and local operator changes to stay separate from clean upstream pull request branches.
 
-Before the public release, confirm that the repository is public or that the organization allows private forks. Forkability is a release requirement; it cannot be proven while `allow_forking` stays blocked by private-repository organization policy.
+Before a public announcement, confirm the custom domain, HTTPS enforcement, OAuth provider setup, and invite-gate behavior from a browser. Forkability is now proven for the public upstream repository.

@@ -50,6 +50,8 @@ For Supabase, start fresh projects from `supabase/schema.sql` and use `supabase/
 
 The app is a static Next.js export. GitHub Pages publishing uses the manual Pages workflow and the `out/` artifact.
 
+For the upstream mother repository, deploy `app.bringa.io` from `main`. Use `deploy/<slug>` only for forks or long-lived operator-specific publication branches.
+
 For a custom subdomain:
 
 1. Set `app.canonicalUrl` in the deployment profile.
@@ -59,6 +61,8 @@ For a custom subdomain:
 5. Enable HTTPS after DNS verifies.
 6. In Supabase Auth settings, set the Site URL and exact production redirect URL for the app domain.
 7. Run the manual **Pages** workflow from `main` or `deploy/<slug>` with the deployment slug.
+
+The live upstream setup and OAuth handoff values are tracked in [Public Launch Runbook](public-launch-runbook.md).
 
 Keep production redirect URLs exact. Use localhost or documented wildcard redirects only for local development and preview environments.
 
@@ -83,5 +87,7 @@ Use short-lived PR branches for generic upstream work. Keep optional long-lived 
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `LICENSE`, issue templates, and the pull request template are present.
 - `docs/readiness-checklist.md` names unresolved external blockers instead of implying they are solved.
 - Manual CI and Pages workflows stay secret-free and `workflow_dispatch` only.
+- Public repository visibility, forkability, Pages source, custom domain, and latest deployment evidence are verified in [Repository Settings](repository-settings.md).
+- Cloudflare DNS, GitHub Pages HTTPS enforcement, Supabase Auth URL configuration, and Google/GitHub OAuth provider setup are complete and browser-tested.
 - Browser evidence covers local demo, connected Supabase auth, long-content states, admin routes, mobile, desktop, and PWA install where supported.
 - Live Supabase schema, RLS, Storage, Edge Functions, an empty-baseline backup, the no-third-party upstream observability default, and log/screenshot evidence retention defaults have been reviewed; Auth redirects, Edge Function secrets, Telegram webhook settings, live restore drills, project-specific backup retention approval, and live notification delivery evidence remain before any production-readiness claim.

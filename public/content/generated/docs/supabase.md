@@ -96,6 +96,14 @@ As of 2026-05-05, the upstream `app.bringa.io` Supabase project in `eu-central-1
 
 Known remaining live setup items are Auth provider configuration, Site URL and redirect URL confirmation, Edge Function secrets, Telegram webhook URL settings, live notification delivery log review, and restore drill evidence. Edge Function logs had no invocations in the last 24-hour windows checked through MCP on 2026-05-05 and 2026-05-06; Auth logs still show the known Supabase-managed GoTrue default/admin group deprecation warnings until provider setup is complete. Supabase Branching is no longer a release blocker for the free-account default path; it remains an optional paid remote-preview follow-up.
 
+On 2026-05-12, Supabase MCP tools were not exposed in the active Codex session, but the Supabase CLI was available as `pnpm exec supabase` at version `2.98.2`. CLI project listing confirmed `app.bringa.io` project ref `bqotcfejqljfcfjhavwh` is `ACTIVE_HEALTHY` in `eu-central-1`. CLI function listing confirmed `notifiy-telegram` and `notifiy-telegram-user` are active with `verify_jwt=true`. CLI secret listing returned secret names and hashes only; never print or commit real secret values. The Supabase custom domain add-on is not required for the GitHub Pages app domain. Use [Public Launch Runbook](public-launch-runbook.md) for the current Cloudflare, Pages, and OAuth sequence.
+
+For upstream OAuth provider setup, use:
+
+- Supabase Site URL: `https://app.bringa.io`
+- Supabase additional redirect URL: `https://app.bringa.io/dashboard`
+- Supabase project callback URL for Google and GitHub provider apps: `https://bqotcfejqljfcfjhavwh.supabase.co/auth/v1/callback`
+
 ## Edge Function Runtime
 
 Supabase Edge Functions run on a Deno-compatible edge runtime. Context7's Supabase documentation review on 2026-05-05 confirmed that Supabase's documented function authoring, local serving, and deployment path is Deno/TypeScript through the Supabase CLI and Edge Runtime.

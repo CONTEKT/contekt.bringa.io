@@ -109,6 +109,12 @@
       "sourcePath": "docs/production-readiness-audit.md"
     },
     {
+      "slug": "public-launch-runbook",
+      "title": "Public Launch Runbook",
+      "path": "/content/generated/docs/public-launch-runbook.md",
+      "sourcePath": "docs/public-launch-runbook.md"
+    },
+    {
       "slug": "readiness-checklist",
       "title": "First Big Version Readiness Checklist",
       "path": "/content/generated/docs/readiness-checklist.md",
