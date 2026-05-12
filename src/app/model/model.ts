@@ -21,6 +21,7 @@ export interface ItemDb {
   description: string | null;
   status: "inStock" | "borrowed";
   image_url: string | null; // Matches DB column name
+  thumbnail_url?: string | null;
   created_by: string | null;
   owner_kind?: ItemOwnerKind | null;
   owner_profile_id?: string | null;
@@ -41,6 +42,7 @@ export interface ItemVersion {
   name: string | null;
   description: string | null;
   image_url: string | null;
+  thumbnail_url?: string | null;
   owner_kind: ItemOwnerKind;
   owner_profile_id: string | null;
   owner_label: string | null;

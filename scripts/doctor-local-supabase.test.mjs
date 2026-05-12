@@ -56,6 +56,7 @@ test("reports a running local stack without printing public keys", async (t) => 
   assert.equal(result.localConfig.state, "ready");
   assert.match(output.text(), /Local Supabase doctor passed/);
   assert.match(output.text(), /http:\/\/127\.0\.0\.1:54321/);
+  assert.match(output.text(), /pnpm dev:docker/);
   assert.doesNotMatch(output.text(), /local-public-key/);
 });
 
@@ -76,6 +77,7 @@ test("points developers to setup when the local stack is running but local confi
   assert.equal(result.localConfig.state, "missing");
   assert.match(output.text(), /Local Supabase stack is running/);
   assert.match(output.text(), /pnpm setup:local-supabase --seed/);
+  assert.match(output.text(), /pnpm dev:docker/);
 });
 
 test("fails clearly when the local Supabase CLI status command is unavailable", async (t) => {

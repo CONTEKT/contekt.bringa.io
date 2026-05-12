@@ -341,7 +341,9 @@
         "acceptedImageMimeTypes",
         "maxUploadBytes",
         "compressionMaxSizeMb",
-        "compressionMaxWidthOrHeight"
+        "compressionMaxWidthOrHeight",
+        "thumbnailCompressionMaxSizeMb",
+        "thumbnailCompressionMaxWidthOrHeight"
       ],
       "additionalProperties": false,
       "properties": {
@@ -361,6 +363,14 @@
           "exclusiveMinimum": 0
         },
         "compressionMaxWidthOrHeight": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "thumbnailCompressionMaxSizeMb": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "thumbnailCompressionMaxWidthOrHeight": {
           "type": "number",
           "exclusiveMinimum": 0
         }

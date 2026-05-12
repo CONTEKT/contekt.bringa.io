@@ -9,6 +9,7 @@ import Link from "next/link";
 import { appConfig } from "@/lib/app-config";
 import { buildLoginCopy, buildLoginOAuthGate, normalizeTermsAccepted } from "@/lib/login-terms";
 import { localDemoModeEnabled } from "@/lib/supabaseclient";
+import LocalDevEmailLogin from "@/components/auth/local-dev-email-login";
 
 export default function LoginPage() {
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -48,6 +49,8 @@ export default function LoginPage() {
           <GitSignInButton disabled={oauthGate.disabled} />
           <GoogleSignInButton disabled={oauthGate.disabled} />
         </div>
+
+        <LocalDevEmailLogin termsAccepted={termsAccepted} />
 
         <div className="mt-6 text-center">
           <Link href="/docs" className="text-sm text-muted-foreground hover:text-foreground">

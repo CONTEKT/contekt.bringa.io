@@ -4,7 +4,15 @@ import { useEffect, useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import imageCompression from 'browser-image-compression'
 import { supabase } from "@/lib/supabaseclient"
-import { formatBytes, getImageCompressionOptions, imageUploadAccept, validateImageFile } from "@/lib/media"
+import { appConfig } from "@/lib/app-config"
+import { formatBytes, imageUploadAccept, validateImageFile } from "@/lib/media"
+import {
+    buildItemImageRpcFields,
+    cleanupUploadedItemImage,
+    uploadItemImageRenditions,
+    type ItemImageRpcFields,
+    type UploadedItemImage,
+} from "@/lib/item-image-upload"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -21,6 +29,7 @@ function EditItemContent() {
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
     const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(null)
+    const [currentThumbnailUrl, setCurrentThumbnailUrl] = useState<string | null>(null)
     const [file, setFile] = useState<File | null>(null)
     const [previewUrl, setPreviewUrl] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
@@ -69,6 +78,7 @@ function EditItemContent() {
                 setName(item.name)
                 setDescription(item.description || "")
                 setCurrentImageUrl(item.image_url)
+                setCurrentThumbnailUrl(item.thumbnail_url || item.image_url)
             } catch (err: unknown) {
                 console.error(err)
                 setError(err instanceof Error ? err.message : "Failed to load item")
@@ -106,47 +116,45 @@ function EditItemContent() {
         }
     }, [previewUrl])
 
-    const uploadImage = async (file: File) => {
-        try {
-            const compressedFile = await imageCompression(file, getImageCompressionOptions())
-            const fileName = `${crypto.randomUUID()}.webp`
-            const filePath = `${fileName}`
-
-            const { error: uploadError } = await supabase.storage
-                .from('items')
-                .upload(filePath, compressedFile, {
-                    contentType: 'image/webp'
-                })
-
-            if (uploadError) throw uploadError
-
-            const { data } = supabase.storage.from('items').getPublicUrl(filePath)
-            return data.publicUrl
-        } catch (error) {
-            console.error('Error compressing image:', error)
-            throw error
-        }
-    }
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!id) return;
         setSaving(true)
         setFormError(null)
 
+        let uploadedImage: UploadedItemImage | null = null
+
         try {
             if (!name) throw new Error("Name is required")
 
-            let imageUrl = currentImageUrl
+            let imageFields: ItemImageRpcFields = {
+                image_url_input: currentImageUrl,
+                thumbnail_url_input: currentThumbnailUrl || currentImageUrl,
+                image_storage_bucket_input: null,
+                image_storage_path_input: null,
+                thumbnail_storage_path_input: null,
+            }
+
             if (file) {
-                imageUrl = await uploadImage(file)
+                const { data: userResult, error: userError } = await supabase.auth.getUser()
+                if (userError) throw userError
+                if (!userResult.user) throw new Error("You need to be signed in to update an item")
+
+                uploadedImage = await uploadItemImageRenditions({
+                    file,
+                    userId: userResult.user.id,
+                    mediaConfig: appConfig.media,
+                    supabase,
+                    compressImage: imageCompression,
+                })
+                imageFields = buildItemImageRpcFields(uploadedImage)
             }
 
             const { data: updated, error: updateError } = await supabase.rpc('update_item', {
                 item_id_input: id,
                 name_input: name,
                 description_input: description,
-                image_url_input: imageUrl,
+                ...imageFields,
             })
 
             if (updateError) throw updateError
@@ -155,6 +163,7 @@ function EditItemContent() {
             router.push(`/items/details?id=${id}`)
             router.refresh()
         } catch (err: unknown) {
+            await cleanupUploadedItemImage(supabase, uploadedImage)
             console.error(err)
             setFormError(err instanceof Error ? err.message : "Something went wrong")
         } finally {

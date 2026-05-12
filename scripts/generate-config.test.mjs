@@ -78,6 +78,8 @@ const completeBaseConfig = {
     maxUploadBytes: 10485760,
     compressionMaxSizeMb: 1,
     compressionMaxWidthOrHeight: 1920,
+    thumbnailCompressionMaxSizeMb: 0.25,
+    thumbnailCompressionMaxWidthOrHeight: 333,
   },
   features: {
     githubLinkInTopbar: true,

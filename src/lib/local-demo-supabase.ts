@@ -44,6 +44,31 @@ function demoId(prefix: string) {
   return `${prefix}-${randomId}`;
 }
 
+function demoStoragePlaceholderUrl(bucket: string, path: string) {
+  const label = `${bucket}/${path}`
+    .slice(0, 80)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("\"", "&quot;")
+    .replaceAll("'", "&apos;");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><rect width="800" height="600" fill="#f3f4f6"/><text x="400" y="300" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="28" fill="#6b7280">${label}</text></svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+function demoStoragePublicUrl(bucket: string, path: string, body?: unknown) {
+  if (
+    typeof Blob !== "undefined"
+    && body instanceof Blob
+    && typeof URL !== "undefined"
+    && typeof URL.createObjectURL === "function"
+  ) {
+    return URL.createObjectURL(body);
+  }
+
+  return demoStoragePlaceholderUrl(bucket, path);
+}
+
 function createDemoTables(): DemoTables {
   return {
     profiles: [
@@ -89,6 +114,7 @@ function createDemoTables(): DemoTables {
         description: "Warm adjustable lamp for checking browsing, search, details, and borrowing.",
         status: "inStock",
         image_url: null,
+        thumbnail_url: null,
         created_by: localDemoUser.id,
         owner_kind: "profile",
         owner_profile_id: localDemoUser.id,
@@ -109,6 +135,7 @@ function createDemoTables(): DemoTables {
         description: "Borrowed sample item so the borrowed-first dashboard path can be inspected.",
         status: "borrowed",
         image_url: null,
+        thumbnail_url: null,
         created_by: secondDemoUserId,
         owner_kind: "profile",
         owner_profile_id: secondDemoUserId,
@@ -130,6 +157,7 @@ function createDemoTables(): DemoTables {
           "A deliberately long local demo description for checking card wrapping, detail pages, and narrow viewport behavior.",
         status: "inStock",
         image_url: null,
+        thumbnail_url: null,
         created_by: localDemoUser.id,
         owner_kind: "profile",
         owner_profile_id: localDemoUser.id,
@@ -161,6 +189,7 @@ function createDemoTables(): DemoTables {
       },
     ],
     item_versions: [],
+    item_images: [],
     item_suggestions: [],
     item_flags: [],
     account_deletion_requests: [],
@@ -357,6 +386,7 @@ function pushVersion(tables: DemoTables, item: DemoRow, reason: string | null) {
     name: item.name,
     description: item.description,
     image_url: item.image_url,
+    thumbnail_url: item.thumbnail_url,
     owner_kind: item.owner_kind ?? "profile",
     owner_profile_id: item.owner_profile_id ?? null,
     owner_label: item.owner_label ?? null,
@@ -383,6 +413,7 @@ function buildRpcHandler(tables: DemoTables) {
         description: params.description_input ?? null,
         status: "inStock",
         image_url: params.image_url_input ?? null,
+        thumbnail_url: params.thumbnail_url_input ?? params.image_url_input ?? null,
         created_by: localDemoUser.id,
         owner_kind: "profile",
         owner_profile_id: localDemoUser.id,
@@ -395,6 +426,25 @@ function buildRpcHandler(tables: DemoTables) {
         deleted_by: null,
         handoff_policy: "return_to_owner",
       });
+      if (params.image_storage_path_input) {
+        tables.item_images.push({
+          id: demoId("demo-image"),
+          item_id: id,
+          storage_bucket: params.image_storage_bucket_input ?? "items",
+          storage_path: params.image_storage_path_input,
+          public_url: params.image_url_input ?? null,
+          thumbnail_storage_path: params.thumbnail_storage_path_input ?? null,
+          thumbnail_public_url: params.thumbnail_url_input ?? params.image_url_input ?? null,
+          uploaded_by: localDemoUser.id,
+          caption: null,
+          alt_text: params.name_input,
+          sort_order: 0,
+          is_cover: true,
+          moderation_state: "accepted",
+          deleted_at: null,
+          created_at: now,
+        });
+      }
       return { data: id, error: null };
     }
 
@@ -406,7 +456,30 @@ function buildRpcHandler(tables: DemoTables) {
         name: params.name_input,
         description: params.description_input ?? null,
         image_url: params.image_url_input ?? null,
+        thumbnail_url: params.thumbnail_url_input ?? params.image_url_input ?? null,
       });
+      if (params.image_storage_path_input) {
+        for (const image of tables.item_images) {
+          if (image.item_id === item.id) image.is_cover = false;
+        }
+        tables.item_images.push({
+          id: demoId("demo-image"),
+          item_id: item.id,
+          storage_bucket: params.image_storage_bucket_input ?? "items",
+          storage_path: params.image_storage_path_input,
+          public_url: params.image_url_input ?? null,
+          thumbnail_storage_path: params.thumbnail_storage_path_input ?? null,
+          thumbnail_public_url: params.thumbnail_url_input ?? params.image_url_input ?? null,
+          uploaded_by: localDemoUser.id,
+          caption: null,
+          alt_text: params.name_input,
+          sort_order: 0,
+          is_cover: true,
+          moderation_state: "accepted",
+          deleted_at: null,
+          created_at: now,
+        });
+      }
       return { data: true, error: null };
     }
 
@@ -529,6 +602,7 @@ function buildRpcHandler(tables: DemoTables) {
 
 export function createLocalDemoSupabaseClient() {
   const tables = createDemoTables();
+  const storageUrls = new Map<string, string>();
   const session = {
     access_token: "local-demo-access-token",
     refresh_token: "local-demo-refresh-token",
@@ -569,11 +643,18 @@ export function createLocalDemoSupabaseClient() {
     storage: {
       from(bucket: string) {
         return {
-          async upload(path: string) {
+          async upload(path: string, body?: unknown) {
+            storageUrls.set(`${bucket}/${path}`, demoStoragePublicUrl(bucket, path, body));
             return { data: { path }, error: null };
           },
           getPublicUrl(path: string) {
-            return { data: { publicUrl: `/demo-uploads/${bucket}/${path}` } };
+            return { data: { publicUrl: storageUrls.get(`${bucket}/${path}`) ?? demoStoragePlaceholderUrl(bucket, path) } };
+          },
+          async remove(paths: string[]) {
+            for (const path of paths) {
+              storageUrls.delete(`${bucket}/${path}`);
+            }
+            return { data: paths, error: null };
           },
         };
       },

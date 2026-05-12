@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   buildImageCompressionOptions,
+  buildImageThumbnailCompressionOptions,
   buildImageUploadAccept,
   formatBytes,
   validateImageFileAgainstConfig,
@@ -13,6 +14,8 @@ const mediaConfig = {
   maxUploadBytes: 10_485_760,
   compressionMaxSizeMb: 1,
   compressionMaxWidthOrHeight: 1920,
+  thumbnailCompressionMaxSizeMb: 0.25,
+  thumbnailCompressionMaxWidthOrHeight: 333,
 };
 
 test("formats image upload accept values from media config", () => {
@@ -40,6 +43,16 @@ test("builds browser image compression options from media config", () => {
     useWebWorker: true,
     fileType: "image/webp",
     initialQuality: 0.85,
+  });
+});
+
+test("builds browser image thumbnail compression options from media config", () => {
+  assert.deepEqual(buildImageThumbnailCompressionOptions(mediaConfig), {
+    maxSizeMB: 0.25,
+    maxWidthOrHeight: 333,
+    useWebWorker: true,
+    fileType: "image/webp",
+    initialQuality: 0.8,
   });
 });
 

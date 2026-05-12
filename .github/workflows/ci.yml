@@ -56,6 +56,12 @@ jobs:
       - name: Test media policy helpers
         run: pnpm test:media-policy
 
+      - name: Test item image upload helpers
+        run: pnpm test:item-image-upload
+
+      - name: Test item detail image helpers
+        run: pnpm test:item-detail-images
+
       - name: Test protected route decisions
         run: pnpm test:protected-route
 
@@ -133,6 +139,9 @@ jobs:
 
       - name: Test login terms gate
         run: pnpm test:login-terms
+
+      - name: Test local Supabase dev login
+        run: pnpm test:local-dev-login
 
       - name: Test local demo mode guard
         run: pnpm test:local-demo-mode

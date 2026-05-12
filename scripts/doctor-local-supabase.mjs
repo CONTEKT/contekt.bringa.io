@@ -106,7 +106,7 @@ function writeReport(output, { expectedConfig, localConfig }) {
 - Public key: present
 - Local app config: ${localConfigRelativePath} is ready
 
-Next: BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
+Next: pnpm dev:docker
 `);
     return;
   }
@@ -123,7 +123,7 @@ Next: BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
 
   output.write(`
 Run: pnpm setup:local-supabase --seed
-Then: BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
+Then: pnpm dev:docker
 `);
 }
 

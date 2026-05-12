@@ -1,6 +1,7 @@
 import { appConfig } from "@/lib/app-config"
 import {
   buildImageCompressionOptions,
+  buildImageThumbnailCompressionOptions,
   buildImageUploadAccept,
   formatBytes,
   validateImageFileAgainstConfig,
@@ -14,6 +15,10 @@ export function validateImageFile(file: File) {
 
 export function getImageCompressionOptions() {
   return buildImageCompressionOptions(appConfig.media)
+}
+
+export function getImageThumbnailCompressionOptions() {
+  return buildImageThumbnailCompressionOptions(appConfig.media)
 }
 
 export { formatBytes }

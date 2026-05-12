@@ -56,7 +56,11 @@ test("supports core item RPCs against the local demo data set", async () => {
   const createResult = await supabase.rpc("create_item", {
     name_input: "Demo Drill",
     description_input: "Cordless drill for trying the create flow.",
-    image_url_input: null,
+    image_url_input: "https://storage.example.test/items/user/image/detail.webp",
+    thumbnail_url_input: "https://storage.example.test/items/user/image/thumb.webp",
+    image_storage_bucket_input: "items",
+    image_storage_path_input: "user/image/detail.webp",
+    thumbnail_storage_path_input: "user/image/thumb.webp",
   });
   assert.equal(createResult.error, null);
   assert.match(createResult.data, /^demo-item-/);
@@ -64,6 +68,8 @@ test("supports core item RPCs against the local demo data set", async () => {
   const createdItem = await supabase.from("items").select("*").eq("id", createResult.data).single();
   assert.equal(createdItem.data.name, "Demo Drill");
   assert.equal(createdItem.data.created_by, localDemoUser.id);
+  assert.equal(createdItem.data.image_url, "https://storage.example.test/items/user/image/detail.webp");
+  assert.equal(createdItem.data.thumbnail_url, "https://storage.example.test/items/user/image/thumb.webp");
 
   const borrowResult = await supabase.rpc("borrow_item", { item_id_input: "demo-desk-lamp" });
   assert.equal(borrowResult.error, null);
@@ -75,4 +81,15 @@ test("supports core item RPCs against the local demo data set", async () => {
   const returnResult = await supabase.rpc("return_item", { item_id_input: "demo-desk-lamp" });
   assert.equal(returnResult.error, null);
   assert.equal(returnResult.data, true);
+});
+
+test("returns displayable public URLs for local demo storage uploads", async () => {
+  const supabase = createLocalDemoSupabaseClient();
+  const storage = supabase.storage.from("items");
+  const uploadResult = await storage.upload("demo.webp", new Blob(["demo"], { type: "image/webp" }));
+
+  assert.equal(uploadResult.error, null);
+
+  const { data } = storage.getPublicUrl("demo.webp");
+  assert.match(data.publicUrl, /^(blob:|data:image\/)/);
 });

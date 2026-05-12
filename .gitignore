@@ -41,6 +41,7 @@ config/local.config.jsonc
 # supabase binaries
 supabase.tar.gz
 supabase_binary_backup
+supabase/.branches/
 supabase/.temp/
 supabase/functions/**/node_modules/
 

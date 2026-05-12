@@ -90,10 +90,10 @@ Production builds ignore local demo mode in code and alias the demo Supabase fix
 pnpm exec supabase start
 pnpm setup:local-supabase --seed
 pnpm doctor:local-supabase
-BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
+pnpm dev:docker
 ```
 
-Use an ignored `config/local.config.jsonc` for the local CLI `supabase.url`, `supabase.publishableKey`, and `"development": { "localDemoMode": false }`. See [Local Supabase Development](local-supabase-development.md) for the local seed accounts and reset flow.
+`pnpm dev:docker` regenerates config with local Docker overrides before starting Next.js. Use an ignored `config/local.config.jsonc` for the local CLI `supabase.url`, `supabase.publishableKey`, and `"development": { "localDemoMode": false }`. See [Local Supabase Development](local-supabase-development.md) for the local seed accounts and reset flow.
 
 ## Layering Rules
 
@@ -135,5 +135,5 @@ Default content is copied first, then `content/deployments/<slug>` overrides mat
 - `supabase.url`, `supabase.publishableKey`: public browser client values for the Supabase API.
 - `supabase.authRedirectPath`: app-relative redirect path used by OAuth buttons.
 - `development.localDemoMode`: development-only in-browser demo data mode; ignored by production builds.
-- `media.*`: accepted image types and upload/compression limits.
+- `media.*`: accepted image types plus upload, detail-image, and thumbnail compression limits.
 - `features.*`: public feature switches.

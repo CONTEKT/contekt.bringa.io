@@ -7,7 +7,7 @@ import type { ItemDb } from "@/app/model/model"
 import { AppImage } from "@/components/ui/app-image"
 import { cn } from "@/lib/utils"
 
-type ItemListCardItem = Pick<ItemDb, "id" | "name" | "description" | "image_url" | "status">
+type ItemListCardItem = Pick<ItemDb, "id" | "name" | "description" | "image_url" | "thumbnail_url" | "status">
 
 type ItemListCardProps = {
   item: ItemListCardItem
@@ -47,6 +47,7 @@ export function ItemStatusBadge({
 
 export function ItemListCard({ item, href, className }: ItemListCardProps) {
   const itemHref = href ?? `/items/details?id=${encodeURIComponent(item.id)}`
+  const imageUrl = item.thumbnail_url || item.image_url
 
   return (
     <Link
@@ -56,20 +57,20 @@ export function ItemListCard({ item, href, className }: ItemListCardProps) {
         className,
       )}
     >
-      <article className="flex w-full items-start gap-3 rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
-        {item.image_url ? (
+      <article className="flex w-full items-start gap-4 rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
+        {imageUrl ? (
           <AppImage
-            src={item.image_url}
+            src={imageUrl}
             alt={item.name}
-            width={56}
-            height={56}
-            sizes="56px"
+            width={96}
+            height={96}
+            sizes="96px"
             loading="lazy"
-            className="h-14 w-14 shrink-0 rounded-lg border object-cover"
+            className="h-24 w-24 shrink-0 rounded-lg border object-cover"
           />
         ) : (
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border bg-muted">
-            <Package className="h-6 w-6 text-muted-foreground" />
+          <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg border bg-muted">
+            <Package className="h-8 w-8 text-muted-foreground" />
           </div>
         )}
 

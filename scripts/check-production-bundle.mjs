@@ -16,6 +16,10 @@ export const developmentOnlyBundleMarkers = [
   "demo-desk-lamp",
   "local-demo-access-token",
   "local.demo@app.bringa.io",
+  "admin@bringa.local",
+  "bringa-local-admin-123",
+  "member@bringa.local",
+  "bringa-local-member-123",
 ];
 
 function normalizeRelativePath(filePath) {

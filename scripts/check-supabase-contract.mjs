@@ -114,6 +114,7 @@ export function checkSupabaseContract({ schema, config }) {
     "Admins and creators can delete items",
     "Authenticated users can insert borrow history",
     "Validated users can insert history",
+    "Authenticated users can upload",
     "borrow_history_insert_authenticated",
     "borrow_history_select_all",
   ];
@@ -175,7 +176,9 @@ export function checkSupabaseContract({ schema, config }) {
       "items.handoff_policy",
       "handoff_policy text NOT NULL DEFAULT 'return_to_owner'::text CHECK (handoff_policy = ANY (ARRAY['return_to_owner'::text, 'direct_handoff_allowed'::text]))",
     ],
+    ["items.thumbnail_url", "thumbnail_url text,"],
     ["item_versions table", "CREATE TABLE IF NOT EXISTS public.item_versions ("],
+    ["item_versions.thumbnail_url", "thumbnail_url text,"],
     [
       "item_versions unique version",
       "CONSTRAINT item_versions_item_id_version_number_unique UNIQUE (item_id, version_number)",
@@ -184,6 +187,12 @@ export function checkSupabaseContract({ schema, config }) {
     [
       "item_images unique storage path",
       "CONSTRAINT item_images_storage_bucket_path_unique UNIQUE (storage_bucket, storage_path)",
+    ],
+    ["item_images thumbnail path", "thumbnail_storage_path text,"],
+    ["item_images thumbnail public URL", "thumbnail_public_url text,"],
+    [
+      "item_images unique thumbnail storage path",
+      "CREATE UNIQUE INDEX IF NOT EXISTS idx_item_images_unique_thumbnail_storage_path ON public.item_images(storage_bucket, thumbnail_storage_path) WHERE thumbnail_storage_path IS NOT NULL;",
     ],
     [
       "item_images moderation state",
@@ -254,6 +263,7 @@ export function checkSupabaseContract({ schema, config }) {
     ["restore locks the current item", "FOR UPDATE;"],
     ["profile owners can record item versions", "current_item.owner_profile_id IS DISTINCT FROM auth.uid()"],
     ["internal version helper is not browser-executable", "REVOKE EXECUTE ON FUNCTION public.record_item_version(uuid, text) FROM PUBLIC;"],
+    ["item versions capture thumbnail URLs", "current_item.thumbnail_url,"],
   ];
 
   for (const [label, expectedSql] of requiredVersioningSql) {
@@ -305,9 +315,10 @@ export function checkSupabaseContract({ schema, config }) {
     ["image metadata suggestion writes item_images", "INSERT INTO public.item_images ("],
     ["image metadata suggestion can set cover", "UPDATE public.item_images\n        SET is_cover = false"],
     ["image metadata suggestion updates legacy cover URL", "image_url = coalesce(normalized_public_url, image_url)"],
+    ["image metadata suggestion updates legacy thumbnail URL", "thumbnail_url = coalesce(normalized_thumbnail_public_url, normalized_public_url, thumbnail_url)"],
     ["image metadata suggestion records version", "SELECT public.record_item_version(selected_item_id, 'accepted image suggestion') INTO new_version_id;"],
-    ["image metadata suggestion blocks anonymous execute", "REVOKE EXECUTE ON FUNCTION public.apply_item_image_suggestion(uuid, text, text, text, text, text, boolean, text) FROM PUBLIC;"],
-    ["image metadata suggestion allows authenticated execute", "GRANT EXECUTE ON FUNCTION public.apply_item_image_suggestion(uuid, text, text, text, text, text, boolean, text) TO authenticated;"],
+    ["image metadata suggestion blocks anonymous execute", "REVOKE EXECUTE ON FUNCTION public.apply_item_image_suggestion(uuid, text, text, text, text, text, boolean, text, text, text) FROM PUBLIC;"],
+    ["image metadata suggestion allows authenticated execute", "GRANT EXECUTE ON FUNCTION public.apply_item_image_suggestion(uuid, text, text, text, text, text, boolean, text, text, text) TO authenticated;"],
     ["owner suggestion application admin RPC", "CREATE OR REPLACE FUNCTION public.apply_owner_item_suggestion("],
     ["owner suggestion application uses hardened search path", "RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$"],
     ["owner suggestion application only applies owner suggestions", "AND suggestion_type = 'owner'"],
@@ -414,6 +425,17 @@ export function checkSupabaseContract({ schema, config }) {
   }
 
   requireIncludes(schema, "INSERT INTO storage.buckets", "Missing Storage bucket setup in supabase/schema.sql.");
+  requireIncludes(
+    schema,
+    "storage.extension(name) = 'webp'",
+    "Storage upload policy must restrict browser uploads to generated WebP renditions.",
+  );
+  requireIncludes(
+    schema,
+    "(storage.foldername(name))[1] = (select auth.uid()::text)",
+    "Storage upload policy must restrict browser uploads to the authenticated user's folder.",
+  );
+  requirePolicyCreate(schema, "Validated users can delete own unreferenced item uploads");
   requireIncludes(
     schema,
     String(config.media.maxUploadBytes),

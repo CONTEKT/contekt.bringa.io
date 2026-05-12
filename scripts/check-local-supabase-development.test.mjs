@@ -21,7 +21,8 @@ Do not create a separate \`app.bringa.io_dev\` project by default.
 \`pnpm exec supabase status -o env\`
 \`pnpm setup:local-supabase\`
 \`pnpm doctor:local-supabase\`
-\`BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev\`
+\`pnpm dev:docker\`
+\`pnpm dev:docker\` regenerates config with local Docker overrides before starting Next.js.
 \`pnpm seed:local-supabase\`
 The script only accepts localhost Supabase URLs.
 admin@bringa.local
@@ -57,6 +58,8 @@ const validPackageJson = JSON.stringify({
     "setup:local-supabase": "node scripts/setup-local-supabase.mjs",
     "seed:local-supabase": "node scripts/seed-local-supabase.mjs",
     "doctor:local-supabase": "node scripts/doctor-local-supabase.mjs",
+    "predev:docker": "BRINGA_CONFIG_INCLUDE_LOCAL=true node scripts/generate-config.mjs",
+    "dev:docker": "BRINGA_CONFIG_INCLUDE_LOCAL=true next dev",
   },
 });
 
@@ -133,5 +136,63 @@ test("requires the local doctor package command", () => {
       }),
     }),
     /doctor:local-supabase/,
+  );
+});
+
+test("requires the Docker-backed dev package command", () => {
+  assert.throws(
+    () => checkLocalSupabaseDevelopmentContent({
+      localSupabaseMarkdown: validLocalSupabaseMarkdown,
+      readmeMarkdown: validReadme,
+      supabaseMarkdown: validSupabase,
+      forkingMarkdown: validForking,
+      branchingMarkdown: validBranching,
+      packageJson: JSON.stringify({
+        scripts: {
+          "setup:local-supabase": "node scripts/setup-local-supabase.mjs",
+          "seed:local-supabase": "node scripts/seed-local-supabase.mjs",
+          "doctor:local-supabase": "node scripts/doctor-local-supabase.mjs",
+        },
+      }),
+    }),
+    /dev:docker/,
+  );
+});
+
+test("requires Docker-backed dev to regenerate config with local overrides", () => {
+  assert.throws(
+    () => checkLocalSupabaseDevelopmentContent({
+      localSupabaseMarkdown: validLocalSupabaseMarkdown,
+      readmeMarkdown: validReadme,
+      supabaseMarkdown: validSupabase,
+      forkingMarkdown: validForking,
+      branchingMarkdown: validBranching,
+      packageJson: JSON.stringify({
+        scripts: {
+          "setup:local-supabase": "node scripts/setup-local-supabase.mjs",
+          "seed:local-supabase": "node scripts/seed-local-supabase.mjs",
+          "doctor:local-supabase": "node scripts/doctor-local-supabase.mjs",
+          "dev:docker": "BRINGA_CONFIG_INCLUDE_LOCAL=true next dev",
+        },
+      }),
+    }),
+    /predev:docker/,
+  );
+});
+
+test("requires local Supabase docs to explain the Docker config regeneration", () => {
+  assert.throws(
+    () => checkLocalSupabaseDevelopmentContent({
+      localSupabaseMarkdown: validLocalSupabaseMarkdown.replace(
+        "\`pnpm dev:docker\` regenerates config with local Docker overrides before starting Next.js.",
+        "",
+      ),
+      readmeMarkdown: validReadme,
+      supabaseMarkdown: validSupabase,
+      forkingMarkdown: validForking,
+      branchingMarkdown: validBranching,
+      packageJson: validPackageJson,
+    }),
+    /regenerates config with local Docker overrides/,
   );
 });

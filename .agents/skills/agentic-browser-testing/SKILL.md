@@ -16,6 +16,7 @@ Use existing browser-agent capabilities first. Do not add Playwright or another 
 ## Baseline Scenarios
 
 - Login page: terms checkbox gates OAuth buttons; terms route opens correctly; logout returns to logged-out state.
+- Local Supabase login: when `pnpm dev:docker` points at localhost, accept terms and use the seeded Admin or Member email/password panel before testing real Auth, RLS, RPC, or Storage flows.
 - Invite flow: invalid code shows an error; valid code redirects to dashboard; users without invite remain blocked when signup-without-invite is disabled.
 - Dashboard default: users with borrowed items see borrowed items first; users without borrowed items see available items; empty states do not hide navigation.
 - Dashboard controls: search, available/all/borrowed filters, create action, fixed bottom controls, keyboard focus, and long labels stay usable on mobile and desktop.
@@ -105,6 +106,7 @@ Use these as concrete routes through the app. Adapt only the account names and f
 ## Data Guidance
 
 - Prefer local, mock, or explicitly approved development data.
+- For real upload behavior, prefer the local Supabase stack over local demo mode because local demo Storage is a mock and does not prove bucket/object behavior.
 - Do not use production user data unless the user approves the exact scenario.
 - Mark reports clearly as mock, development, staging, or production metadata.
 

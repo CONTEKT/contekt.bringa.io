@@ -27,7 +27,8 @@ const requiredDocsPhrases = [
   "pnpm exec supabase status -o env",
   "pnpm setup:local-supabase",
   "pnpm doctor:local-supabase",
-  "BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev",
+  "pnpm dev:docker",
+  "`pnpm dev:docker` regenerates config with local Docker overrides before starting Next.js.",
   "pnpm seed:local-supabase",
   "The script only accepts localhost Supabase URLs.",
   "admin@bringa.local",
@@ -102,6 +103,15 @@ export function checkLocalSupabaseDevelopmentContent({
   }
   if (!scripts["doctor:local-supabase"]) {
     throw new Error("package.json is missing script: doctor:local-supabase");
+  }
+  if (!scripts["dev:docker"]) {
+    throw new Error("package.json is missing script: dev:docker");
+  }
+  if (!scripts["predev:docker"]) {
+    throw new Error("package.json is missing script: predev:docker");
+  }
+  if (!scripts["predev:docker"].includes("BRINGA_CONFIG_INCLUDE_LOCAL=true") || !scripts["predev:docker"].includes("generate-config.mjs")) {
+    throw new Error("package.json predev:docker must regenerate config with local Docker overrides");
   }
 }
 

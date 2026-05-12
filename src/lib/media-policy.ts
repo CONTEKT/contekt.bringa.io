@@ -3,6 +3,8 @@ export type MediaPolicyConfig = {
   maxUploadBytes: number;
   compressionMaxSizeMb: number;
   compressionMaxWidthOrHeight: number;
+  thumbnailCompressionMaxSizeMb: number;
+  thumbnailCompressionMaxWidthOrHeight: number;
 };
 
 export type ImageFileLike = {
@@ -33,6 +35,16 @@ export function buildImageCompressionOptions(config: MediaPolicyConfig) {
     useWebWorker: true,
     fileType: "image/webp" as const,
     initialQuality: 0.85,
+  };
+}
+
+export function buildImageThumbnailCompressionOptions(config: MediaPolicyConfig) {
+  return {
+    maxSizeMB: config.thumbnailCompressionMaxSizeMb,
+    maxWidthOrHeight: config.thumbnailCompressionMaxWidthOrHeight,
+    useWebWorker: true,
+    fileType: "image/webp" as const,
+    initialQuality: 0.8,
   };
 }
 

@@ -4,7 +4,14 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import imageCompression from 'browser-image-compression'
 import { supabase } from "@/lib/supabaseclient"
-import { formatBytes, getImageCompressionOptions, imageUploadAccept, validateImageFile } from "@/lib/media"
+import { appConfig } from "@/lib/app-config"
+import { formatBytes, imageUploadAccept, validateImageFile } from "@/lib/media"
+import {
+    buildItemImageRpcFields,
+    cleanupUploadedItemImage,
+    uploadItemImageRenditions,
+    type UploadedItemImage,
+} from "@/lib/item-image-upload"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -48,48 +55,34 @@ export default function CreateItemPage() {
         }
     }, [previewUrl])
 
-    const uploadImage = async (file: File) => {
-        try {
-            // Compress and convert to WebP
-            const compressedFile = await imageCompression(file, getImageCompressionOptions())
-            const fileName = `${crypto.randomUUID()}.webp`
-            const filePath = `${fileName}`
-
-            const { error: uploadError } = await supabase.storage
-                .from('items')
-                .upload(filePath, compressedFile, {
-                    contentType: 'image/webp'
-                })
-
-            if (uploadError) {
-                throw uploadError
-            }
-
-            const { data } = supabase.storage.from('items').getPublicUrl(filePath)
-            return data.publicUrl
-        } catch (error) {
-            console.error('Error compressing image:', error)
-            throw error
-        }
-    }
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setError(null)
 
+        let uploadedImage: UploadedItemImage | null = null
+
         try {
             if (!name.trim()) throw new Error("Name is required")
 
-            let imageUrl = ""
+            const { data: userResult, error: userError } = await supabase.auth.getUser()
+            if (userError) throw userError
+            if (!userResult.user) throw new Error("You need to be signed in to create an item")
+
             if (file) {
-                imageUrl = await uploadImage(file)
+                uploadedImage = await uploadItemImageRenditions({
+                    file,
+                    userId: userResult.user.id,
+                    mediaConfig: appConfig.media,
+                    supabase,
+                    compressImage: imageCompression,
+                })
             }
 
             const { data: itemId, error: insertError } = await supabase.rpc('create_item', {
                 name_input: name,
                 description_input: description,
-                image_url_input: imageUrl,
+                ...buildItemImageRpcFields(uploadedImage),
             })
 
             if (insertError) throw insertError
@@ -98,6 +91,7 @@ export default function CreateItemPage() {
             router.push('/dashboard')
             router.refresh()
         } catch (err: unknown) {
+            await cleanupUploadedItemImage(supabase, uploadedImage)
             console.error(err)
             setError(err instanceof Error ? err.message : "Something went wrong")
         } finally {

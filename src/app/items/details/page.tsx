@@ -11,6 +11,8 @@ import { User } from "@supabase/supabase-js"
 import ProtectedRoute from "@/components/auth/protected-route"
 import { useIsAdmin } from "@/hooks/useIsAdmin"
 import { AppImage } from "@/components/ui/app-image"
+import { ItemImageViewer } from "@/components/items/item-image-viewer"
+import { buildItemDetailImages, type ItemDetailImageRow } from "@/lib/item-detail-images"
 import {
     buildItemVisibilityRequest,
     itemVisibilityActionForState,
@@ -27,6 +29,7 @@ function ItemDetailsContent() {
     const [actionLoading, setActionLoading] = useState(false)
     const [user, setUser] = useState<User | null>(null)
     const [error, setError] = useState<string | null>(null)
+    const [itemImages, setItemImages] = useState<ItemDetailImageRow[]>([])
     const [borrowHistory, setBorrowHistory] = useState<BorrowHistoryWithProfile[]>([])
     const [suggestionType, setSuggestionType] = useState<ItemSuggestionType>("content")
     const [flagReason, setFlagReason] = useState<ItemFlagReason>("incorrect")
@@ -50,6 +53,7 @@ function ItemDetailsContent() {
 
                 if (!id) {
                     setError("No item ID provided")
+                    setItemImages([])
                     setLoading(false)
                     return
                 }
@@ -62,6 +66,23 @@ function ItemDetailsContent() {
 
                 if (error) throw error
                 setItem(data)
+
+                const { data: imageRows, error: imageError } = await supabase
+                    .from("item_images")
+                    .select("id, public_url, thumbnail_public_url, storage_path, alt_text, caption, is_cover, sort_order, created_at")
+                    .eq("item_id", id)
+                    .eq("moderation_state", "accepted")
+                    .is("deleted_at", null)
+                    .order("is_cover", { ascending: false })
+                    .order("sort_order", { ascending: true })
+                    .order("created_at", { ascending: true })
+
+                if (imageError) {
+                    console.error("Error fetching item images:", imageError)
+                    setItemImages([])
+                } else {
+                    setItemImages((imageRows ?? []) as ItemDetailImageRow[])
+                }
 
                 // If admin, fetch last 3 borrow history records
                 if (isAdmin) {
@@ -83,6 +104,7 @@ function ItemDetailsContent() {
                 }
             } catch {
                 setError("Ein Fehler ist aufgetreten. Bitte versuche es später erneut.")
+                setItemImages([])
             } finally {
                 setLoading(false)
             }
@@ -277,21 +299,40 @@ function ItemDetailsContent() {
     const isAvailable = item.status === 'inStock';
     const canRequestVisibility = Boolean(user && (item.created_by === user.id || item.owner_profile_id === user.id))
     const visibilityAction = canRequestVisibility ? itemVisibilityActionForState(item.visibility_state) : null
+    const galleryImages = buildItemDetailImages({ item, itemImages })
+    const coverImage = galleryImages[0]
 
     return (
         <ProtectedRoute>
             <div className="min-h-screen bg-background pb-20">
                 <div className="max-w-2xl mx-auto px-4 pt-20 relative z-10">
                     <div className="bg-card rounded-lg shadow-sm border p-6 space-y-4">
-                        {item.image_url ? (
-                            <AppImage
-                                src={item.image_url}
-                                alt={item.name}
-                                width={1200}
-                                height={800}
-                                sizes="(max-width: 768px) 100vw, 672px"
-                                loading="lazy"
-                                className="aspect-[4/3] w-full rounded-lg object-cover"
+                        {coverImage ? (
+                            <ItemImageViewer
+                                images={galleryImages}
+                                itemName={item.name}
+                                trigger={
+                                    <button
+                                        type="button"
+                                        aria-label={`Open full image viewer for ${item.name}`}
+                                        className="group relative block w-full overflow-hidden rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                    >
+                                        <AppImage
+                                            src={coverImage.src}
+                                            alt={coverImage.alt}
+                                            width={1200}
+                                            height={800}
+                                            sizes="(max-width: 768px) 100vw, 672px"
+                                            loading="lazy"
+                                            className="aspect-[4/3] w-full object-cover transition duration-200 group-hover:brightness-95"
+                                        />
+                                        {galleryImages.length > 1 && (
+                                            <span className="absolute right-3 top-3 rounded-full bg-background/85 px-2.5 py-1 text-xs font-medium text-foreground shadow-sm">
+                                                1 / {galleryImages.length}
+                                            </span>
+                                        )}
+                                    </button>
+                                }
                             />
                         ) : (
                             <div className="flex aspect-[4/3] w-full items-center justify-center rounded-lg border bg-muted text-sm text-muted-foreground">

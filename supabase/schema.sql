@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS public.items (
     name text,
     description text,
     image_url text,
+    thumbnail_url text,
     borrowed_by uuid,
     created_by uuid,
     owner_kind text NOT NULL DEFAULT 'operator'::text CHECK (owner_kind = ANY (ARRAY['operator'::text, 'profile'::text, 'free_text'::text])),
@@ -101,6 +102,7 @@ CREATE TABLE IF NOT EXISTS public.item_versions (
     name text,
     description text,
     image_url text,
+    thumbnail_url text,
     owner_kind text NOT NULL DEFAULT 'operator'::text CHECK (owner_kind = ANY (ARRAY['operator'::text, 'profile'::text, 'free_text'::text])),
     owner_profile_id uuid,
     owner_label text,
@@ -119,6 +121,8 @@ CREATE TABLE IF NOT EXISTS public.item_images (
     storage_bucket text NOT NULL DEFAULT 'items'::text,
     storage_path text NOT NULL,
     public_url text,
+    thumbnail_storage_path text,
+    thumbnail_public_url text,
     uploaded_by uuid,
     caption text,
     alt_text text,
@@ -462,6 +466,7 @@ BEGIN
         name,
         description,
         image_url,
+        thumbnail_url,
         owner_kind,
         owner_profile_id,
         owner_label,
@@ -475,6 +480,7 @@ BEGIN
         current_item.name,
         current_item.description,
         current_item.image_url,
+        current_item.thumbnail_url,
         current_item.owner_kind,
         current_item.owner_profile_id,
         current_item.owner_label,
@@ -493,13 +499,22 @@ REVOKE EXECUTE ON FUNCTION public.record_item_version(uuid, text) FROM PUBLIC;
 CREATE OR REPLACE FUNCTION public.create_item(
     name_input text,
     description_input text DEFAULT NULL,
-    image_url_input text DEFAULT NULL
+    image_url_input text DEFAULT NULL,
+    thumbnail_url_input text DEFAULT NULL,
+    image_storage_bucket_input text DEFAULT 'items',
+    image_storage_path_input text DEFAULT NULL,
+    thumbnail_storage_path_input text DEFAULT NULL
 )
 RETURNS uuid LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 DECLARE
     new_item_id uuid;
     new_version_id uuid;
     normalized_name text;
+    normalized_image_url text;
+    normalized_thumbnail_url text;
+    normalized_bucket text;
+    normalized_path text;
+    normalized_thumbnail_path text;
 BEGIN
     IF auth.uid() IS NULL OR NOT public.is_validated() THEN
         RETURN NULL;
@@ -510,15 +525,65 @@ BEGIN
         RETURN NULL;
     END IF;
 
-    INSERT INTO public.items (name, description, image_url, status, created_by)
+    normalized_image_url := NULLIF(btrim(coalesce(image_url_input, '')), '');
+    normalized_thumbnail_url := NULLIF(btrim(coalesce(thumbnail_url_input, '')), '');
+    normalized_bucket := NULLIF(btrim(coalesce(image_storage_bucket_input, 'items')), '');
+    normalized_path := NULLIF(btrim(coalesce(image_storage_path_input, '')), '');
+    normalized_thumbnail_path := NULLIF(btrim(coalesce(thumbnail_storage_path_input, '')), '');
+
+    IF normalized_path IS NOT NULL THEN
+        IF normalized_image_url IS NULL
+           OR normalized_thumbnail_url IS NULL
+           OR normalized_bucket IS DISTINCT FROM 'items'
+           OR normalized_thumbnail_path IS NULL
+           OR normalized_path LIKE '/%' OR normalized_path LIKE '%..%'
+           OR normalized_thumbnail_path LIKE '/%' OR normalized_thumbnail_path LIKE '%..%'
+           OR normalized_path NOT LIKE auth.uid()::text || '/%/detail.webp'
+           OR normalized_thumbnail_path NOT LIKE auth.uid()::text || '/%/thumb.webp'
+           OR replace(normalized_path, '/detail.webp', '/thumb.webp') IS DISTINCT FROM normalized_thumbnail_path THEN
+            RETURN NULL;
+        END IF;
+    END IF;
+
+    INSERT INTO public.items (name, description, image_url, thumbnail_url, status, created_by)
     VALUES (
         normalized_name,
         NULLIF(btrim(coalesce(description_input, '')), ''),
-        NULLIF(btrim(coalesce(image_url_input, '')), ''),
+        normalized_image_url,
+        coalesce(normalized_thumbnail_url, normalized_image_url),
         'inStock',
         auth.uid()
     )
     RETURNING id INTO new_item_id;
+
+    IF normalized_path IS NOT NULL THEN
+        INSERT INTO public.item_images (
+            item_id,
+            storage_bucket,
+            storage_path,
+            public_url,
+            thumbnail_storage_path,
+            thumbnail_public_url,
+            uploaded_by,
+            alt_text,
+            is_cover,
+            moderation_state,
+            deleted_at
+        )
+        VALUES (
+            new_item_id,
+            normalized_bucket,
+            normalized_path,
+            normalized_image_url,
+            normalized_thumbnail_path,
+            normalized_thumbnail_url,
+            auth.uid(),
+            normalized_name,
+            true,
+            'accepted',
+            NULL
+        );
+    END IF;
 
     SELECT public.record_item_version(new_item_id, 'created') INTO new_version_id;
     IF new_version_id IS NULL THEN
@@ -533,13 +598,22 @@ CREATE OR REPLACE FUNCTION public.update_item(
     item_id_input uuid,
     name_input text,
     description_input text DEFAULT NULL,
-    image_url_input text DEFAULT NULL
+    image_url_input text DEFAULT NULL,
+    thumbnail_url_input text DEFAULT NULL,
+    image_storage_bucket_input text DEFAULT 'items',
+    image_storage_path_input text DEFAULT NULL,
+    thumbnail_storage_path_input text DEFAULT NULL
 )
 RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 DECLARE
     item_creator uuid;
     new_version_id uuid;
     normalized_name text;
+    normalized_image_url text;
+    normalized_thumbnail_url text;
+    normalized_bucket text;
+    normalized_path text;
+    normalized_thumbnail_path text;
     updated_count integer;
 BEGIN
     IF auth.uid() IS NULL OR NOT public.is_validated() THEN
@@ -549,6 +623,26 @@ BEGIN
     normalized_name := NULLIF(btrim(name_input), '');
     IF normalized_name IS NULL THEN
         RETURN false;
+    END IF;
+
+    normalized_image_url := NULLIF(btrim(coalesce(image_url_input, '')), '');
+    normalized_thumbnail_url := NULLIF(btrim(coalesce(thumbnail_url_input, '')), '');
+    normalized_bucket := NULLIF(btrim(coalesce(image_storage_bucket_input, 'items')), '');
+    normalized_path := NULLIF(btrim(coalesce(image_storage_path_input, '')), '');
+    normalized_thumbnail_path := NULLIF(btrim(coalesce(thumbnail_storage_path_input, '')), '');
+
+    IF normalized_path IS NOT NULL THEN
+        IF normalized_image_url IS NULL
+           OR normalized_thumbnail_url IS NULL
+           OR normalized_bucket IS DISTINCT FROM 'items'
+           OR normalized_thumbnail_path IS NULL
+           OR normalized_path LIKE '/%' OR normalized_path LIKE '%..%'
+           OR normalized_thumbnail_path LIKE '/%' OR normalized_thumbnail_path LIKE '%..%'
+           OR normalized_path NOT LIKE auth.uid()::text || '/%/detail.webp'
+           OR normalized_thumbnail_path NOT LIKE auth.uid()::text || '/%/thumb.webp'
+           OR replace(normalized_path, '/detail.webp', '/thumb.webp') IS DISTINCT FROM normalized_thumbnail_path THEN
+            RETURN false;
+        END IF;
     END IF;
 
     SELECT created_by
@@ -568,12 +662,46 @@ BEGIN
     SET
         name = normalized_name,
         description = NULLIF(btrim(coalesce(description_input, '')), ''),
-        image_url = NULLIF(btrim(coalesce(image_url_input, '')), '')
+        image_url = normalized_image_url,
+        thumbnail_url = coalesce(normalized_thumbnail_url, normalized_image_url)
     WHERE id = item_id_input;
 
     GET DIAGNOSTICS updated_count = ROW_COUNT;
     IF updated_count <> 1 THEN
         RETURN false;
+    END IF;
+
+    IF normalized_path IS NOT NULL THEN
+        UPDATE public.item_images
+        SET is_cover = false
+        WHERE item_id = item_id_input;
+
+        INSERT INTO public.item_images (
+            item_id,
+            storage_bucket,
+            storage_path,
+            public_url,
+            thumbnail_storage_path,
+            thumbnail_public_url,
+            uploaded_by,
+            alt_text,
+            is_cover,
+            moderation_state,
+            deleted_at
+        )
+        VALUES (
+            item_id_input,
+            normalized_bucket,
+            normalized_path,
+            normalized_image_url,
+            normalized_thumbnail_path,
+            normalized_thumbnail_url,
+            auth.uid(),
+            normalized_name,
+            true,
+            'accepted',
+            NULL
+        );
     END IF;
 
     SELECT public.record_item_version(item_id_input, 'updated') INTO new_version_id;
@@ -663,6 +791,7 @@ BEGIN
         name = selected_version.name,
         description = selected_version.description,
         image_url = selected_version.image_url,
+        thumbnail_url = coalesce(selected_version.thumbnail_url, selected_version.image_url),
         owner_kind = selected_version.owner_kind,
         owner_profile_id = selected_version.owner_profile_id,
         owner_label = selected_version.owner_label,
@@ -972,7 +1101,7 @@ BEGIN
         'created_items', coalesce((
             SELECT jsonb_agg(to_jsonb(item_row) ORDER BY item_row.created_at DESC)
             FROM (
-                SELECT id, created_at, name, description, image_url, status, owner_kind, owner_profile_id, owner_label, visibility_state, visibility_reason, hidden_at, deleted_at, handoff_policy
+                SELECT id, created_at, name, description, image_url, thumbnail_url, status, owner_kind, owner_profile_id, owner_label, visibility_state, visibility_reason, hidden_at, deleted_at, handoff_policy
                 FROM public.items
                 WHERE created_by = auth.uid()
             ) AS item_row
@@ -980,7 +1109,7 @@ BEGIN
         'borrowed_items', coalesce((
             SELECT jsonb_agg(to_jsonb(item_row) ORDER BY item_row.created_at DESC)
             FROM (
-                SELECT id, created_at, name, description, image_url, status, owner_kind, owner_profile_id, owner_label, visibility_state, handoff_policy
+                SELECT id, created_at, name, description, image_url, thumbnail_url, status, owner_kind, owner_profile_id, owner_label, visibility_state, handoff_policy
                 FROM public.items
                 WHERE borrowed_by = auth.uid()
             ) AS item_row
@@ -1433,7 +1562,8 @@ BEGIN
     SET
         name = normalized_name,
         description = normalized_description,
-        image_url = normalized_image_url
+        image_url = normalized_image_url,
+        thumbnail_url = normalized_image_url
     WHERE id = selected_item_id;
 
     GET DIAGNOSTICS updated_count = ROW_COUNT;
@@ -1471,15 +1601,20 @@ CREATE OR REPLACE FUNCTION public.apply_item_image_suggestion(
     caption_input text DEFAULT NULL,
     alt_text_input text DEFAULT NULL,
     is_cover_input boolean DEFAULT false,
-    admin_note_input text DEFAULT NULL
+    admin_note_input text DEFAULT NULL,
+    thumbnail_storage_path_input text DEFAULT NULL,
+    thumbnail_public_url_input text DEFAULT NULL
 )
 RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
 DECLARE
     selected_item_id uuid;
     existing_image_item_id uuid;
+    existing_thumbnail_item_id uuid;
     normalized_bucket text;
     normalized_path text;
     normalized_public_url text;
+    normalized_thumbnail_path text;
+    normalized_thumbnail_public_url text;
     normalized_caption text;
     normalized_alt_text text;
     normalized_note text;
@@ -1493,6 +1628,8 @@ BEGIN
     normalized_bucket := NULLIF(btrim(coalesce(storage_bucket_input, 'items')), '');
     normalized_path := NULLIF(btrim(coalesce(storage_path_input, '')), '');
     normalized_public_url := NULLIF(btrim(coalesce(public_url_input, '')), '');
+    normalized_thumbnail_path := NULLIF(btrim(coalesce(thumbnail_storage_path_input, '')), '');
+    normalized_thumbnail_public_url := NULLIF(btrim(coalesce(thumbnail_public_url_input, '')), '');
     normalized_caption := NULLIF(btrim(coalesce(caption_input, '')), '');
     normalized_alt_text := NULLIF(btrim(coalesce(alt_text_input, '')), '');
     normalized_note := NULLIF(btrim(coalesce(admin_note_input, '')), '');
@@ -1500,6 +1637,7 @@ BEGIN
     IF normalized_bucket IS NULL
        OR normalized_path IS NULL
        OR normalized_path LIKE '/%' OR normalized_path LIKE '%..%'
+       OR (normalized_thumbnail_path IS NOT NULL AND (normalized_thumbnail_path LIKE '/%' OR normalized_thumbnail_path LIKE '%..%'))
        OR normalized_alt_text IS NULL OR length(normalized_alt_text) < 3
        OR normalized_note IS NULL OR length(normalized_note) < 3 THEN
         RETURN false;
@@ -1528,6 +1666,19 @@ BEGIN
         RETURN false;
     END IF;
 
+    IF normalized_thumbnail_path IS NOT NULL THEN
+        SELECT item_id
+        INTO existing_thumbnail_item_id
+        FROM public.item_images
+        WHERE storage_bucket = normalized_bucket
+          AND thumbnail_storage_path = normalized_thumbnail_path
+        FOR UPDATE;
+
+        IF FOUND AND existing_thumbnail_item_id IS DISTINCT FROM selected_item_id THEN
+            RETURN false;
+        END IF;
+    END IF;
+
     IF is_cover_input THEN
         UPDATE public.item_images
         SET is_cover = false
@@ -1539,6 +1690,8 @@ BEGIN
         storage_bucket,
         storage_path,
         public_url,
+        thumbnail_storage_path,
+        thumbnail_public_url,
         uploaded_by,
         caption,
         alt_text,
@@ -1551,6 +1704,8 @@ BEGIN
         normalized_bucket,
         normalized_path,
         normalized_public_url,
+        normalized_thumbnail_path,
+        coalesce(normalized_thumbnail_public_url, normalized_public_url),
         auth.uid(),
         normalized_caption,
         normalized_alt_text,
@@ -1562,6 +1717,8 @@ BEGIN
     SET
         item_id = EXCLUDED.item_id,
         public_url = EXCLUDED.public_url,
+        thumbnail_storage_path = EXCLUDED.thumbnail_storage_path,
+        thumbnail_public_url = EXCLUDED.thumbnail_public_url,
         uploaded_by = EXCLUDED.uploaded_by,
         caption = EXCLUDED.caption,
         alt_text = EXCLUDED.alt_text,
@@ -1571,7 +1728,9 @@ BEGIN
 
     IF is_cover_input THEN
         UPDATE public.items
-        SET image_url = coalesce(normalized_public_url, image_url)
+        SET
+            image_url = coalesce(normalized_public_url, image_url),
+            thumbnail_url = coalesce(normalized_thumbnail_public_url, normalized_public_url, thumbnail_url)
         WHERE id = selected_item_id;
     END IF;
 
@@ -1594,8 +1753,8 @@ BEGIN
 END;
 $$;
 
-REVOKE EXECUTE ON FUNCTION public.apply_item_image_suggestion(uuid, text, text, text, text, text, boolean, text) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.apply_item_image_suggestion(uuid, text, text, text, text, text, boolean, text) TO authenticated;
+REVOKE EXECUTE ON FUNCTION public.apply_item_image_suggestion(uuid, text, text, text, text, text, boolean, text, text, text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.apply_item_image_suggestion(uuid, text, text, text, text, text, boolean, text, text, text) TO authenticated;
 
 CREATE OR REPLACE FUNCTION public.apply_owner_item_suggestion(
     suggestion_id_input uuid,
@@ -2126,6 +2285,7 @@ CREATE INDEX IF NOT EXISTS idx_item_versions_actor_id ON public.item_versions(ac
 CREATE INDEX IF NOT EXISTS idx_item_images_item_id ON public.item_images(item_id);
 CREATE INDEX IF NOT EXISTS idx_item_images_uploaded_by ON public.item_images(uploaded_by);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_item_images_one_cover_per_item ON public.item_images(item_id) WHERE is_cover;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_item_images_unique_thumbnail_storage_path ON public.item_images(storage_bucket, thumbnail_storage_path) WHERE thumbnail_storage_path IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_account_deletion_requests_user_id ON public.account_deletion_requests(user_id);
 CREATE INDEX IF NOT EXISTS idx_account_deletion_requests_subject_user_id ON public.account_deletion_requests(subject_user_id);
 CREATE INDEX IF NOT EXISTS idx_account_deletion_requests_reviewed_by ON public.account_deletion_requests(reviewed_by);
@@ -2359,12 +2519,30 @@ DROP POLICY IF EXISTS "No direct notification mute deletes" ON public.notificati
 CREATE POLICY "No direct notification mute deletes" ON public.notification_mutes FOR DELETE TO authenticated USING (false);
 
 -- storage.objects
+DROP POLICY IF EXISTS "Authenticated users can upload" ON storage.objects;
 DROP POLICY IF EXISTS "Validated users can upload item images" ON storage.objects;
 CREATE POLICY "Validated users can upload item images" ON storage.objects
 FOR INSERT TO authenticated
 WITH CHECK (
     bucket_id = 'items'
     AND (select public.is_validated())
+    AND storage.extension(name) = 'webp'
+    AND storage.filename(name) = ANY (ARRAY['detail.webp', 'thumb.webp'])
+    AND (storage.foldername(name))[1] = (select auth.uid()::text)
+);
+DROP POLICY IF EXISTS "Validated users can delete own unreferenced item uploads" ON storage.objects;
+CREATE POLICY "Validated users can delete own unreferenced item uploads" ON storage.objects
+FOR DELETE TO authenticated
+USING (
+    bucket_id = 'items'
+    AND owner = (select auth.uid())
+    AND (storage.foldername(name))[1] = (select auth.uid()::text)
+    AND NOT EXISTS (
+        SELECT 1
+        FROM public.item_images
+        WHERE storage_bucket = 'items'
+          AND (storage_path = name OR thumbnail_storage_path = name)
+    )
 );
 
 -- 7. TRIGGERS
@@ -2400,8 +2578,8 @@ GRANT EXECUTE ON FUNCTION public.is_admin() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.verify_and_apply_invite(text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.borrow_item(uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.return_item(uuid) TO authenticated;
-GRANT EXECUTE ON FUNCTION public.create_item(text, text, text) TO authenticated;
-GRANT EXECUTE ON FUNCTION public.update_item(uuid, text, text, text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.create_item(text, text, text, text, text, text, text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.update_item(uuid, text, text, text, text, text, text, text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.delete_item(uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.restore_item_version(uuid, text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.set_item_visibility(uuid, text, text) TO authenticated;
@@ -2419,7 +2597,7 @@ GRANT EXECUTE ON FUNCTION public.create_item_suggestion(uuid, text, text) TO aut
 GRANT EXECUTE ON FUNCTION public.create_item_flag(uuid, text, text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.review_item_suggestion(uuid, text, text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.apply_item_suggestion(uuid, text, text, text, text) TO authenticated;
-GRANT EXECUTE ON FUNCTION public.apply_item_image_suggestion(uuid, text, text, text, text, text, boolean, text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.apply_item_image_suggestion(uuid, text, text, text, text, text, boolean, text, text, text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.apply_owner_item_suggestion(uuid, text, uuid, text, text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.review_item_flag(uuid, text, text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.mark_notification_seen(uuid, text) TO authenticated;

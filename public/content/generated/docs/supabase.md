@@ -38,7 +38,7 @@ For contributors and free-account-oriented forks, use the repo-local Supabase CL
 pnpm exec supabase start
 pnpm setup:local-supabase --seed
 pnpm doctor:local-supabase
-BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
+pnpm dev:docker
 ```
 
 The local stack is sufficient for normal schema, RLS, RPC, Auth, Storage, and Edge Function development. The doctor checks the running local stack and ignored local config without printing keys. Local development does not replace final hosted checks for OAuth redirects, custom domains, live secrets, backups, advisors, logs, and Telegram delivery. See [Local Supabase Development](local-supabase-development.md).

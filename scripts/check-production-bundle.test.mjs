@@ -48,6 +48,20 @@ test("reports local demo fixture markers in production static chunks", async () 
   );
 });
 
+test("reports local Supabase email login fixture markers in production static chunks", async () => {
+  await withFixture(
+    {
+      "out/_next/static/chunks/login.js": "const email = 'admin@bringa.local'; const password = 'bringa-local-admin-123';\n",
+    },
+    async (root) => {
+      assert.deepEqual(await checkProductionBundle({ root }), [
+        "out/_next/static/chunks/login.js contains development-only local demo marker: admin@bringa.local",
+        "out/_next/static/chunks/login.js contains development-only local demo marker: bringa-local-admin-123",
+      ]);
+    },
+  );
+});
+
 test("requires a production build before checking bundle output", async () => {
   await withFixture(
     {

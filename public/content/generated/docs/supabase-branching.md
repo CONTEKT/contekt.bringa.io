@@ -67,7 +67,7 @@ Supabase Branching is not the default development path for free-account-oriented
    ```bash
    pnpm exec supabase start
    pnpm setup:local-supabase --seed
-   BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
+   pnpm dev:docker
    ```
 
 1. If local Supabase is insufficient, create a persistent Supabase development branch from the production project:

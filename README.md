@@ -89,7 +89,7 @@ Use the local Supabase stack as the default backend path for schema, RLS, RPC, A
 Use `pnpm exec supabase status -o env` to inspect the local API URL and anon key. `pnpm setup:local-supabase` creates the ignored local config from those public values and refuses remote URLs or secret keys. `pnpm doctor:local-supabase` checks the running local stack and local config without printing keys. Then run:
 
 ```bash
-BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
+pnpm dev:docker
 ```
 
 See [Local Supabase Development](docs/local-supabase-development.md) for the local seed users, reset flow, and limits of what local testing can prove.

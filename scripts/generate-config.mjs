@@ -338,6 +338,8 @@ function validateConfig(config) {
   assertPositiveNumber(config.media?.maxUploadBytes, "media.maxUploadBytes");
   assertPositiveNumber(config.media?.compressionMaxSizeMb, "media.compressionMaxSizeMb");
   assertPositiveNumber(config.media?.compressionMaxWidthOrHeight, "media.compressionMaxWidthOrHeight");
+  assertPositiveNumber(config.media?.thumbnailCompressionMaxSizeMb, "media.thumbnailCompressionMaxSizeMb");
+  assertPositiveNumber(config.media?.thumbnailCompressionMaxWidthOrHeight, "media.thumbnailCompressionMaxWidthOrHeight");
   assertBoolean(config.features?.githubLinkInTopbar, "features.githubLinkInTopbar");
   assertBoolean(config.features?.showBorrowedFirstOnlyWhenActive, "features.showBorrowedFirstOnlyWhenActive");
   assertBoolean(config.features?.telegramAdminNotifications, "features.telegramAdminNotifications");

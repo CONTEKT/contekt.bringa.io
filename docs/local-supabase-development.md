@@ -86,10 +86,23 @@ Create `config/local.config.jsonc`; it is ignored by Git:
 Then run:
 
 ```bash
-BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
+pnpm dev:docker
 ```
 
 Keep the local key in `config/local.config.jsonc` or `.env.local`, not in committed deployment profiles.
+
+`pnpm dev:docker` regenerates config with local Docker overrides before starting Next.js. It sets `BRINGA_CONFIG_INCLUDE_LOCAL=true` for the generation step and the dev server. Because config generation writes tracked generated files, this can make `public/bringa.config.json` and `src/config/bringa.config.generated.json` point at `127.0.0.1`. Before committing or making a release claim, stop the dev server and run plain `pnpm generate:config` without local overrides, then confirm the generated files no longer contain local Supabase values.
+
+## Sign In Locally
+
+When the app is running through `pnpm dev:docker`, the login page shows a local Supabase email/password panel instead of relying only on OAuth. The panel is development-only and appears only when the resolved Supabase URL is localhost and local demo mode is disabled.
+
+Default local accounts:
+
+- Admin: `admin@bringa.local` / `bringa-local-admin-123`
+- Member: `member@bringa.local` / `bringa-local-member-123`
+
+Accept the terms checkbox, choose Admin or Member, and submit the local sign-in form. Use the Admin account for admin routes, moderation, and Storage upload tests that need a validated/admin profile. Use the Member account for ordinary borrower flows.
 
 ## Seed Local Demo Data
 
@@ -123,10 +136,32 @@ Use a full reset when migrations or seed assumptions change:
 ```bash
 pnpm exec supabase db reset
 pnpm seed:local-supabase
-BRINGA_CONFIG_INCLUDE_LOCAL=true pnpm dev
+pnpm dev:docker
 ```
 
 `supabase db reset` reapplies migrations and seed files. The Bringa seed helper is separate because it uses Auth Admin APIs to create local Auth users before inserting profile and admin records.
+
+## Agent Workflow
+
+Use this sequence when an agent needs real local Auth, RLS, RPC, or Storage behavior:
+
+```bash
+pnpm exec supabase start
+pnpm setup:local-supabase --seed
+pnpm doctor:local-supabase
+pnpm dev:docker
+```
+
+Then open `/login`, accept the terms checkbox, sign in with the seeded Admin or Member account, and test the target route. For image upload work, prefer the Admin account first because it has a validated profile and admin access to inspect item/admin routes after upload.
+
+When the browser run is finished:
+
+```bash
+pnpm generate:config
+pnpm check:config
+```
+
+Do not commit `config/local.config.jsonc`, `supabase/.branches/`, local generated Supabase values, screenshots containing local keys, or terminal output that includes `SECRET_KEY`, `SERVICE_ROLE_KEY`, `S3_PROTOCOL_ACCESS_KEY_SECRET`, or JWT values from `supabase status -o env`.
 
 ## Edge Functions
 
