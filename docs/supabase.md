@@ -17,19 +17,15 @@ Run `pnpm check:supabase-contract` after changing RPCs, item write policies, or 
 
 ## Quick Operator Setup
 
-For a fork that wants to run the app:
+For a fork that wants to run the app, use [Fork Launch Runbook](fork-launch-runbook.md) as the full step-by-step path. The Supabase-specific summary is:
 
-1. Create a Supabase project.
-2. For a fresh project, apply `supabase/schema.sql` as the baseline. For an existing project, apply reviewed incremental migrations from `supabase/migrations/`.
-3. Create or confirm the `items` Storage bucket and policies through the schema/migration flow.
-4. Configure Auth providers such as GitHub or Google in Supabase.
-5. Set the Supabase Site URL to the final app URL, for example `https://share.example.org`.
-6. Add the exact app redirect URL used by `supabase.authRedirectPath`, for example `https://share.example.org/dashboard`.
-7. Copy the public project URL and publishable key into `config/deployments/<slug>.jsonc`.
-8. Copy `.env.example` to `.env.local`, set `SUPABASE_URL` or `SUPABASE_PROJECT_REF`, and set `SUPABASE_SECRET_KEY` or `SUPABASE_SECRET_KEYS` only for trusted local maintenance after confirming the target project.
-9. Keep Supabase secret keys, service role keys, OAuth secrets, and provider secrets outside Git.
-10. After the intended first admin signs in once, run `pnpm bootstrap:first-admin --confirm-project-ref <project-ref>` as a dry run, then rerun with `--execute` when the target is correct.
-11. Run `pnpm check:supabase-maintenance-key` to verify server-side maintenance access without printing key values.
+1. Create a hosted Supabase project.
+2. Apply `supabase/schema.sql` for a fresh project or reviewed migrations from `supabase/migrations/` for an existing project.
+3. Configure Auth URLs and Google/GitHub OAuth for the final app domain.
+4. Copy only the public Supabase URL and publishable key into `config/deployments/<slug>.jsonc`.
+5. Keep Supabase secret keys, service role keys, OAuth secrets, and provider secrets outside Git.
+6. After the intended first admin signs in once, use `pnpm bootstrap:first-admin` with a dry run first, then `--execute`.
+7. Use `pnpm check:supabase-maintenance-key` only from a trusted local environment to verify server-side maintenance access without printing key values.
 
 The public project URL and publishable key are expected to reach the browser. They are safe only when Row Level Security, Storage policies, and RPC boundaries are correct. Run `pnpm check:supabase-contract` after schema or policy changes.
 
@@ -103,7 +99,7 @@ As of 2026-05-05, the upstream `app.bringa.io` Supabase project in `eu-central-1
 
 Known remaining live setup items are Auth provider configuration, Site URL and redirect URL confirmation, Edge Function secrets, Telegram webhook URL settings, live notification delivery log review, and restore drill evidence. Edge Function logs had no invocations in the last 24-hour windows checked through MCP on 2026-05-05 and 2026-05-06; Auth logs still show the known Supabase-managed GoTrue default/admin group deprecation warnings until provider setup is complete. Supabase Branching is no longer a release blocker for the free-account default path; it remains an optional paid remote-preview follow-up.
 
-On 2026-05-12, Supabase MCP tools were not exposed in the active Codex session, but the Supabase CLI was available as `pnpm exec supabase` at version `2.98.2`. CLI project listing confirmed `app.bringa.io` project ref `bqotcfejqljfcfjhavwh` is `ACTIVE_HEALTHY` in `eu-central-1`. CLI function listing confirmed `notifiy-telegram` and `notifiy-telegram-user` are active with `verify_jwt=true`. CLI secret listing returned secret names and hashes only; never print or commit real secret values. The Supabase custom domain add-on is not required for the GitHub Pages app domain. Use [Public Launch Runbook](public-launch-runbook.md) for the current Cloudflare, Pages, and OAuth sequence.
+On 2026-05-13, secret-safe Supabase CLI metadata confirmed `app.bringa.io` project ref `bqotcfejqljfcfjhavwh` is `ACTIVE_HEALTHY` in `eu-central-1`. CLI function listing confirmed `notifiy-telegram` and `notifiy-telegram-user` are active with `verify_jwt=true`. Supabase MCP availability is session-dependent; use project-scoped MCP when installed and the repo-local CLI/dashboard when it is not. Never print or commit real secret values. The Supabase custom domain add-on is not required for the GitHub Pages app domain. Use [Public Launch Runbook](public-launch-runbook.md) for the current upstream Cloudflare, Pages, and OAuth sequence.
 
 For upstream OAuth provider setup, use:
 

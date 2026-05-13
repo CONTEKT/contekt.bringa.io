@@ -8,7 +8,7 @@ Use `main` for the upstream `app.bringa.io` deployment. Reserve `deploy/<slug>` 
 
 ## Verified State
 
-As of 2026-05-12:
+As of 2026-05-13:
 
 - GitHub repository: `bringaio/app.bringa.io`
 - Repository visibility: public
@@ -17,6 +17,7 @@ As of 2026-05-12:
 - GitHub security switches: secret scanning, secret scanning push protection, vulnerability alerts, and Dependabot security updates enabled
 - GitHub Pages source: GitHub Actions
 - GitHub Pages custom domain: `app.bringa.io`
+- GitHub Pages HTTPS: certificate approved, `https_enforced=true`
 - Manual Pages workflow evidence: initial public deploy `25755567245`, docs redeploy `25756046085`, Node 24 actions opt-in verification `25756158964`, and Next.js security patch deploy `25756419770`, all successful on `main`
 - Cloudflare DNS: `app CNAME bringaio.github.io` resolved after the operator added the record
 - Supabase project: `app.bringa.io`, ref `bqotcfejqljfcfjhavwh`, region `eu-central-1`, status `ACTIVE_HEALTHY`
@@ -25,7 +26,7 @@ As of 2026-05-12:
 - Edge Functions: `notifiy-telegram` and `notifiy-telegram-user`, both active with `verify_jwt=true`
 - First admin: bootstrapped and validated with one admin row; the invite code is intentionally not documented
 
-GitHub now serves `http://app.bringa.io/` through Pages. HTTPS enforcement is still waiting on GitHub's custom-domain certificate. This can take a few minutes, and GitHub documents that **Enforce HTTPS** can take up to 24 hours to become available. The Pages workflow opts JavaScript actions into Node 24 with `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`; GitHub may still annotate upstream actions that target Node 20 until those actions retarget Node 24, but the launch workflow has been verified under the forced Node 24 runtime.
+GitHub now serves `https://app.bringa.io/` through Pages with enforced HTTPS. The Pages workflow opts JavaScript actions into Node 24 with `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`; GitHub may still annotate upstream actions that target Node 20 until those actions retarget Node 24, but the launch workflow has been verified under the forced Node 24 runtime.
 
 ## Cloudflare DNS
 
@@ -44,7 +45,7 @@ dig +short app.bringa.io CNAME
 curl -I https://app.bringa.io/
 ```
 
-The CNAME should resolve to `bringaio.github.io.`. HTTPS may fail until GitHub finishes certificate provisioning.
+The CNAME should resolve to `bringaio.github.io.`. If the certificate ever has to be reissued after a domain change, GitHub may need a few minutes and documents that **Enforce HTTPS** can take up to 24 hours to become available.
 
 ## First Admin Bootstrap
 

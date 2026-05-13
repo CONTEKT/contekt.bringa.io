@@ -22,6 +22,7 @@ Bringa starts as a focused sharing and borrowing app for communities. The long-t
 - Wire the prepared ownership model through UI and RPCs for operator-owned, profile-owned, and free-text owner cases.
 - Continue moderation follow-through for suggestions, flags, visibility requests, image metadata, and user-facing notification history.
 - Improve search actions, breadcrumbs, responsive polish, empty states, and keyboard flow after browser evidence points to concrete issues.
+- Multilingual UI: centralize user-facing copy, use `app.defaultLocale` and `app.locales` as config inputs, keep English primary while adding German, and allow fork/operator terminology overrides before considering a larger i18n framework.
 
 ## Data And Trust
 

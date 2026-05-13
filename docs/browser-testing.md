@@ -65,43 +65,13 @@ When the browser supports installation, install or simulate installed mode and t
 
 ## Latest Local Evidence
 
-2026-05-05 local in-app browser pass against `pnpm dev` and local demo mode:
+Recent local and static evidence:
 
-- `/login`: terms gate, disabled OAuth buttons, local demo entry, and Docs link rendered.
-- `/dashboard`: borrowed-first default rendered, Available view showed long item cards without overlap, and bottom controls stayed usable.
-- `/items/details?id=demo-long-label`: long title wrapped, no-image state had stable aspect ratio, and user/admin actions remained visible.
-- `/docs`: generated docs loaded, Open Source Release appeared in the manifest, and mobile navigation was constrained so article content reached the first viewport.
-- `/admin/dashboard`: local demo admin route rendered counts, source-of-truth links, recent activity, and item list.
-- `/items/create`: form labels, image drop zone, and primary action rendered in local demo mode.
-
-2026-05-05 static export preview after `pnpm build` with `out/` served locally:
-
-- `/login`: anonymous production login rendered without a live Supabase server; OAuth buttons stayed gated until terms acceptance.
-- `/docs` and `/docs?doc=configuration`: generated in-app docs rendered from the static export, including the operator setup and public Supabase config guidance.
-- `/manifest.webmanifest`: generated app name, icons, colors, and start URL were readable from the static export.
-- `/dashboard`: direct anonymous access redirected back to `/login`; local demo data intentionally stayed unavailable in the production export.
-
-2026-05-06 local quick-start contract check against `pnpm dev --hostname 127.0.0.1 --port 4324`:
-
-- `pnpm dev` regenerated the default `app.bringa.io` public config with `development.localDemoMode=true`.
-- `http://127.0.0.1:4324/bringa.config.json` returned the public config with `localDemoMode=true`.
-- `http://127.0.0.1:4324/login` returned a successful response containing the **Open local demo** entry without a running local Supabase server.
-- `/manifest.webmanifest` returned the configured app name, start URL, and install icons.
-- `pnpm test:local-demo-mode` now checks that the committed generated config enables local demo mode in development and remains disabled in production through the `NODE_ENV` guard.
-- Browser Use could not attach to a Codex in-app browser in this session because no `iab` backend was discoverable, so this is not a replacement for visual browser evidence.
-
-2026-05-06 Next 16 local dev-server regression check:
-
-- `pnpm dev --hostname 127.0.0.1 --port 4324` initially failed because Next 16 starts with Turbopack by default and the custom `webpack` config had no explicit development `turbopack` config.
-- `next.config.ts` now keeps Turbopack explicit in development and applies the local-demo production alias only for production builds.
-- `pnpm dev --hostname 127.0.0.1 --port 4324` started successfully with Turbopack after the fix.
-- `http://127.0.0.1:4324/bringa.config.json` returned `localDemoMode=true`, `http://127.0.0.1:4324/login` contained **Open local demo**, and `/manifest.webmanifest` returned the configured `bringa.io` PWA name, start URL, and icon set.
-
-2026-05-12 Browser Use static export setup-readiness check against `out/` served on `127.0.0.1:4328`:
-
-- `http://127.0.0.1:4328/login` stayed in normal static-preview login mode, confirming local origins are not blocked by the public-fork setup guard.
-- `http://fork.localhost:4328/login` showed **Setup required**, exposed the **Fork launch guide** and **Docs** links, and did not show GitHub or Google OAuth buttons.
-- Opening **Fork launch guide** navigated to `/docs?doc=fork-launch-runbook`; the generated runbook loaded and included the GitHub Pages HTTPS and first-admin bootstrap guidance.
+- 2026-05-05 local demo pass covered `/login`, `/dashboard`, long item details, generated `/docs`, `/admin/dashboard`, and `/items/create`.
+- 2026-05-05 static export preview covered `/login`, generated docs, `/manifest.webmanifest`, and anonymous `/dashboard` redirect behavior.
+- 2026-05-06 local quick-start and Next 16 regression checks confirmed `pnpm dev` serves local demo mode and Turbopack starts with the explicit development config.
+- 2026-05-12 Browser Use static export setup-readiness check against `out/` served on `127.0.0.1:4328` confirmed local origins stayed in normal static-preview login mode, `fork.localhost` showed **Setup required**, OAuth buttons were hidden, and the **Fork launch guide** link opened the generated runbook.
+- 2026-05-13 Browser Use local demo smoke started only after checking the target port, opened `/login`, entered local demo mode, and confirmed the pre-bump generated version `v0.2.1` appeared in the user menu.
 
 Remaining release evidence still needs connected Supabase auth persistence, logout, PWA install behavior, slow-network review, target-browser coverage, and approved live/staging data boundaries.
 

@@ -1,6 +1,13 @@
 # Changelog
 
-This file records human-readable upstream app versions. `package.json` is the source of truth for the current app version, using [Semantic Versioning 2.0.0](https://semver.org/) in normal `MAJOR.MINOR.PATCH` form. Git tags such as `v0.2.1` are the preferred stable anchors for fork upgrades.
+This file records human-readable upstream app versions. `package.json` is the source of truth for the current app version, using [Semantic Versioning 2.0.0](https://semver.org/) in normal `MAJOR.MINOR.PATCH` form. Git tags such as `v0.2.2` are the preferred stable anchors for fork upgrades.
+
+## 0.2.2 - 2026-05-13
+
+- Tightened docs source-of-truth ownership and reduced duplicated fork launch guidance.
+- Updated current GitHub Pages, DNS, HTTPS, and Supabase CLI evidence in readiness docs.
+- Added a docs-health checker for source-of-truth docs, multilingual roadmap language, fork runbook pointers, and documented `pnpm` commands.
+- Clarified that locale config is metadata today and full multilingual UI remains roadmap work.
 
 ## 0.2.1 - 2026-05-13
 

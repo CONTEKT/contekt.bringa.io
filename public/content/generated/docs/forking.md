@@ -48,23 +48,7 @@ Then:
 4. Run `BRINGA_DEPLOYMENT=<fork-slug> pnpm generate:config`.
 5. Commit the profile, content overrides, and generated outputs in the fork.
 
-To publish a fork on GitHub Pages:
-
-1. Choose a deployment slug, usually the app domain such as `share.example.org`.
-2. Scaffold the profile with `pnpm setup:operator`, or use `pnpm create:deployment -- <slug>` for non-interactive setup.
-3. Review `app.canonicalUrl`, repository links, public Supabase values, legal content, and brand assets in that deployment profile.
-4. Decide where the fork deploys from:
-   - use the fork's `main` when local deployment config is meant to live there;
-   - use `deploy/<slug>` when the fork wants a long-lived operator branch and cleaner upstream-sync branches.
-5. Configure the repository's Pages source as GitHub Actions.
-6. Point a subdomain CNAME to `<github-owner>.github.io`.
-7. Add the matching Site URL and redirect URLs in Supabase Auth settings.
-8. Enable Google or GitHub OAuth providers with the Supabase project callback URL.
-9. After the intended first admin signs in once, run `pnpm bootstrap:first-admin --confirm-project-ref <ref>` as a dry run and then add `--execute`.
-10. Run the manual **Pages** workflow from `main` or `deploy/<slug>`.
-11. Wait for GitHub's Pages certificate, then enable **Enforce HTTPS**. A pending certificate is normal for a few minutes, and GitHub documents that the option can take up to 24 hours.
-
-Use [Fork Launch Runbook](fork-launch-runbook.md) for the full checklist and copy-paste agent prompt.
+Use [Fork Launch Runbook](fork-launch-runbook.md) for the full GitHub Pages, DNS, Supabase OAuth, first-admin, HTTPS, and invite-gate checklist. This page only describes how forks should keep their customizations rebaseable.
 
 ## What Forks Commonly Customize
 
@@ -137,16 +121,4 @@ Set up this bringa fork for https://share.example.org using GitHub owner <owner>
 
 Agents should use `.agents/skills/fork-operator-onboarding/` for this workflow. The expected result is a deployment profile, generated public config, optional deployment content or brand placeholders when requested, and a checked list of remaining Supabase, GitHub Pages, Auth redirect, and secret setup items. Agents should not paste service-role keys, Supabase secret keys, OAuth secrets, Telegram tokens, or real user data into docs, commits, issues, screenshots, or chat.
 
-A new agent session should begin by reading `AGENTS.md`, `.agents/workflows/session-start.md`, `.agents/skills/fork-operator-onboarding/SKILL.md`, this document, [Fork Launch Runbook](fork-launch-runbook.md), [Configuration](configuration.md), [Supabase](supabase.md), and [Repository Settings](repository-settings.md). It should then run `pnpm setup:operator --dry-run`, create or update a deployment profile, keep local demo mode enabled until Supabase is verified, document remaining dashboard-only tasks, and run the local quality gates before pushing fork setup changes.
-
-Evidence checklist for agent-assisted setup:
-
-- config generated and checked;
-- Supabase project confirmed without printing secrets;
-- OAuth providers configured or listed as dashboard tasks;
-- first admin bootstrapped through `pnpm bootstrap:first-admin`;
-- setup-required login view resolved by connected fork config when it appears;
-- Pages deployed;
-- DNS resolves to `<github-owner>.github.io`;
-- HTTPS enforced after GitHub issues the certificate;
-- invite gate tested for uninvited and invited users.
+A new agent session should begin by reading `AGENTS.md`, `.agents/workflows/session-start.md`, `.agents/skills/fork-operator-onboarding/SKILL.md`, and the canonical [Fork Launch Runbook](fork-launch-runbook.md). The launch runbook owns the evidence checklist so this overview does not drift.

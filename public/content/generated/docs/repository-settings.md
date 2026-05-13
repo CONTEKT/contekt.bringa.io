@@ -4,7 +4,7 @@ Some GitHub settings are repository state, not code. Keep this checklist aligned
 
 ## Current Repository State
 
-As of 2026-05-12, GitHub API checks confirmed that the repository is public, forking is enabled, rebase merging is enabled, merge commits and squash merges are disabled, pull request branch updates are allowed, and merged head branches are deleted automatically. The repository description, topics, and homepage are configured for open-source discovery. Secret scanning, secret scanning push protection, vulnerability alerts, and Dependabot security updates are enabled. GitHub Pages is enabled with GitHub Actions as the source, `app.bringa.io` is set as the custom domain, and manual Pages runs `25755567245`, `25756046085`, and `25756158964` deployed successfully from `main`. The Pages workflow opts JavaScript actions into Node 24 with `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`. Cloudflare DNS still needs the `app` CNAME before GitHub can issue the custom-domain certificate and HTTPS can be enforced. Use [Public Launch Runbook](public-launch-runbook.md) for the current operator sequence.
+As of 2026-05-13, GitHub API checks confirmed that the repository is public, forking is enabled, rebase merging is enabled, merge commits and squash merges are disabled, pull request branch updates are allowed, and merged head branches are deleted automatically. The repository description, topics, and homepage are configured for open-source discovery. Secret scanning, secret scanning push protection, vulnerability alerts, and Dependabot security updates are enabled. GitHub Pages is enabled with GitHub Actions as the source, `app.bringa.io` is set as the custom domain, the custom-domain certificate is approved, and `https_enforced=true`. DNS resolves `app.bringa.io` to `bringaio.github.io`, and manual Pages runs `25755567245`, `25756046085`, `25756158964`, and `25756419770` deployed successfully from `main`. Use [Public Launch Runbook](public-launch-runbook.md) for the current upstream operator evidence.
 
 ## Pull Requests
 
@@ -58,7 +58,7 @@ For `app.bringa.io` or a fork-owned subdomain:
 7. After DNS verifies, wait for GitHub Pages to issue the certificate, then enable **Enforce HTTPS**. This often takes a few minutes; GitHub documents that the option can take up to 24 hours to become available, so a pending certificate is normal.
 8. Run the manual **Pages** workflow from `main` or `deploy/<slug>`.
 
-For a complete fork setup sequence, use [Fork Launch Runbook](fork-launch-runbook.md).
+This page is the source of truth for GitHub repository and Pages settings. For the complete fork setup sequence across config, Supabase, OAuth, first admin, DNS, and invite verification, use [Fork Launch Runbook](fork-launch-runbook.md).
 
 ## Supabase Auth URLs
 

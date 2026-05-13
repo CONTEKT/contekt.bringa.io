@@ -22,7 +22,7 @@ function validAuditContent() {
 | Source of truth and hyperoptimum | \`docs/hyperoptimum.md\`, \`docs/optimization-options.md\`, \`.agents/rules/source-of-truth.md\` | Covered |
 | Naming conventions and developer experience | \`docs/conventions.md\`, \`pnpm test:naming-conventions\`, \`pnpm check:naming-conventions\` | Covered |
 | Forkability and configuration | \`config/base.config.jsonc\`, \`config/deployments/app.bringa.io.jsonc\`, \`docs/configuration.md\`, \`docs/forking.md\` | Covered |
-| Security maintenance and fork safety | \`SECURITY.md\`, \`docs/security.md\`, \`docs/maintenance.md\`, \`.agents/skills/security-maintenance/SKILL.md\`, \`.agents/skills/fork-operator-onboarding/SKILL.md\`, \`pnpm test:security-maintenance\`, \`pnpm check:security-maintenance\`, abuse controls, \`pnpm check:secrets\`, \`pnpm check:release-checklist\` | Covered locally |
+| Security maintenance and fork safety | \`SECURITY.md\`, \`docs/security.md\`, \`docs/maintenance.md\`, \`.agents/skills/security-maintenance/SKILL.md\`, \`.agents/skills/fork-operator-onboarding/SKILL.md\`, \`pnpm test:security-maintenance\`, \`pnpm check:security-maintenance\`, abuse controls, \`pnpm check:secrets\`, \`pnpm check:docs-health\`, \`pnpm check:release-checklist\` | Covered locally |
 | Secret-free manual CI/CD | \`.github/workflows/ci.yml\`, \`docs/conventions.md\`, \`pnpm check:github-workflows\`, \`pnpm check:edge-functions\` | Covered |
 | Supabase contract and privacy | \`supabase/schema.sql\`, \`supabase/migrations/\`, \`docs/supabase-contract-audit.md\`, \`pnpm test:supabase-contract\`, \`pnpm check:supabase-contract\`, \`pnpm check:supabase-mcp\`, \`pnpm check:edge-functions\` | Partial |
 | Local Supabase development default | \`docs/local-supabase-development.md\`, \`scripts/seed-local-supabase.mjs\`, \`pnpm test:local-supabase\`, \`pnpm check:local-supabase\`, \`pnpm test:supabase-cli\`, \`pnpm check:supabase-cli\` | Covered locally |
@@ -51,7 +51,7 @@ function validAuditContent() {
 
 ## Remaining Blockers
 
-- GitHub branch protection, forkability, and manual Pages deployment settings require repository UI, organization policy, visibility, or plan access. GitHub Pages site creation and private-repository fork enabling currently return plan or organization-policy limitations.
+- GitHub branch protection remains the only open repository-settings blocker. Repository visibility, forkability, merge method, branch cleanup, repository description, topics, Pages source, custom domain, DNS, certificate approval, and HTTPS enforcement are confirmed through GitHub API and HTTP metadata.
 - Live Supabase schema, RLS, functions, triggers, Storage, Edge Functions, advisor remediation, Storage bucket metadata, and an empty-baseline backup have approved evidence.
 - Live Supabase health checks beyond schema/key/API smoke tests and any deployment-specific observability tool decision require final operator policy. Supabase Edge Function logs were checked on 2026-05-05 and rechecked on 2026-05-06 with no invocations in the latest 24-hour windows; recheck them after Telegram delivery is configured. Auth logs still show the known Supabase-managed GoTrue default/admin group deprecation warnings after the 2026-05-06 redacted review.
 - Local app development now defaults to the local Supabase CLI stack for free-account-oriented forks. Supabase Branching is optional for paid remote-preview, staging, or QA workflows and is not required for the first open-source release path.

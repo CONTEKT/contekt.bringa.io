@@ -1,6 +1,6 @@
 {
   "name": "app.bringa.io",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.33.2",
@@ -33,6 +33,7 @@
     "test:optimization-options": "node --test scripts/check-optimization-options.test.mjs",
     "test:docs-view": "node --test scripts/docs-view.test.mjs",
     "test:docs-index": "node --test scripts/check-docs-index.test.mjs",
+    "test:docs-health": "node --test scripts/check-docs-health.test.mjs",
     "test:browser-testing": "node --test scripts/check-browser-testing.test.mjs",
     "test:local-supabase": "node --test scripts/check-local-supabase-development.test.mjs scripts/doctor-local-supabase.test.mjs scripts/seed-local-supabase.test.mjs scripts/setup-local-supabase.test.mjs",
     "test:supabase-mcp": "node --test scripts/check-supabase-mcp.test.mjs",
@@ -83,6 +84,7 @@
     "check:copy": "node scripts/check-copy.mjs",
     "check:optimization-options": "node scripts/check-optimization-options.mjs",
     "check:docs-index": "node scripts/check-docs-index.mjs",
+    "check:docs-health": "node scripts/check-docs-health.mjs",
     "check:browser-testing": "node scripts/check-browser-testing.mjs",
     "check:local-supabase": "node scripts/check-local-supabase-development.mjs",
     "check:supabase-mcp": "node scripts/check-supabase-mcp.mjs",

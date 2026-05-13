@@ -13,3 +13,4 @@
 - `.agents/` is the only active repository-local agent directory. Do not reintroduce `.agent/`.
 - Historical notes in `docs/prompts/` are not implementation sources. Use current `.agents/`, `docs/`, code, config, and Supabase files instead.
 - If duplication is unavoidable, name the source of truth in a nearby comment or doc note.
+- For docs cleanup, keep `docs/fork-launch-runbook.md` as the fork launch source, `docs/fork-upgrade-runbook.md` as the fork upgrade source, `docs/configuration.md` as the config/generated-artifact source, `docs/repository-settings.md` as the GitHub settings source, `docs/supabase.md` as the backend source, `docs/readiness-checklist.md` as the current evidence source, and `docs/roadmap.md` plus `docs/optimization-options.md` as the roadmap sources.

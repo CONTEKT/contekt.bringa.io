@@ -55,6 +55,7 @@ This is the current definition of done for upstream work. It is intentionally pr
 - `pnpm test:pwa-manifest` when app metadata, manifest, PWA config, or brand icon config changes
 - `pnpm test:copy` and `pnpm check:copy` when docs, agent instructions, or public source-of-truth copy changes
 - `pnpm test:docs-index` and `pnpm check:docs-index` when top-level docs are added, removed, renamed, linked from `docs/index.md`, or generated for the in-app docs route
+- `pnpm test:docs-health` and `pnpm check:docs-health` when documentation source-of-truth, fork runbooks, roadmap, or documented command references change
 - `pnpm test:browser-testing` and `pnpm check:browser-testing` when browser testing docs, browser scenarios, role coverage, or browser-testing skills change
 - `pnpm test:production-bundle` and `pnpm check:production-bundle` when production build config, local demo boundaries, or static artifact checks change
 - `pnpm test:supabase-branching` and `pnpm check:supabase-branching` when Supabase branching setup, branch privacy, migration dry-run, or development-branch docs change

@@ -35,5 +35,6 @@ Keep upstream changes easy to adopt by forks. Do not solve fork customization by
 
 - Update user-facing docs when the convention affects other developers.
 - Update `.agents/` when the convention should affect future agents.
+- Run `pnpm check:docs-health` when fork runbooks, roadmap language, documented commands, or docs source-of-truth ownership changes.
 - Run `pnpm check:version-bump -- --base origin/main` before merge-oriented completion.
 - Add follow-up ideas to `docs/optimization-options.md` instead of expanding the task.

@@ -53,7 +53,7 @@ This file is the living roadmap and anti-roadmap for ideas discovered by users a
 - Typography and FOUT/FOUC: document system-font choice or self-hosted font policy; verify first paint and theme flash. Impact: perceived quality and performance. Uncertainty/research: needs visual QA.
 - Routes and navigation: evaluate breadcrumbs for deep item/admin/profile routes, and keep primary mobile navigation predictable. Impact: wayfinding without clutter. Side effect: avoid adding navigation chrome that competes with core borrowing flow.
 - Markdown or rich descriptions: decide between plain text, safe Markdown, or constrained formatting for item descriptions. Impact: usefulness and XSS risk. Uncertainty/research: package/tool choice requires current best-practice check.
-- Internationalization: centralize user-facing copy, keep English primary with German available, and maintain a glossary for ambiguous domain terms. Impact: fork readiness. Side effect: avoid large i18n framework unless it earns its complexity.
+- Multilingual UI execution: implement the direction in `docs/roadmap.md` by centralizing user-facing copy, keeping English primary, adding German, and maintaining a glossary for ambiguous domain terms. Impact: fork readiness. Side effect: avoid a large i18n framework unless the design earns its complexity.
 
 ## Operations
 

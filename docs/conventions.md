@@ -54,6 +54,21 @@ Every durable fact should have one home.
 
 When adding new text, decide whether it is a source of truth, a short summary, or a pointer. Prefer pointers over repeated prose.
 
+## Docs Source Of Truth
+
+Keep durable documentation facts in one place and link to that place from summaries:
+
+- `README.md`: short fork-first entry, quick start, and maintainer pointers.
+- `docs/fork-launch-runbook.md`: canonical fork launch procedure.
+- `docs/fork-upgrade-runbook.md`: canonical fork sync and update procedure.
+- `docs/configuration.md`: config schema, generated artifacts, setup-readiness guard, and locale metadata.
+- `docs/conventions.md`: contributor rules, SemVer, source-of-truth rules, and CI command lists.
+- `docs/repository-settings.md`: GitHub repository settings and GitHub Pages settings.
+- `docs/supabase.md`: Supabase backend contract, local/hosted backend paths, and operator sequence.
+- `docs/readiness-checklist.md`: current release-readiness status and live evidence summary.
+- `docs/optimization-options.md`: living roadmap and anti-roadmap for deferred ideas.
+- `docs/roadmap.md`: product direction, including multilingual UI.
+
 ## Naming Conventions
 
 Keep names predictable across React, scripts, config, and Supabase. Prefer matching established local patterns over broad renames.
@@ -122,6 +137,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm test:optimization-options`
 - `pnpm test:docs-view`
 - `pnpm test:docs-index`
+- `pnpm test:docs-health`
 - `pnpm test:browser-testing`
 - `pnpm test:local-supabase`
 - `pnpm test:supabase-mcp`
@@ -167,6 +183,7 @@ The manual CI workflow runs these secret-free checks:
 - `pnpm check:copy`
 - `pnpm check:optimization-options`
 - `pnpm check:docs-index`
+- `pnpm check:docs-health`
 - `pnpm check:browser-testing`
 - `pnpm check:local-supabase`
 - `pnpm check:supabase-mcp`

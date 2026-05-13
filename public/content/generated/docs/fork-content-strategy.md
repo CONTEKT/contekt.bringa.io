@@ -61,16 +61,7 @@ Use content files for text that will diverge by operator, language, jurisdiction
 - local help pages;
 - legal disclaimers.
 
-Target direction:
-
-```text
-content/default/legal/en.md
-content/default/legal/de.md
-content/deployments/<deployment-slug>/legal/en.md
-content/deployments/<deployment-slug>/legal/de.md
-```
-
-Current app source:
+Current shipped content is English-only:
 
 ```text
 content/default/legal/en.md
@@ -78,6 +69,8 @@ content/default/onboarding/en.md
 content/default/help/en.md
 content/default/issues/en.md
 ```
+
+Forks can override matching files under `content/deployments/<deployment-slug>/`. Target multilingual direction is to add language-specific defaults and deployment overrides such as `legal/de.md` only after the multilingual UI design lands. Until then, `app.defaultLocale` and `app.locales` are locale metadata, not proof that all user-facing UI is translated.
 
 `pnpm generate:config` layers `content/default` with `content/deployments/<deployment-slug>` and writes generated public Markdown under:
 

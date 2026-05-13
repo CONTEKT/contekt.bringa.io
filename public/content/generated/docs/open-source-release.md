@@ -15,32 +15,7 @@ The first public version should be useful in three modes:
 
 Fast path: fork it, configure it, use it.
 
-1. Fork the repository.
-2. Create a Supabase project.
-3. Create a deployment profile instead of copying the upstream profile by hand.
-4. Connect Supabase Auth providers and bootstrap the first admin.
-5. Deploy through GitHub Pages, wait for the certificate, then enforce HTTPS.
-
-```bash
-pnpm setup:operator --dry-run
-pnpm setup:operator
-```
-
-Then edit:
-
-- `config/deployments/share.example.org.jsonc` for public app identity and Supabase browser values;
-- `content/deployments/share.example.org/**` for longer local legal, onboarding, help, and issue text when needed;
-- `public/brand/deployments/share.example.org/**` for fork-owned assets when needed.
-
-Generate and check:
-
-```bash
-BRINGA_DEPLOYMENT=share.example.org pnpm generate:config
-BRINGA_DEPLOYMENT=share.example.org pnpm check:config
-```
-
-Use [Fork Launch Runbook](fork-launch-runbook.md) for the complete operator path. It includes DNS, GitHub Pages HTTPS timing, Supabase Auth redirect URLs, Google/GitHub OAuth callback URLs, first-admin bootstrap, and invite-gate verification.
-Use [Fork Upgrade Runbook](fork-upgrade-runbook.md) when an existing fork wants a newer upstream version.
+Use [Fork Launch Runbook](fork-launch-runbook.md) for the canonical operator path: deployment profile, generated config, Supabase/OAuth, first admin, GitHub Pages, DNS, HTTPS enforcement, and invite-gate verification. Use [Fork Upgrade Runbook](fork-upgrade-runbook.md) when an existing fork wants a newer upstream version.
 
 Public Supabase URL and publishable key belong in the deployment profile. Secrets belong in ignored env files, GitHub secrets, OAuth provider dashboards, or Supabase function secrets.
 For trusted local maintenance such as backups or account cleanup, copy `.env.example` to `.env.local` after confirming the target project, set `SUPABASE_PROJECT_REF` or `SUPABASE_URL`, and set `SUPABASE_SECRET_KEY` or `SUPABASE_SECRET_KEYS` there. Legacy service-role keys remain fallback-only.
@@ -49,21 +24,7 @@ For Supabase, start fresh projects from `supabase/schema.sql` and use `supabase/
 
 ## GitHub Pages
 
-The app is a static Next.js export. GitHub Pages publishing uses the manual Pages workflow and the `out/` artifact.
-
-For the upstream mother repository, deploy `app.bringa.io` from `main`. Use `deploy/<slug>` only for forks or long-lived operator-specific publication branches.
-
-For a custom subdomain:
-
-1. Set `app.canonicalUrl` in the deployment profile.
-2. Set the repository Pages source to GitHub Actions.
-3. Add the custom domain in the repository Pages settings.
-4. Point the subdomain CNAME to `<github-owner>.github.io`.
-5. Wait for GitHub to issue the Pages certificate, then enable HTTPS. This often takes a few minutes and GitHub documents that the option can take up to 24 hours to become available.
-6. In Supabase Auth settings, set the Site URL and exact production redirect URL for the app domain.
-7. Run the manual **Pages** workflow from `main` or `deploy/<slug>` with the deployment slug.
-
-The live upstream setup and OAuth handoff values are tracked in [Public Launch Runbook](public-launch-runbook.md).
+The app is a static Next.js export. GitHub Pages publishing uses the manual Pages workflow and the `out/` artifact. [Repository Settings](repository-settings.md) is the source of truth for GitHub settings and Pages settings. [Fork Launch Runbook](fork-launch-runbook.md) is the source of truth for the complete fork publishing sequence. [Public Launch Runbook](public-launch-runbook.md) is only the upstream `app.bringa.io` worked example.
 
 Keep production redirect URLs exact. Use localhost or documented wildcard redirects only for local development and preview environments.
 

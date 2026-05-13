@@ -18,10 +18,10 @@ For the prompt-to-artifact evidence map and the remaining blockers that prevent 
 - [x] GitHub merge settings prefer rebase merges, disable merge and squash merges, allow pull request branch updates, and delete merged head branches automatically.
 - [x] GitHub repository description and topics are configured for open-source discovery.
 - [x] Repository visibility allows forks.
-- [x] Manual GitHub Pages deployment settings have been confirmed.
+- [x] Manual GitHub Pages deployment settings and enforced HTTPS have been confirmed.
 - [ ] GitHub branch protection has been confirmed or intentionally deferred.
 
-As of 2026-05-12, GitHub API checks confirm the merge settings above. The repository is public, `allow_forking` is `true`, the repository homepage is `https://app.bringa.io`, secret scanning and push protection are enabled, Dependabot security updates are enabled, Pages is configured for GitHub Actions, and manual Pages runs `25755567245`, `25756046085`, and `25756158964` deployed successfully from `main`. The Pages workflow opts JavaScript actions into Node 24 with `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`. The `app.bringa.io` custom domain is set in GitHub Pages, but Cloudflare DNS still needs `app CNAME bringaio.github.io` before GitHub can provision the certificate and HTTPS can be enforced. Branch protection remains a follow-up repository setting.
+As of 2026-05-13, GitHub API checks confirm the merge settings above. The repository is public, `allow_forking` is `true`, the repository homepage is `https://app.bringa.io`, secret scanning and push protection are enabled, Dependabot security updates are enabled, Pages is configured for GitHub Actions, the custom domain is `app.bringa.io`, the Pages certificate is approved, and `https_enforced=true`. DNS resolves `app.bringa.io` to `bringaio.github.io`, and `curl -I https://app.bringa.io/` returns `HTTP/2 200`. Manual Pages runs `25755567245`, `25756046085`, `25756158964`, and `25756419770` deployed successfully from `main`. Branch protection remains a follow-up repository setting.
 
 ## Forkability
 
@@ -33,6 +33,7 @@ As of 2026-05-12, GitHub API checks confirm the merge settings above. The reposi
 - [x] Deployment content profiles generate legal, onboarding, help, and issue copy from `content/default` plus deployment overrides.
 - [x] Fork deployment profiles can be scaffolded with `pnpm create:deployment -- <slug>` and are covered by `pnpm test:create-deployment`.
 - [x] Fork operators have an interactive `pnpm setup:operator` first-run helper covered by `pnpm test:operator-setup`.
+- [x] Docs source-of-truth boundaries, fork runbook pointers, multilingual roadmap language, and documented `pnpm` commands are checked by `pnpm check:docs-health`.
 
 ## Supabase Contract
 
@@ -49,7 +50,7 @@ As of 2026-05-12, GitHub API checks confirm the merge settings above. The reposi
 
 As of 2026-05-05, Supabase MCP can see the `app.bringa.io` project in `eu-central-1` with `ACTIVE_HEALTHY` status. The live baseline now has the repository schema applied, RLS enabled on app tables, the `items` Storage bucket configured with the expected image MIME and size limits, both Telegram Edge Functions deployed with `verify_jwt=true`, anon/PUBLIC SECURITY DEFINER execution removed, and a verified empty backup recorded. `pnpm check:supabase-maintenance-key` confirmed the modern `SUPABASE_SECRET_KEY` can reach Storage Admin and Auth Admin APIs, so the legacy service-role key is only a fallback for this project. Edge Function logs had no invocations in the last 24-hour windows checked on 2026-05-05 and 2026-05-06. Auth logs still show the known Supabase-managed GoTrue default/admin group deprecation warnings, while API/Storage health metadata and Postgres routine logs did not surface a new app blocker in the redacted 2026-05-06 review.
 
-On 2026-05-12, Supabase MCP tools were not available in the active Codex session, but Supabase CLI `2.98.2` confirmed project ref `bqotcfejqljfcfjhavwh` is `ACTIVE_HEALTHY`, both Telegram Edge Functions are active with `verify_jwt=true`, and remote secret names are present without printing values. Remaining blockers are Auth provider/redirect setup, Edge Function secrets, Telegram webhook URL settings, live notification delivery log review, and restore drills. Supabase Branching is no longer a release blocker for the free-account default path; it remains an optional paid remote-preview workflow.
+On 2026-05-13, secret-safe Supabase CLI metadata confirmed project ref `bqotcfejqljfcfjhavwh` is `ACTIVE_HEALTHY` in `eu-central-1`, and both Telegram Edge Functions are active with `verify_jwt=true`. Supabase MCP availability is session-dependent; use project-scoped MCP when installed and the repo-local CLI/dashboard when it is not. Remaining blockers are Auth provider/redirect verification, Edge Function secrets, Telegram webhook URL settings, live notification delivery log review, and restore drills. Supabase Branching is no longer a release blocker for the free-account default path; it remains an optional paid remote-preview workflow.
 
 ## User Experience
 
@@ -62,7 +63,7 @@ On 2026-05-12, Supabase MCP tools were not available in the active Codex session
 - [x] Production browser chunks are checked to exclude development-only local demo fixture markers after static builds.
 - [ ] Auth persistence, logout, PWA install, slow network, and long-content states have been browser-tested across target browsers.
 
-A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long item details, in-app docs, admin dashboard, and item creation in local demo mode. A 2026-05-06 quick-start contract check confirmed the default `pnpm dev` config enables local demo mode without a Supabase server and remains production-disabled through the `NODE_ENV` guard. Browser Use could not attach to an in-app browser on 2026-05-06, so connected auth, PWA install, slow-network, visual browser, and target-browser evidence remain open.
+A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long item details, in-app docs, admin dashboard, and item creation in local demo mode. A 2026-05-06 quick-start contract check confirmed the default `pnpm dev` config enables local demo mode without a Supabase server and remains production-disabled through the `NODE_ENV` guard. A 2026-05-12 static export Browser Use pass covered the setup-required guard for unfinished public fork config. A 2026-05-13 local Browser Use smoke opened local demo mode and confirmed the pre-bump generated version `v0.2.1` appeared in the user menu. Connected auth, PWA install, slow-network, and target-browser evidence remain open.
 
 ## Admin Experience
 
@@ -138,6 +139,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 - [ ] `pnpm test:github-workflows`
 - [ ] `pnpm test:copy`
 - [ ] `pnpm test:docs-index`
+- [ ] `pnpm test:docs-health`
 - [ ] `pnpm test:browser-testing`
 - [ ] `pnpm test:production-bundle`
 - [ ] `pnpm test:version-bump`
@@ -167,6 +169,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 - [ ] `pnpm test:pwa-manifest`
 - [ ] `pnpm check:copy`
 - [ ] `pnpm check:docs-index`
+- [ ] `pnpm check:docs-health`
 - [ ] `pnpm check:browser-testing`
 - [ ] `pnpm check:local-supabase`
 - [ ] `pnpm check:supabase-mcp`
