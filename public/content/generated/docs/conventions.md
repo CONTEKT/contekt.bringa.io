@@ -206,7 +206,7 @@ The manual CI workflow runs these secret-free checks:
 - The manual Pages workflow builds the static app artifact from `out/` and deploys it only when run on `main`.
 - Public Supabase browser values come from deployment config, not `NEXT_PUBLIC_*` CI environment variables.
 
-The manual E2E workflow runs repeatable browser checks against local Supabase:
+The manual CI workflow also runs a repeatable browser-check job against local Supabase:
 
 - `pnpm install --frozen-lockfile`
 - `pnpm exec playwright install --with-deps chromium`

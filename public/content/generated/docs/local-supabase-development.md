@@ -164,7 +164,7 @@ Use Playwright UI/watch mode while developing or debugging repeatable browser te
 pnpm test:e2e:ui
 ```
 
-The E2E runner starts local Supabase when needed, runs `pnpm setup:local-supabase --force --seed`, checks the stack with `pnpm doctor:local-supabase`, starts the app through `pnpm dev:docker`, and restores generated config before exit. The GitHub Actions E2E workflow runs the deterministic CI variant:
+The E2E runner starts local Supabase when needed, runs `pnpm setup:local-supabase --force --seed`, checks the stack with `pnpm doctor:local-supabase`, starts the app through `pnpm dev:docker`, and restores generated config before exit. The GitHub Actions CI workflow runs the deterministic CI variant:
 
 ```bash
 pnpm test:e2e:ci

@@ -40,7 +40,7 @@ pnpm test:e2e:ci
 
 `pnpm test:e2e` starts or reuses the local Supabase Docker stack, seeds deterministic local data, runs the Chromium Playwright suite, and restores generated public config before exit. `pnpm test:e2e:ui` opens Playwright UI/watch mode for local iteration. `pnpm test:e2e:ci` is the deterministic GitHub Actions entrypoint.
 
-The manual E2E workflow installs Chromium with `pnpm exec playwright install --with-deps chromium`, starts local Supabase with `pnpm exec supabase start`, configures fixtures with `pnpm setup:local-supabase --force --seed`, checks the stack with `pnpm doctor:local-supabase`, runs `pnpm test:e2e:ci`, and uploads Playwright reports and test-result artifacts.
+The manual CI workflow includes a local-Supabase Playwright job. That job installs Chromium with `pnpm exec playwright install --with-deps chromium`, starts local Supabase with `pnpm exec supabase start >/dev/null`, configures fixtures with `pnpm setup:local-supabase --force --seed`, checks the stack with `pnpm doctor:local-supabase`, runs `pnpm test:e2e:ci`, and uploads Playwright reports and test-result artifacts.
 
 ## Baseline Routes
 
