@@ -63,7 +63,7 @@ On 2026-05-13, secret-safe Supabase CLI metadata confirmed project ref `bqotcfej
 - [x] Production browser chunks are checked to exclude development-only local demo fixture markers after static builds.
 - [ ] Auth persistence, logout, PWA install, slow network, and long-content states have been browser-tested across target browsers.
 
-A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long item details, in-app docs, admin dashboard, and item creation in local demo mode. A 2026-05-06 quick-start contract check confirmed the default `pnpm dev` config enables local demo mode without a Supabase server and remains production-disabled through the `NODE_ENV` guard. A 2026-05-12 static export Browser Use pass covered the setup-required guard for unfinished public fork config. A 2026-05-13 local Browser Use smoke opened local demo mode and confirmed the pre-bump generated version `v0.2.1` appeared in the user menu. Connected auth, PWA install, slow-network, and target-browser evidence remain open.
+A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long item details, in-app docs, admin dashboard, and item creation in local demo mode. A 2026-05-06 quick-start contract check confirmed the default `pnpm dev` config enables local demo mode without a Supabase server and remains production-disabled through the `NODE_ENV` guard. A 2026-05-12 static export Browser Use pass covered the setup-required guard for unfinished public fork config. A 2026-05-13 local Browser Use smoke opened local demo mode and confirmed the pre-bump generated version `v0.2.1` appeared in the user menu. Playwright E2E now provides repeatable local Supabase coverage for seeded auth, logout, borrowed-first dashboard behavior, admin route gating, and local Storage image upload. PWA install, slow-network, non-Chromium target-browser, and approved live/staging evidence remain open.
 
 ## Admin Experience
 
@@ -141,6 +141,7 @@ A 2026-05-05 local in-app browser pass covered login/local demo, dashboard, long
 - [ ] `pnpm test:docs-index`
 - [ ] `pnpm test:docs-health`
 - [ ] `pnpm test:browser-testing`
+- [ ] `pnpm test:e2e:ci`
 - [ ] `pnpm test:production-bundle`
 - [ ] `pnpm test:version-bump`
 - [ ] `pnpm test:local-supabase`

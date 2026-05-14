@@ -70,7 +70,7 @@ export default function TopBar() {
                             </a>
                         )}
                         <MenubarMenu>
-                            <MenubarTrigger className="rounded-full p-1">
+                            <MenubarTrigger aria-label="User menu" className="rounded-full p-1">
                                 <UserIcon className="h-5 w-5" />
                             </MenubarTrigger>
                             <MenubarContent align="end" className="w-56">

@@ -130,6 +130,27 @@ export function checkWorkflowContent(filePath, content) {
     }
   }
 
+  if (filePath === ".github/workflows/e2e.yml") {
+    if (!content.includes("pnpm exec playwright install --with-deps chromium")) {
+      throw new Error(`${filePath} must run pnpm exec playwright install --with-deps chromium before running browser tests.`);
+    }
+    if (!content.includes("pnpm exec supabase start")) {
+      throw new Error(`${filePath} must start the local Supabase stack before Playwright tests.`);
+    }
+    if (!content.includes("pnpm setup:local-supabase --force --seed")) {
+      throw new Error(`${filePath} must configure and seed local Supabase before Playwright tests.`);
+    }
+    if (!content.includes("pnpm doctor:local-supabase")) {
+      throw new Error(`${filePath} must run pnpm doctor:local-supabase before Playwright tests.`);
+    }
+    if (!content.includes("pnpm test:e2e:ci")) {
+      throw new Error(`${filePath} must run pnpm test:e2e:ci.`);
+    }
+    if (!content.includes("actions/upload-artifact") || !content.includes("playwright-report/") || !content.includes("test-results/")) {
+      throw new Error(`${filePath} must upload Playwright report and test-result artifacts.`);
+    }
+  }
+
   return triggers;
 }
 

@@ -28,6 +28,24 @@ lsof -nP -iTCP:3000 -sTCP:LISTEN
 
 If the app is already running, reuse it and verify the URL before testing. If the port is occupied by another process, choose a different port and record the actual URL in the evidence. Stop only the server process started for the current task; leave user-owned or pre-existing servers running.
 
+## Repeatable Playwright E2E
+
+Use Playwright for repeatable local Supabase and CI regression coverage. Keep Browser Use for exploratory browser evidence. Browser Use also remains the right tool for design inspection, target-browser spot checks, and ad hoc debugging.
+
+Core commands:
+
+```bash
+pnpm test:e2e
+pnpm test:e2e:ui
+pnpm test:e2e:headed
+pnpm test:e2e:debug
+pnpm test:e2e:ci
+```
+
+`pnpm test:e2e` starts or reuses the local Supabase Docker stack, seeds deterministic local data, runs the Chromium Playwright suite, and restores generated public config before exit. `pnpm test:e2e:ui` opens Playwright UI/watch mode for local iteration. `pnpm test:e2e:ci` is the deterministic GitHub Actions entrypoint.
+
+The manual E2E workflow installs Chromium with `pnpm exec playwright install --with-deps chromium`, starts local Supabase with `pnpm exec supabase start`, configures fixtures with `pnpm setup:local-supabase --force --seed`, checks the stack with `pnpm doctor:local-supabase`, runs `pnpm test:e2e:ci`, and uploads Playwright reports and test-result artifacts.
+
 ## Baseline Routes
 
 - `/login`: terms checkbox gates sign-in actions, setup-required view appears for unfinished public fork config, terms link works, logout returns to logged-out state.
@@ -73,7 +91,7 @@ Recent local and static evidence:
 - 2026-05-12 Browser Use static export setup-readiness check against `out/` served on `127.0.0.1:4328` confirmed local origins stayed in normal static-preview login mode, `fork.localhost` showed **Setup required**, OAuth buttons were hidden, and the **Fork launch guide** link opened the generated runbook.
 - 2026-05-13 Browser Use local demo smoke started only after checking the target port, opened `/login`, entered local demo mode, and confirmed the pre-bump generated version `v0.2.1` appeared in the user menu.
 
-Remaining release evidence still needs connected Supabase auth persistence, logout, PWA install behavior, slow-network review, target-browser coverage, and approved live/staging data boundaries.
+Repeatable local Supabase Playwright E2E now covers seeded local login/logout, borrowed-first dashboard behavior, admin route gating, and a real local Storage image upload. Remaining release evidence still needs PWA install behavior, slow-network review, non-Chromium target-browser coverage, and approved live/staging data boundaries.
 
 ## Reporting
 

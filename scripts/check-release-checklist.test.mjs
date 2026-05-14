@@ -47,12 +47,31 @@ test("accepts aligned release checklist sources", () => {
       scripts: {
         "test:config": "node --test scripts/generate-config.test.mjs",
         "check:config": "node scripts/generate-config.mjs --check",
+        "test:e2e:ci": "node scripts/run-e2e-local-supabase.mjs --ci",
       },
     }),
     ciYaml: "run: pnpm test:config\nrun: pnpm check:config\nrun: pnpm build\n",
-    conventionsMarkdown: "- `pnpm test:config`\n- `pnpm check:config`\n- `pnpm build`\n",
-    readinessMarkdown: "- [ ] `pnpm test:config`\n- [ ] `pnpm check:config`\n- [ ] `pnpm build`\n",
+    extraWorkflowYamls: ["run: pnpm test:e2e:ci\n"],
+    conventionsMarkdown: "- `pnpm test:config`\n- `pnpm check:config`\n- `pnpm build`\n- `pnpm test:e2e:ci`\n",
+    readinessMarkdown: "- [ ] `pnpm test:config`\n- [ ] `pnpm check:config`\n- [ ] `pnpm build`\n- [ ] `pnpm test:e2e:ci`\n",
   }));
+});
+
+test("includes extra workflow commands in release checklist alignment", () => {
+  assert.throws(
+    () => checkReleaseChecklist({
+      packageJson: JSON.stringify({
+        scripts: {
+          "test:e2e:ci": "node scripts/run-e2e-local-supabase.mjs --ci",
+        },
+      }),
+      ciYaml: "",
+      extraWorkflowYamls: ["run: pnpm test:e2e:ci\n"],
+      conventionsMarkdown: "",
+      readinessMarkdown: "- [ ] `pnpm test:e2e:ci`\n",
+    }),
+    /docs\/conventions\.md.*pnpm test:e2e:ci/s,
+  );
 });
 
 test("rejects CI commands missing from conventions", () => {

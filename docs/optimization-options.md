@@ -52,7 +52,7 @@ This file is the living roadmap and anti-roadmap for ideas discovered by users a
 
 ## App Experience
 
-- Responsive and browser QA: test mobile, tablet, desktop, touch, keyboard, Safari, Firefox, Chromium, installed PWA, slow network, empty states, long names, long words, and image-heavy lists. Impact: accessibility and reliability. Uncertainty/research: use the documented browser runbook and agentic browser skills first; add packages only after explicit decision.
+- Responsive and browser QA: build on the Chromium Playwright local-Supabase smoke suite with targeted Browser Use evidence for visual review, then add mobile, Safari/WebKit, Firefox, installed PWA, slow network, empty states, long names, long words, and image-heavy lists as repeated friction proves the need. Impact: accessibility and reliability. Uncertainty/research: expand the browser matrix carefully because each browser/project adds CI runtime and maintenance.
 - PWA polish: build on the config-driven, tested manifest and PNG/maskable install icons by adding Apple touch icon platform verification, offline behavior review, update behavior, installed auth persistence, and logout testing. Impact: mobile trust. Uncertainty/research: current browser/platform behavior must be tested.
 - Typography and FOUT/FOUC: document system-font choice or self-hosted font policy; verify first paint and theme flash. Impact: perceived quality and performance. Uncertainty/research: needs visual QA.
 - Routes and navigation: evaluate breadcrumbs for deep item/admin/profile routes, and keep primary mobile navigation predictable. Impact: wayfinding without clutter. Side effect: avoid adding navigation chrome that competes with core borrowing flow.
@@ -73,7 +73,7 @@ This file is the living roadmap and anti-roadmap for ideas discovered by users a
 
 ## Developer Experience
 
-- Test strategy: extend focused tests beyond config generation, OAuth redirect helpers, login terms gating, app-config helpers, admin route gates, media policy helpers, protected-route decisions, invite flow helpers, profile completion helpers, settings data actions, and Supabase contract checker behavior to more critical UI states. Impact: safer refactors. Side effect: respect the user's preference for agentic browser skills before adding browser-test packages.
+- Test strategy: extend focused tests beyond config generation, OAuth redirect helpers, login terms gating, app-config helpers, admin route gates, media policy helpers, protected-route decisions, invite flow helpers, profile completion helpers, settings data actions, Supabase contract checker behavior, and Playwright E2E smoke coverage to more critical UI states. Impact: safer refactors. Side effect: keep package-based browser checks scoped and leave Browser Use for exploratory evidence.
 - Local Supabase fixture growth: build on `pnpm setup:local-supabase --seed` and `pnpm seed:local-supabase` with optional reset flags, richer media fixtures, moderation queues, deletion requests, and agent personas once real local-backend work shows repeated friction. Impact: makes schema/RLS/Auth/Storage development pleasant without hosted dev projects. Uncertainty/research: keep the helpers localhost-only and avoid turning fixtures into production policy.
 - Static export verifier growth: expand `pnpm check:static-export` if the app adds generated route handlers, custom export paths, or deployment-specific hosting rules. Impact: preserves the static-export architecture while Next.js evolves. Uncertainty/research: use current Next.js docs before broadening the checker.
 - Major dependency upgrades: review Node 25 runtime/types, ESLint, and TypeScript major updates with current official docs before upgrading. Impact: keeps tooling current without avoidable breakage. Uncertainty/research: confirm runtime Node policy, lint migration path, and compiler changes.
@@ -100,7 +100,6 @@ This file is the living roadmap and anti-roadmap for ideas discovered by users a
 - Separate Astro repository for the public `bringa.io` home page.
 - Full role-switch impersonation beyond the local demo fixture identities. This needs a security design before implementation.
 - Merge queue. Consider only after the repository has enough PR volume to justify it.
-- Installing Playwright or other browser-test packages. Prefer agentic browser skills unless the user explicitly chooses package-based automation.
 
 ## Questions Waiting For User
 

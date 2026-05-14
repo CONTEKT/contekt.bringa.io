@@ -17,6 +17,7 @@ const skillPath = path.join(root, ".agents", "skills", "agentic-browser-testing"
 const requiredRunbookSections = [
   "Scope",
   "Dev Server Startup",
+  "Repeatable Playwright E2E",
   "Baseline Routes",
   "Responsive And Accessibility Pass",
   "PWA Pass",
@@ -29,6 +30,9 @@ const requiredRunbookPhrases = [
   "Before starting `pnpm dev`, `pnpm dev:docker`, `pnpm exec next dev`, or a static preview server, check whether a suitable server is already listening.",
   "lsof -nP -iTCP:3000 -sTCP:LISTEN",
   "Stop only the server process started for the current task",
+  "`pnpm test:e2e`",
+  "`pnpm test:e2e:ui`",
+  "Keep Browser Use for exploratory browser evidence.",
   "/login",
   "/invite",
   "/dashboard",
@@ -75,8 +79,11 @@ const requiredScenarioHeadings = [
 ];
 
 const requiredSkillPhrases = [
-  "Do not add Playwright",
+  "Use Playwright for repeatable local Supabase and CI regression coverage.",
+  "Keep Browser Use for exploratory browser evidence.",
   "docs/browser-testing.md",
+  "`pnpm test:e2e`",
+  "`pnpm test:e2e:ui`",
   "Before starting `pnpm dev`, `pnpm dev:docker`, `pnpm exec next dev`, or a static preview server, check whether a suitable server is already listening.",
   "lsof -nP -iTCP:3000 -sTCP:LISTEN",
   "Stop only the server process started for the current task.",

@@ -5,7 +5,7 @@ description: Use when manually testing this web app through an agentic browser, 
 
 # Agentic Browser Testing
 
-Use existing browser-agent capabilities first. Do not add Playwright or another browser package unless the user asks or the current task requires repeatable CI automation. Use `docs/browser-testing.md` as the maintainer-facing evidence format.
+Use Playwright for repeatable local Supabase and CI regression coverage. Keep Browser Use for exploratory browser evidence. Browser Use also remains the right tool for design inspection, target-browser spot checks, and ad hoc debugging. Use `docs/browser-testing.md` as the maintainer-facing evidence format.
 
 ## Dev Server Startup
 
@@ -17,7 +17,10 @@ Use existing browser-agent capabilities first. Do not add Playwright or another 
 
 ## Tool Choice
 
-- Use the Codex in-app browser or other available agentic browser for normal route, responsive, and workflow checks.
+- Run `pnpm test:e2e` for repeatable local Supabase checks before claiming browser-regression coverage.
+- Run `pnpm test:e2e:ui` for Playwright UI/watch mode when iterating on the repeatable suite.
+- Run `pnpm test:e2e:headed` or `pnpm test:e2e:debug` when headless output is not enough.
+- Use the Codex in-app browser or other available agentic browser for exploratory route, responsive, visual, and workflow checks.
 - Use Chrome DevTools MCP only when it is available and the task needs low-level console, network, accessibility-tree, performance, or throttling inspection.
 - If Chrome DevTools MCP requires a local debugging port, verify the connection before relying on it.
 

@@ -156,6 +156,24 @@ pnpm dev:docker
 
 Then open `/login`, accept the terms checkbox, sign in with the seeded Admin or Member account, and test the target route. For image upload work, prefer the Admin account first because it has a validated profile and admin access to inspect item/admin routes after upload.
 
+For repeatable browser regression coverage, run Playwright against the same local stack:
+
+```bash
+pnpm test:e2e
+```
+
+Use Playwright UI/watch mode while developing or debugging repeatable browser tests:
+
+```bash
+pnpm test:e2e:ui
+```
+
+The E2E runner starts local Supabase when needed, runs `pnpm setup:local-supabase --force --seed`, checks the stack with `pnpm doctor:local-supabase`, starts the app through `pnpm dev:docker`, and restores generated config before exit. The GitHub Actions E2E workflow runs the deterministic CI variant:
+
+```bash
+pnpm test:e2e:ci
+```
+
 When the browser run is finished:
 
 ```bash

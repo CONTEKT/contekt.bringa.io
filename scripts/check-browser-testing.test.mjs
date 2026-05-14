@@ -29,6 +29,10 @@ Do not use production user data unless the exact scenario and data category have
 Before starting \`pnpm dev\`, \`pnpm dev:docker\`, \`pnpm exec next dev\`, or a static preview server, check whether a suitable server is already listening.
 lsof -nP -iTCP:3000 -sTCP:LISTEN
 Stop only the server process started for the current task.
+## Repeatable Playwright E2E
+Use \`pnpm test:e2e\` for local Supabase regression checks.
+Use \`pnpm test:e2e:ui\` for Playwright UI/watch mode.
+Keep Browser Use for exploratory browser evidence.
 ## Baseline Routes
 - /login
 - /invite
@@ -50,12 +54,14 @@ Record expected result, actual result, and evidence.
 `,
     skill: `
 # Agentic Browser Testing
-Do not add Playwright. Use docs/browser-testing.md.
+Use Playwright for repeatable local Supabase and CI regression coverage. Keep Browser Use for exploratory browser evidence. Use docs/browser-testing.md.
 ## Dev Server Startup
 Before starting \`pnpm dev\`, \`pnpm dev:docker\`, \`pnpm exec next dev\`, or a static preview server, check whether a suitable server is already listening.
 lsof -nP -iTCP:3000 -sTCP:LISTEN
 Stop only the server process started for the current task.
 ## Tool Choice
+Run \`pnpm test:e2e\` for repeatable local Supabase checks.
+Run \`pnpm test:e2e:ui\` for interactive watch mode.
 ## Baseline Scenarios
 - PWA: manifest and install behavior.
 ## Scenario Sets
@@ -95,6 +101,10 @@ Do not use production user data unless the exact scenario and data category have
 Before starting \`pnpm dev\`, \`pnpm dev:docker\`, \`pnpm exec next dev\`, or a static preview server, check whether a suitable server is already listening.
 lsof -nP -iTCP:3000 -sTCP:LISTEN
 Stop only the server process started for the current task.
+## Repeatable Playwright E2E
+Use \`pnpm test:e2e\` for local Supabase regression checks.
+Use \`pnpm test:e2e:ui\` for Playwright UI/watch mode.
+Keep Browser Use for exploratory browser evidence.
 ## Baseline Routes
 - /login
 - /invite
@@ -116,12 +126,14 @@ Record expected result, actual result, and evidence.
 `,
       skill: `
 # Agentic Browser Testing
-Do not add Playwright. Use docs/browser-testing.md.
+Use Playwright for repeatable local Supabase and CI regression coverage. Keep Browser Use for exploratory browser evidence. Use docs/browser-testing.md.
 ## Dev Server Startup
 Before starting \`pnpm dev\`, \`pnpm dev:docker\`, \`pnpm exec next dev\`, or a static preview server, check whether a suitable server is already listening.
 lsof -nP -iTCP:3000 -sTCP:LISTEN
 Stop only the server process started for the current task.
 ## Tool Choice
+Run \`pnpm test:e2e\` for repeatable local Supabase checks.
+Run \`pnpm test:e2e:ui\` for interactive watch mode.
 ## Baseline Scenarios
 ## Scenario Sets
 ### Mobile Item Browsing

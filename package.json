@@ -1,6 +1,6 @@
 {
   "name": "app.bringa.io",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.33.2",
@@ -35,6 +35,11 @@
     "test:docs-index": "node --test scripts/check-docs-index.test.mjs",
     "test:docs-health": "node --test scripts/check-docs-health.test.mjs",
     "test:browser-testing": "node --test scripts/check-browser-testing.test.mjs",
+    "test:e2e": "node scripts/run-e2e-local-supabase.mjs",
+    "test:e2e:ci": "node scripts/run-e2e-local-supabase.mjs --ci",
+    "test:e2e:ui": "node scripts/run-e2e-local-supabase.mjs --ui",
+    "test:e2e:headed": "node scripts/run-e2e-local-supabase.mjs --headed",
+    "test:e2e:debug": "node scripts/run-e2e-local-supabase.mjs --debug",
     "test:local-supabase": "node --test scripts/check-local-supabase-development.test.mjs scripts/doctor-local-supabase.test.mjs scripts/seed-local-supabase.test.mjs scripts/setup-local-supabase.test.mjs",
     "test:supabase-mcp": "node --test scripts/check-supabase-mcp.test.mjs",
     "test:supabase-cli": "node --test scripts/check-supabase-cli.test.mjs",
@@ -137,6 +142,7 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4.2.4",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",

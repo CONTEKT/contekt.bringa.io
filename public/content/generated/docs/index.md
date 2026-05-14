@@ -20,7 +20,7 @@ Forkable open source sharing and borrowing software for communities, clubs, asso
 - [Restore Drills](restore-drills.md): backup restore rehearsal, encrypted retention, and recovery evidence requirements.
 - [Observability](observability.md): privacy-preserving diagnostics, current signals, live log boundaries, and remaining setup tasks.
 - [Security](security.md): security rules, maintenance checks, live evidence expectations, and fork safety.
-- [Browser Testing](browser-testing.md): manual and agentic browser runbook for responsive, accessibility, PWA, user, and admin flows.
+- [Browser Testing](browser-testing.md): Playwright, manual, and agentic browser runbook for responsive, accessibility, PWA, user, and admin flows.
 - [Maintenance](maintenance.md): recurring operations and safety checks.
 
 ## Contributor Flow

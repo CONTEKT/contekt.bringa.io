@@ -15,6 +15,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const allowedNonScriptCommands = new Set([
   "pnpm install --frozen-lockfile",
   "pnpm build",
+  "pnpm exec playwright install --with-deps chromium",
+  "pnpm exec supabase start",
+  "pnpm exec supabase start >/dev/null",
   "pnpm exec tsc --noEmit",
   "pnpm lint",
   "pnpm outdated",
@@ -97,11 +100,15 @@ function extractReadinessCommands(content) {
 export function checkReleaseChecklist({
   packageJson,
   ciYaml,
+  extraWorkflowYamls = [],
   conventionsMarkdown,
   readinessMarkdown,
 }) {
   const packageScripts = new Set(Object.keys(JSON.parse(packageJson).scripts || {}));
-  const ciCommands = extractCiPnpmCommands(ciYaml);
+  const ciCommands = new Set([
+    ...extractCiPnpmCommands(ciYaml),
+    ...extraWorkflowYamls.flatMap((workflowYaml) => [...extractCiPnpmCommands(workflowYaml)]),
+  ]);
   const conventionCommands = extractMarkdownPnpmCommands(conventionsMarkdown);
   const readinessCommands = extractReadinessCommands(readinessMarkdown);
 
@@ -136,9 +143,10 @@ export function checkReleaseChecklist({
 }
 
 export async function main() {
-  const [packageJson, ciYaml, conventionsMarkdown, readinessMarkdown] = await Promise.all([
+  const [packageJson, ciYaml, e2eYaml, conventionsMarkdown, readinessMarkdown] = await Promise.all([
     readFile(path.join(root, "package.json"), "utf8"),
     readFile(path.join(root, ".github", "workflows", "ci.yml"), "utf8"),
+    readFile(path.join(root, ".github", "workflows", "e2e.yml"), "utf8").catch(() => ""),
     readFile(path.join(root, "docs", "conventions.md"), "utf8"),
     readFile(path.join(root, "docs", "readiness-checklist.md"), "utf8"),
   ]);
@@ -146,6 +154,7 @@ export async function main() {
   checkReleaseChecklist({
     packageJson,
     ciYaml,
+    extraWorkflowYamls: e2eYaml ? [e2eYaml] : [],
     conventionsMarkdown,
     readinessMarkdown,
   });
