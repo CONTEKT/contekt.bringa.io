@@ -50,6 +50,23 @@ The current functions are named:
 
 The typo is part of the current deployed surface and should only be renamed with a migration plan for triggers/webhooks.
 
+## Current Upstream Handoff
+
+As of 2026-05-14, the upstream `app.bringa.io` Supabase project is `bqotcfejqljfcfjhavwh`.
+
+Already done:
+
+- The 2026-05-14 Telegram hardening migrations are applied in live migration history.
+- `notifiy-telegram` and `notifiy-telegram-user` are deployed with `verify_jwt=false` so database webhooks can call them.
+- `APP_URL` and `TELEGRAM_WEBHOOK_SECRET` exist as Supabase Function secrets.
+
+Still required before Telegram can be considered set up:
+
+- Set real Telegram bot token and chat id Function secrets. The local `.env` entries were blank during the 2026-05-14 handoff.
+- Rotate `TELEGRAM_WEBHOOK_SECRET` and set the matching database setting in the same session. The existing Function secret value cannot be read back from Supabase, and the matching `app.settings.telegram_webhook_secret` database setting was not created.
+- Set `app.settings.telegram_item_webhook_url` and `app.settings.telegram_user_webhook_url`. The Supabase CLI Management API query role returned `permission denied to set parameter "app.settings.telegram_item_webhook_url"`, so use the Supabase dashboard SQL editor or a direct database owner connection rather than `supabase db query --linked`.
+- Exercise one live notification and review `notification_events` plus Edge Function logs without copying private row contents into docs or chat.
+
 ## Setup
 
 1. Create a bot with BotFather.
@@ -61,6 +78,23 @@ The typo is part of the current deployed surface and should only be renamed with
 7. Deploy the Edge Functions with the repository `supabase/config.toml` so `verify_jwt=false` is applied for database webhook calls.
 8. Configure the database settings for the matching webhook URL and the same `app.settings.telegram_webhook_secret` value.
 9. Enable the database trigger.
+
+For the upstream `app.bringa.io` project, the database settings SQL is:
+
+```sql
+ALTER DATABASE postgres SET app.settings.telegram_item_webhook_url = 'https://bqotcfejqljfcfjhavwh.supabase.co/functions/v1/notifiy-telegram';
+ALTER DATABASE postgres SET app.settings.telegram_user_webhook_url = 'https://bqotcfejqljfcfjhavwh.supabase.co/functions/v1/notifiy-telegram-user';
+ALTER DATABASE postgres SET app.settings.telegram_webhook_secret = '<same high-entropy value set as TELEGRAM_WEBHOOK_SECRET>';
+```
+
+After applying those settings, reconnect and verify without printing secret values:
+
+```sql
+select
+  nullif(current_setting('app.settings.telegram_item_webhook_url', true), '') is not null as item_webhook_configured,
+  nullif(current_setting('app.settings.telegram_user_webhook_url', true), '') is not null as user_webhook_configured,
+  nullif(current_setting('app.settings.telegram_webhook_secret', true), '') is not null as webhook_secret_configured;
+```
 
 ## Remaining Improvements
 
