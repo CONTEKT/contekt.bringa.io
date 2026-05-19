@@ -92,7 +92,7 @@ export default function DocsClient() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <header className="border-b">
+      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
           <Link href={appConfig.app.homeHref} className="flex items-center gap-2">
             <AppImage src={appConfig.branding.logoPath} alt="" width={24} height={24} className="h-6 w-6 rounded-sm" />
