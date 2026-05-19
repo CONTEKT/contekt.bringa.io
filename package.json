@@ -23,6 +23,7 @@
     "test:admin-route-gate": "node --test scripts/admin-route-gate.test.mjs",
     "test:media-policy": "node --test scripts/media-policy.test.mjs",
     "test:item-image-upload": "node --test scripts/item-image-upload.test.mjs",
+    "test:item-create-errors": "node --test scripts/item-create-errors.test.mjs",
     "test:item-detail-images": "node --test scripts/item-detail-images.test.mjs",
     "test:protected-route": "node --test scripts/protected-route-decision.test.mjs",
     "test:env-example": "node --test scripts/check-env-example.test.mjs",

@@ -12,6 +12,7 @@ import {
     uploadItemImageRenditions,
     type UploadedItemImage,
 } from "@/lib/item-image-upload"
+import { buildCreateItemErrorMessage, createItemRejectedMessage } from "@/lib/item-create-errors"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -86,14 +87,14 @@ export default function CreateItemPage() {
             })
 
             if (insertError) throw insertError
-            if (!itemId) throw new Error("Item could not be created")
+            if (!itemId) throw new Error(createItemRejectedMessage)
 
             router.push('/dashboard')
             router.refresh()
         } catch (err: unknown) {
             await cleanupUploadedItemImage(supabase, uploadedImage)
             console.error(err)
-            setError(err instanceof Error ? err.message : "Something went wrong")
+            setError(buildCreateItemErrorMessage(err))
         } finally {
             setLoading(false)
         }
