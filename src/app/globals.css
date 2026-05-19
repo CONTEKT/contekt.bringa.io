@@ -123,3 +123,8 @@
     font-family: var(--font-sans-stack);
   }
 }
+
+/* Invert the white web logo to black when in light mode */
+html:not(.dark) img[src*="Bringa_logo_web"] {
+  filter: invert(1);
+}
