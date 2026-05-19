@@ -14,7 +14,6 @@ import {
     buildDashboardEmptyMessage,
     buildDashboardInitialViewState,
     buildDashboardItemFilters,
-    buildDashboardViewControlState,
     type DashboardView,
 } from "@/lib/dashboard-item-query";
 
@@ -32,9 +31,6 @@ export default function DashboardPage() {
     const [isDragging, setIsDragging] = useState(false);
     const [startY, setStartY] = useState(0);
     const [scrollTop, setScrollTop] = useState(0);
-    const borrowedControlState = buildDashboardViewControlState({ currentView: view, controlView: "borrowed" });
-    const availableControlState = buildDashboardViewControlState({ currentView: view, controlView: "available" });
-    const allControlState = buildDashboardViewControlState({ currentView: view, controlView: "all" });
 
     const fetchItems = useCallback(async (currentUser: User | null, searchQuery: string, selectedView: DashboardView) => {
         try {
@@ -84,8 +80,9 @@ export default function DashboardPage() {
                     const { count: availCount, error: availError } = await supabase
                         .from('items')
                         .select('id', { count: 'exact', head: true })
-                        .eq('status', 'inStock');
-                        
+                        .eq('status', 'inStock')
+                        .eq('visibility_state', 'visible');
+
                     if (availError) throw availError;
 
                     setBorrowedCount(count);
