@@ -23,6 +23,8 @@ export default function DashboardPage() {
     const [results, setResults] = useState<ItemDb[]>([])
     const [user, setUser] = useState<User | null>(null);
     const [view, setView] = useState<DashboardView>("available");
+    const [borrowedCount, setBorrowedCount] = useState<number | null>(null);
+    const [availableCount, setAvailableCount] = useState<number | null>(null);
     const [hasBorrowedItems, setHasBorrowedItems] = useState(false);
     const [ready, setReady] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -78,7 +80,16 @@ export default function DashboardPage() {
                         .eq('borrowed_by', user.id);
 
                     if (error) throw error;
+                    
+                    const { count: availCount, error: availError } = await supabase
+                        .from('items')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('status', 'inStock');
+                        
+                    if (availError) throw availError;
 
+                    setBorrowedCount(count);
+                    setAvailableCount(availCount);
                     const initialViewState = buildDashboardInitialViewState(count);
                     setHasBorrowedItems(initialViewState.hasBorrowedItems);
                     setView(initialViewState.view);
@@ -122,88 +133,77 @@ export default function DashboardPage() {
 
     return (
         <ProtectedRoute>
-            <div className="flex flex-col h-screen">
-                {loading && (
-                    <div className="flex-1 flex items-center justify-center">
-                        <p className="text-sm text-muted-foreground">Loading items...</p>
+            <div className="flex flex-col h-screen overflow-hidden">
+                {/* Fixed Top Section: Tabs and Search */}
+                <div className="pt-20 px-4 w-full max-w-2xl mx-auto flex flex-col shrink-0">
+                    <div className="flex border-b mb-4">
+                        <button
+                            onClick={() => setView('borrowed')}
+                            disabled={!hasBorrowedItems}
+                            className={`pb-3 px-1 mr-6 border-b-2 font-medium flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${view === 'borrowed' ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                        >
+                            Borrowed {borrowedCount !== null && <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-foreground font-semibold">{borrowedCount}</span>}
+                        </button>
+                        <button
+                            onClick={() => setView('available')}
+                            className={`pb-3 px-1 mr-6 border-b-2 font-medium flex items-center gap-2 transition-colors ${view === 'available' ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                        >
+                            Available {availableCount !== null && <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-foreground font-semibold">{availableCount}</span>}
+                        </button>
+                        <button
+                            onClick={() => setView('all')}
+                            className={`pb-3 px-1 border-b-2 font-medium transition-colors ${view === 'all' ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                        >
+                            All items
+                        </button>
                     </div>
-                )}
 
-                {!loading && results.length === 0 && (
-                    <div className="flex-1 flex items-center justify-center">
-                        <div className="text-center text-muted-foreground flex flex-col items-center gap-2">
-                            <p>{emptyMessage}</p>
+                    <div className="flex items-center gap-2">
+                        <div className="relative flex-1">
+                            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            <Input
+                                value={query}
+                                onChange={(event) => setQuery(event.target.value)}
+                                type="text"
+                                aria-label="Search items"
+                                placeholder="Search items..."
+                                className="w-full pl-9 bg-card"
+                            />
                         </div>
+                        <Button asChild variant="secondary" className="shrink-0 font-medium">
+                            <Link href="/items/create">
+                                + Create
+                            </Link>
+                        </Button>
                     </div>
-                )}
+                </div>
 
-                {!loading && results.length > 0 && (
-                    <div
-                        ref={scrollContainerRef}
-                        onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
-                        onMouseUp={handleMouseUpOrLeave}
-                        onMouseLeave={handleMouseUpOrLeave}
-                        className={`flex-1 min-h-0 overflow-y-auto pt-16 pb-12  touch-pan-y`}
-                        style={{ userSelect: isDragging ? 'none' : 'auto' }}
-                    >
-                        <div className="flex flex-col items-center w-full max-w-2xl mx-auto space-y-2 px-4 pb-32">
-                            {results.map((item) => (
-                                <ItemListCard item={item} key={item.id} />
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 flex flex-col gap-2 ">
-                    {!query && (
-                        <div className="grid grid-cols-2 gap-2">
-                            {hasBorrowedItems && (
-                                <Button
-                                    aria-pressed={borrowedControlState.ariaPressed}
-                                    variant={borrowedControlState.variant}
-                                    onClick={() => setView("borrowed")}
-                                    className="w-full shadow-lg cursor-pointer"
-                                >
-                                    Borrowed
-                                </Button>
-                            )}
-                            <Button
-                                aria-pressed={availableControlState.ariaPressed}
-                                variant={availableControlState.variant}
-                                onClick={() => setView("available")}
-                                className="w-full shadow-lg cursor-pointer"
-                            >
-                                Available
-                            </Button>
-                            <Button
-                                aria-pressed={allControlState.ariaPressed}
-                                variant={allControlState.variant}
-                                onClick={() => setView("all")}
-                                className="w-full shadow-lg cursor-pointer"
-                            >
-                                All Items
-                            </Button>
-                            <Button
-                                asChild
-                                variant="secondary"
-                                className="w-full shadow-lg"
-                            >
-                                <Link href="/items/create">
-                                    Create Item
-                                </Link>
-                            </Button>
-                        </div>
-                    )}
-                    <div className="flex items-center gap-2 bg-card border rounded-lg shadow-lg p-2">
-                        <Input
-                            value={query}
-                            onChange={(event) => setQuery(event.target.value)}
-                            type="text"
-                            aria-label="Search items"
-                            placeholder="Search items..."
-                            className="flex-1 border-none focus-visible:ring-0"
-                        />
+                {/* Scrollable Items List */}
+                <div
+                    ref={scrollContainerRef}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUpOrLeave}
+                    onMouseLeave={handleMouseUpOrLeave}
+                    className="flex-1 min-h-0 overflow-y-auto pt-6 pb-12 touch-pan-y"
+                    style={{ userSelect: isDragging ? 'none' : 'auto' }}
+                >
+                    <div className="w-full max-w-2xl mx-auto px-4 pb-32">
+                        {loading ? (
+                            <div className="flex justify-center py-10">
+                                <p className="text-sm text-muted-foreground">Loading items...</p>
+                            </div>
+                        ) : results.length === 0 ? (
+                            <div className="text-center py-10 text-muted-foreground flex flex-col items-center gap-2">
+                                <p>{emptyMessage}</p>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col space-y-2">
+                                {results.map((item) => (
+                                    <ItemListCard item={item} key={item.id} />
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
