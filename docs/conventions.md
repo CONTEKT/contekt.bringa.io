@@ -111,13 +111,15 @@ Scripts are operational tooling, so optimize them for reviewability and predicta
 
 ## CI/CD
 
-CI should be useful for upstream and forks without creating noise on every push.
+CI verifies what reaches `main` automatically, and keeps a manual escape hatch for one-off reruns and fork operators.
 
-The shared GitHub workflows are manual-only. Run them with GitHub Actions `workflow_dispatch` when a pull request, release, dependency update, or operational check needs remote verification.
+The shared GitHub workflows trigger on `push: branches: [main]` and on `workflow_dispatch`. Push runs catch regressions on every merge to `main` without the noise of running on every WIP branch; manual dispatch covers re-runs after infra changes, ad-hoc verification, and any fork that wants to disable the automatic trigger by deleting `push` locally.
 
-`pnpm check:github-workflows` verifies every workflow in `.github/workflows/` keeps `workflow_dispatch` and does not add automatic triggers such as `push` or `pull_request`.
+`pnpm check:github-workflows` enforces this contract: every workflow in `.github/workflows/` must keep `workflow_dispatch` (the manual fallback), and may only declare triggers from the allow-list `{workflow_dispatch, push}`. Triggers such as `pull_request`, `schedule`, or `release` need a deliberate policy update to the checker, its test, and this paragraph before they can land.
 
-The manual CI workflow runs these secret-free checks:
+Forks that prefer the prior manual-only behavior can remove the `push:` block locally; `pnpm check:github-workflows` accepts either combination as long as `workflow_dispatch` is present.
+
+The CI workflow runs these secret-free checks:
 
 - Use Node 24 locally to match CI, `package.json` `engines.node`, `.node-version`, and `@types/node`.
 - `pnpm install --frozen-lockfile`

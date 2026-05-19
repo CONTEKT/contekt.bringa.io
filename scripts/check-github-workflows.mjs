@@ -1,5 +1,6 @@
 /**
- * Verifies GitHub Actions workflows stay manual-only and preserve the repository CI contract.
+ * Verifies GitHub Actions workflows expose a manual dispatch fallback and only
+ * use the trigger surface allowed by the repository CI contract.
  *
  * Source of truth: `.github/workflows/*.yml` and `docs/conventions.md`.
  * Side effects: None beyond CLI output and exit status.
@@ -12,7 +13,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const workflowsDir = path.join(root, ".github", "workflows");
-const allowedTriggers = new Set(["workflow_dispatch"]);
+const allowedTriggers = new Set(["workflow_dispatch", "push"]);
 
 function stripInlineComment(line) {
   const index = line.indexOf("#");
@@ -94,7 +95,7 @@ export function checkWorkflowContent(filePath, content) {
 
   const disallowed = [...triggers].filter((trigger) => !allowedTriggers.has(trigger));
   if (disallowed.length > 0) {
-    throw new Error(`${filePath} must stay manual-only. Remove automatic trigger(s): ${disallowed.join(", ")}.`);
+    throw new Error(`${filePath} only allows ${[...allowedTriggers].join(", ")}. Remove trigger(s): ${disallowed.join(", ")}.`);
   }
 
   if (filePath === ".github/workflows/ci.yml") {

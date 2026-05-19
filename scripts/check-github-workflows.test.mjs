@@ -259,21 +259,33 @@ jobs:
   );
 });
 
-test("rejects push triggers in workflow blocks", () => {
-  assert.throws(
-    () => checkWorkflowContent(".github/workflows/ci.yml", `name: CI
+test("accepts push triggers alongside workflow_dispatch", () => {
+  const triggers = extractWorkflowTriggers(`name: CI
+
 on:
-  workflow_dispatch:
   push:
-`),
-    /must stay manual-only.*push/s,
+    branches: [main]
+  workflow_dispatch:
+`);
+
+  assert.deepEqual([...triggers].sort(), ["push", "workflow_dispatch"]);
+});
+
+test("rejects inline arrays with non-allowed triggers", () => {
+  assert.throws(
+    () => checkWorkflowContent(".github/workflows/pages.yml", "on: [workflow_dispatch, pull_request]"),
+    /only allows .*pull_request/s,
   );
 });
 
-test("rejects inline arrays with non-manual triggers", () => {
+test("rejects schedule even when workflow_dispatch is present", () => {
   assert.throws(
-    () => checkWorkflowContent(".github/workflows/pages.yml", "on: [workflow_dispatch, pull_request]"),
-    /must stay manual-only.*pull_request/s,
+    () => checkWorkflowContent(".github/workflows/nightly.yml", `on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+`),
+    /only allows .*schedule/s,
   );
 });
 
