@@ -1,4 +1,5 @@
 name: Pages
+run-name: "Pages · ${{ github.event.head_commit.message || format('manual: {0}', inputs.deployment || 'app.bringa.io') }}"
 
 on:
   push:

@@ -17,7 +17,7 @@ jobs:
   assert.deepEqual([...triggers], ["workflow_dispatch"]);
 });
 
-test("accepts the CI workflow when it checks quality gates and runs Playwright against local Supabase", () => {
+test("accepts the CI workflow when it checks the secret-free quality gates", () => {
   const triggers = checkWorkflowContent(".github/workflows/ci.yml", `name: CI
 
 on:
@@ -37,16 +37,6 @@ jobs:
       - run: pnpm check:version-bump
       - run: pnpm check:edge-functions
       - run: pnpm check:production-bundle
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm exec supabase start >/dev/null
-      - run: pnpm setup:local-supabase --force --seed
-      - run: pnpm doctor:local-supabase
-      - run: pnpm test:e2e:ci
-      - uses: actions/upload-artifact@v4
-        with:
-          path: |
-            playwright-report/
-            test-results/
 `);
 
   assert.deepEqual([...triggers], ["workflow_dispatch"]);
@@ -231,28 +221,74 @@ jobs:
   );
 });
 
-test("requires the CI workflow to install Chromium browser dependencies before running E2E tests", () => {
-  assert.throws(
-    () => checkWorkflowContent(".github/workflows/ci.yml", `name: CI
+test("accepts the e2e workflow when it is manual-only and runs Playwright against local Supabase", () => {
+  const triggers = checkWorkflowContent(".github/workflows/e2e.yml", `name: E2E
 
 on:
   workflow_dispatch:
 
 jobs:
-  quality:
+  e2e:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec supabase start >/dev/null
+      - run: pnpm setup:local-supabase --force --seed
+      - run: pnpm doctor:local-supabase
+      - run: pnpm test:e2e:ci
+      - uses: actions/upload-artifact@v4
         with:
-          fetch-depth: 0
-      - uses: denoland/setup-deno@v2
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm check:supabase-cli
-      - run: pnpm check:local-supabase
-      - run: pnpm check:security-maintenance
-      - run: pnpm check:version-bump
-      - run: pnpm check:edge-functions
-      - run: pnpm check:production-bundle
+          path: |
+            playwright-report/
+            test-results/
+`);
+
+  assert.deepEqual([...triggers], ["workflow_dispatch"]);
+});
+
+test("rejects push triggers on the e2e workflow", () => {
+  assert.throws(
+    () => checkWorkflowContent(".github/workflows/e2e.yml", `name: E2E
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec supabase start >/dev/null
+      - run: pnpm setup:local-supabase --force --seed
+      - run: pnpm doctor:local-supabase
+      - run: pnpm test:e2e:ci
+      - uses: actions/upload-artifact@v4
+        with:
+          path: |
+            playwright-report/
+            test-results/
+`),
+    /must stay manual-only/,
+  );
+});
+
+test("requires the e2e workflow to install Chromium before running tests", () => {
+  assert.throws(
+    () => checkWorkflowContent(".github/workflows/e2e.yml", `name: E2E
+
+on:
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pnpm exec supabase start >/dev/null
+      - run: pnpm setup:local-supabase --force --seed
+      - run: pnpm doctor:local-supabase
       - run: pnpm test:e2e:ci
 `),
     /playwright install --with-deps chromium/,

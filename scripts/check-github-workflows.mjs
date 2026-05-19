@@ -123,6 +123,18 @@ export function checkWorkflowContent(filePath, content) {
     if (!content.includes("pnpm check:production-bundle")) {
       throw new Error(`${filePath} must run pnpm check:production-bundle after the static build so development fixtures stay out of production chunks.`);
     }
+  }
+
+  if (filePath === ".github/workflows/pages.yml") {
+    if (!content.includes("pnpm check:production-bundle")) {
+      throw new Error(`${filePath} must run pnpm check:production-bundle before uploading the Pages artifact.`);
+    }
+  }
+
+  if (filePath === ".github/workflows/e2e.yml") {
+    if (triggers.has("push")) {
+      throw new Error(`${filePath} must stay manual-only. Remove the push trigger so e2e is dispatched intentionally.`);
+    }
     if (!content.includes("pnpm exec playwright install --with-deps chromium")) {
       throw new Error(`${filePath} must run pnpm exec playwright install --with-deps chromium before running browser tests.`);
     }
@@ -140,12 +152,6 @@ export function checkWorkflowContent(filePath, content) {
     }
     if (!content.includes("actions/upload-artifact") || !content.includes("playwright-report/") || !content.includes("test-results/")) {
       throw new Error(`${filePath} must upload Playwright report and test-result artifacts.`);
-    }
-  }
-
-  if (filePath === ".github/workflows/pages.yml") {
-    if (!content.includes("pnpm check:production-bundle")) {
-      throw new Error(`${filePath} must run pnpm check:production-bundle before uploading the Pages artifact.`);
     }
   }
 

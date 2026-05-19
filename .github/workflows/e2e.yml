@@ -1,0 +1,58 @@
+name: E2E
+run-name: "E2E · manual on ${{ github.ref_name }}"
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Local Supabase Playwright
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Start local Supabase
+        run: pnpm exec supabase start >/dev/null
+
+      - name: Configure and seed local Supabase
+        run: pnpm setup:local-supabase --force --seed
+
+      - name: Check local Supabase
+        run: pnpm doctor:local-supabase
+
+      - name: Run Playwright E2E
+        run: pnpm test:e2e:ci
+        env:
+          BRINGA_E2E_SKIP_SUPABASE_SETUP: "true"
+
+      - name: Upload Playwright artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-e2e-artifacts
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7

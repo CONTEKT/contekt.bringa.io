@@ -107,13 +107,15 @@ Scripts are operational tooling, so optimize them for reviewability and predicta
 
 ## CI/CD
 
-CI verifies what reaches `main` automatically, and keeps a manual escape hatch for one-off reruns and fork operators.
+Three GitHub workflows, each with one job:
 
-The shared GitHub workflows trigger on `push: branches: [main]` and on `workflow_dispatch`. Push runs catch regressions on every merge to `main` without the noise of running on every WIP branch; manual dispatch covers re-runs after infra changes, ad-hoc verification, and any fork that wants to disable the automatic trigger by deleting `push` locally.
+- **`ci.yml`** — secret-free quality checks (`test:*`, `check:*`, `lint`, `tsc`, `pnpm build`, version-bump diff). Triggers: `push: branches: [main]` + `workflow_dispatch`. Fast (~2–3 min). Keeps `main` honest on every merge.
+- **`pages.yml`** — static build + GitHub Pages deploy. Triggers: `push: branches: [main]` + `workflow_dispatch`. Cloudflare DNS routes `app.bringa.io` to the GitHub Pages target; pushing to `main` ships within minutes.
+- **`e2e.yml`** — Playwright against a local Supabase started inside the runner. Triggers: `workflow_dispatch` only. **Run locally before merging** via `pnpm test:e2e` (or `pnpm test:e2e:ci` for the headless CI-style run). Manual on GitHub because spinning up Supabase + Playwright takes ~5 min and would slow every push for a check that has a faster local equivalent.
 
-`pnpm check:github-workflows` enforces this contract: every workflow in `.github/workflows/` must keep `workflow_dispatch` (the manual fallback), and may only declare triggers from the allow-list `{workflow_dispatch, push}`. Triggers such as `pull_request`, `schedule`, or `release` need a deliberate policy update to the checker, its test, and this paragraph before they can land.
+`pnpm check:github-workflows` enforces this contract: every workflow must keep `workflow_dispatch` (the manual fallback) and may only declare triggers from the allow-list `{workflow_dispatch, push}`. `e2e.yml` is additionally pinned to `workflow_dispatch`-only — the checker rejects a `push:` trigger there. Other triggers (`pull_request`, `schedule`, `release`) need a deliberate policy update to the checker, its test, and this paragraph before they can land.
 
-Forks that prefer the prior manual-only behavior can remove the `push:` block locally; `pnpm check:github-workflows` accepts either combination as long as `workflow_dispatch` is present.
+Forks that prefer fully manual CI can remove the `push:` blocks from `ci.yml` and `pages.yml` locally; the checker accepts any subset of the allow-list as long as `workflow_dispatch` is present.
 
 The CI workflow runs these secret-free checks:
 
@@ -205,10 +207,10 @@ The CI workflow runs these secret-free checks:
 - `pnpm lint`
 - `pnpm exec tsc --noEmit`
 - `pnpm build`
-- The manual Pages workflow builds the static app artifact from `out/` and deploys it only when run on `main`.
+- The Pages workflow builds the static app artifact from `out/` and deploys it only when the ref is `main` or starts with `deploy/`.
 - Public Supabase browser values come from deployment config, not `NEXT_PUBLIC_*` CI environment variables.
 
-The manual CI workflow also runs a repeatable browser-check job against local Supabase:
+The dispatch-only `e2e.yml` workflow runs a repeatable browser-check job against a Supabase started inside the runner. Same steps you should be running locally before merging:
 
 - `pnpm install --frozen-lockfile`
 - `pnpm exec playwright install --with-deps chromium`
