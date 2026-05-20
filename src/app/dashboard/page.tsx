@@ -34,6 +34,11 @@ export default function DashboardPage() {
     const [startY, setStartY] = useState(0);
     const [scrollTop, setScrollTop] = useState(0);
 
+    // Pull to refresh state
+    const [pullDistance, setPullDistance] = useState(0);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const touchStartY = useRef(0);
+
     const fetchItems = useCallback(async (currentUser: User | null, searchQuery: string, selectedView: DashboardView) => {
         try {
             setLoading(true);
@@ -147,6 +152,44 @@ export default function DashboardPage() {
         setIsDragging(false);
     };
 
+    const handleTouchStart = (e: React.TouchEvent) => {
+        if (scrollContainerRef.current?.scrollTop === 0) {
+            touchStartY.current = e.touches[0].clientY;
+        } else {
+            touchStartY.current = 0;
+        }
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (touchStartY.current > 0 && scrollContainerRef.current && scrollContainerRef.current.scrollTop === 0) {
+            const pull = e.touches[0].clientY - touchStartY.current;
+            if (pull > 0) {
+                // Apply friction
+                setPullDistance(Math.min(pull * 0.4, 80));
+            } else {
+                setPullDistance(0);
+            }
+        }
+    };
+
+    const handleTouchEnd = () => {
+        if (pullDistance > 60 && !isRefreshing) {
+            setIsRefreshing(true);
+            setPullDistance(60); // Hold open at 60px
+            
+            // Trigger refresh
+            fetchItems(user, query, view).finally(() => {
+                if (user) fetchCounts(user);
+                setIsRefreshing(false);
+                setPullDistance(0);
+                setHasNewUpdates(false);
+            });
+        } else {
+            setPullDistance(0);
+        }
+        touchStartY.current = 0;
+    };
+
     const emptyMessage = buildDashboardEmptyMessage({ query, view });
 
     return (
@@ -203,9 +246,23 @@ export default function DashboardPage() {
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUpOrLeave}
                     onMouseLeave={handleMouseUpOrLeave}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
                     className="flex-1 min-h-0 overflow-y-auto pt-6 pb-12 touch-pan-y"
                     style={{ userSelect: isDragging ? 'none' : 'auto' }}
                 >
+                    {/* Pull to refresh indicator */}
+                    <div 
+                        className="w-full flex justify-center items-center overflow-hidden transition-all duration-200 ease-out"
+                        style={{ height: `${pullDistance}px`, opacity: pullDistance / 60 }}
+                    >
+                        <RefreshCw 
+                            className={`w-5 h-5 text-muted-foreground ${isRefreshing ? 'animate-spin' : ''}`} 
+                            style={{ transform: `rotate(${pullDistance * 3}deg)` }} 
+                        />
+                    </div>
+
                     <div className="w-full max-w-2xl mx-auto px-4 pb-32">
                         {loading ? (
                             <div className="flex justify-center py-10">
