@@ -1,5 +1,14 @@
 export type DashboardView = "borrowed" | "available" | "all";
 
+/** Page size for server-side paginated item lists (dashboard, my items, borrowed). */
+export const ITEM_LIST_PAGE_SIZE = 40;
+
+/**
+ * Columns needed to render an ItemListCard. Replaces `select('*')` so paged
+ * responses stay small. Keep in sync with the Pick<> in ItemListCard.
+ */
+export const ITEM_LIST_SELECT = "id,name,description,image_url,thumbnail_url,status";
+
 export type DashboardItemFilter =
   | { method: "eq"; column: "status" | "visibility_state" | "borrowed_by"; value: string }
   | { method: "ilike"; column: "name"; value: string };

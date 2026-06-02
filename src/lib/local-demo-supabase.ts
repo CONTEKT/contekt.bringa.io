@@ -254,6 +254,8 @@ class LocalDemoQueryBuilder {
   private filters: Filter[] = [];
   private orders: Order[] = [];
   private limitCount: number | null = null;
+  private rangeFrom: number | null = null;
+  private rangeTo: number | null = null;
   private singleMode: "single" | "maybeSingle" | null = null;
   private updateValues: DemoRow | null = null;
 
@@ -304,6 +306,12 @@ class LocalDemoQueryBuilder {
     return this;
   }
 
+  range(from: number, to: number) {
+    this.rangeFrom = from;
+    this.rangeTo = to;
+    return this;
+  }
+
   single() {
     this.singleMode = "single";
     return this;
@@ -349,7 +357,10 @@ class LocalDemoQueryBuilder {
       });
     }
 
-    if (this.limitCount !== null) {
+    if (this.rangeFrom !== null && this.rangeTo !== null) {
+      // PostgREST .range(from, to) is inclusive on both ends.
+      rows = rows.slice(this.rangeFrom, this.rangeTo + 1);
+    } else if (this.limitCount !== null) {
       rows = rows.slice(0, this.limitCount);
     }
 

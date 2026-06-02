@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import Link from "next/link";
 
 import { supabase } from "@/lib/supabaseclient";
-import { ItemDb } from "@/app/model/model";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ItemListCard } from "@/components/items/item-list-card";
@@ -15,12 +14,15 @@ import {
     buildDashboardEmptyMessage,
     buildDashboardInitialViewState,
     buildDashboardItemFilters,
+    ITEM_LIST_SELECT,
     type DashboardView,
 } from "@/lib/dashboard-item-query";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useInfiniteItems } from "@/hooks/useInfiniteItems";
 
 export default function DashboardPage() {
     const [query, setQuery] = useState("")
-    const [results, setResults] = useState<ItemDb[]>([])
+    const debouncedQuery = useDebouncedValue(query, 250);
     const [user, setUser] = useState<User | null>(null);
     const [view, setView] = useState<DashboardView>("available");
     const [borrowedCount, setBorrowedCount] = useState<number | null>(null);
@@ -28,8 +30,8 @@ export default function DashboardPage() {
     const [hasBorrowedItems, setHasBorrowedItems] = useState(false);
     const [hasNewUpdates, setHasNewUpdates] = useState(false);
     const [ready, setReady] = useState(false);
-    const [loading, setLoading] = useState(true);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const sentinelRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [startY, setStartY] = useState(0);
     const [scrollTop, setScrollTop] = useState(0);
@@ -39,37 +41,35 @@ export default function DashboardPage() {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const touchStartY = useRef(0);
 
-    const fetchItems = useCallback(async (currentUser: User | null, searchQuery: string, selectedView: DashboardView) => {
-        try {
-            setLoading(true);
-            let queryBuilder = supabase.from('items').select('*').order('name', { ascending: true });
-            const filterPlan = buildDashboardItemFilters({
-                userId: currentUser?.id ?? null,
-                query: searchQuery,
-                view: selectedView,
-            });
-
-            if (filterPlan.empty) {
-                setResults([]);
-                return;
-            }
-
-            for (const filter of filterPlan.filters) {
-                queryBuilder = filter.method === "eq"
-                    ? queryBuilder.eq(filter.column, filter.value)
-                    : queryBuilder.ilike(filter.column, filter.value);
-            }
-
-            const { data, error } = await queryBuilder;
-
-            if (error) throw error;
-            setResults(data || []);
-        } catch (err) {
-            console.error('Error fetching items:', err)
-        } finally {
-            setLoading(false);
+    const buildItemsQuery = useCallback(({ from, to }: { from: number; to: number }) => {
+        let queryBuilder = supabase
+            .from('items')
+            .select(ITEM_LIST_SELECT)
+            .order('name', { ascending: true })
+            .order('id', { ascending: true }) // stable tie-break so paging never skips/duplicates
+            .range(from, to);
+        const filterPlan = buildDashboardItemFilters({
+            userId: user?.id ?? null,
+            query: debouncedQuery,
+            view,
+        });
+        for (const filter of filterPlan.filters) {
+            queryBuilder = filter.method === "eq"
+                ? queryBuilder.eq(filter.column, filter.value)
+                : queryBuilder.ilike(filter.column, filter.value);
         }
-    }, [])
+        return queryBuilder;
+    }, [user, debouncedQuery, view])
+
+    const {
+        items: results,
+        hasMore,
+        loading,
+        loadingMore,
+        reset: resetItems,
+        loadMore,
+        setEmpty: setItemsEmpty,
+    } = useInfiniteItems(buildItemsQuery)
 
     const fetchCounts = useCallback(async (currentUser: User) => {
         const { count } = await supabase
@@ -109,13 +109,25 @@ export default function DashboardPage() {
     }, [fetchCounts])
 
 
+    // Load / reload the first page whenever the user, view or debounced search changes.
     useEffect(() => {
         if (!ready) return;
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- item results are loaded from Supabase after auth/view changes.
-        fetchItems(user, query, view);
+        const filterPlan = buildDashboardItemFilters({
+            userId: user?.id ?? null,
+            query: debouncedQuery,
+            view,
+        });
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- reset the list and hide the stale "new items" toast when the query inputs change.
         setHasNewUpdates(false);
-        
-        // Setup Supabase Realtime subscription for live updates
+        // Show the new result set from the top (a short page-0 must not stay mid-scrolled).
+        scrollContainerRef.current?.scrollTo({ top: 0 });
+        if (filterPlan.empty) setItemsEmpty(); else resetItems();
+    }, [ready, user, debouncedQuery, view, resetItems, setItemsEmpty]);
+
+    // Realtime subscription lives in its own effect so it is not torn down and
+    // re-created on every keystroke or view change.
+    useEffect(() => {
+        if (!ready) return;
         const channel = supabase
             .channel('dashboard_items_changes')
             .on(
@@ -131,7 +143,25 @@ export default function DashboardPage() {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [fetchItems, query, ready, user, view]);
+    }, [ready]);
+
+    // Infinite scroll: load the next page when the sentinel nears the bottom of
+    // the custom scroll container. root MUST be the scroll container (not the
+    // viewport) or the sentinel never intersects on this overflow-y-auto element.
+    useEffect(() => {
+        if (loading || !hasMore) return;
+        const root = scrollContainerRef.current;
+        const sentinel = sentinelRef.current;
+        if (!sentinel) return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0]?.isIntersecting) loadMore();
+            },
+            { root, rootMargin: "600px 0px", threshold: 0 },
+        );
+        observer.observe(sentinel);
+        return () => observer.disconnect();
+    }, [loading, hasMore, loadMore, results.length]);
 
     const handleMouseDown = (e: React.MouseEvent) => {
         if (!scrollContainerRef.current) return;
@@ -178,7 +208,7 @@ export default function DashboardPage() {
             setPullDistance(60); // Hold open at 60px
             
             // Trigger refresh
-            fetchItems(user, query, view).finally(() => {
+            resetItems().finally(() => {
                 if (user) fetchCounts(user);
                 setIsRefreshing(false);
                 setPullDistance(0);
@@ -190,7 +220,7 @@ export default function DashboardPage() {
         touchStartY.current = 0;
     };
 
-    const emptyMessage = buildDashboardEmptyMessage({ query, view });
+    const emptyMessage = buildDashboardEmptyMessage({ query: debouncedQuery, view });
 
     return (
         <ProtectedRoute>
@@ -277,6 +307,12 @@ export default function DashboardPage() {
                                 {results.map((item) => (
                                     <ItemListCard item={item} key={item.id} />
                                 ))}
+                                <div ref={sentinelRef} className="h-px w-full" aria-hidden="true" />
+                                {loadingMore && (
+                                    <div className="flex justify-center py-4">
+                                        <p className="text-sm text-muted-foreground">Loading items...</p>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
@@ -286,7 +322,7 @@ export default function DashboardPage() {
                     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">
                         <Button 
                             onClick={() => {
-                                fetchItems(user, query, view);
+                                resetItems();
                                 if (user) fetchCounts(user);
                                 setHasNewUpdates(false);
                             }}

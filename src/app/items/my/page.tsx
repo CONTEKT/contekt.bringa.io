@@ -1,40 +1,64 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseclient";
-import { ItemDb } from "@/app/model/model";
 import { Loader2 } from "lucide-react";
+import type { User } from "@supabase/supabase-js";
 import ProtectedRoute from "@/components/auth/protected-route";
 import { ItemListCard } from "@/components/items/item-list-card";
+import { ITEM_LIST_SELECT } from "@/lib/dashboard-item-query";
+import { useInfiniteItems } from "@/hooks/useInfiniteItems";
 
 export default function MyItemsPage() {
-    const [items, setItems] = useState<ItemDb[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
+    const [ready, setReady] = useState(false);
+    const sentinelRef = useRef<HTMLDivElement>(null);
+
+    const buildItemsQuery = useCallback(
+        ({ from, to }: { from: number; to: number }) =>
+            supabase
+                .from('items')
+                .select(ITEM_LIST_SELECT)
+                .eq('created_by', user?.id ?? '')
+                .order('created_at', { ascending: false })
+                .order('id', { ascending: false }) // stable tie-break so paging never skips/duplicates
+                .range(from, to),
+        [user],
+    );
+
+    const { items, hasMore, loading, loadingMore, reset, loadMore, setEmpty } = useInfiniteItems(buildItemsQuery);
 
     useEffect(() => {
-        const fetchMyItems = async () => {
-            try {
-                const { data: { user } } = await supabase.auth.getUser();
-                if (!user) return;
-
-                const { data, error } = await supabase
-                    .from('items')
-                    .select('*')
-                    .eq('created_by', user.id)
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-                setItems(data || []);
-            } catch (err) {
-                console.error('Error fetching my items:', err);
-            } finally {
-                setLoading(false);
-            }
+        let active = true;
+        supabase.auth.getUser().then(({ data }) => {
+            if (!active) return;
+            setUser(data.user);
+            setReady(true);
+        });
+        return () => {
+            active = false;
         };
-
-        fetchMyItems();
     }, []);
+
+    useEffect(() => {
+        if (!ready) return;
+        if (!user) setEmpty(); else reset();
+    }, [ready, user, reset, setEmpty]);
+
+    useEffect(() => {
+        if (loading || !hasMore) return;
+        const sentinel = sentinelRef.current;
+        if (!sentinel) return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0]?.isIntersecting) loadMore();
+            },
+            { rootMargin: "600px 0px", threshold: 0 },
+        );
+        observer.observe(sentinel);
+        return () => observer.disconnect();
+    }, [loading, hasMore, loadMore, items.length]);
 
     if (loading) {
         return (
@@ -62,6 +86,12 @@ export default function MyItemsPage() {
                             {items.map((item) => (
                                 <ItemListCard item={item} key={item.id} />
                             ))}
+                            <div ref={sentinelRef} className="h-px w-full" aria-hidden="true" />
+                            {loadingMore && (
+                                <div className="flex justify-center py-4">
+                                    <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
