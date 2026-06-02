@@ -53,6 +53,7 @@ This file is the living roadmap and anti-roadmap for ideas discovered by users a
 
 ## App Experience
 
+- Item list pagination and virtualization: add server-side paging or cursor loading for dashboard, personal item lists, and admin item tables before communities reach thousands of items. Impact: avoids large client payloads, slow React renders, and expensive broad reads while keeping Supabase/Postgres as the scalable backend. Uncertainty/research: choose page size, cursor strategy, search semantics, and Realtime update behavior after testing realistic image-heavy data.
 - Responsive and browser QA: build on the Chromium Playwright local-Supabase smoke suite with targeted Browser Use evidence for visual review, then add mobile, Safari/WebKit, Firefox, installed PWA, slow network, empty states, long names, long words, and image-heavy lists as repeated friction proves the need. Impact: accessibility and reliability. Uncertainty/research: expand the browser matrix carefully because each browser/project adds CI runtime and maintenance.
 - PWA polish: build on the config-driven, tested manifest and PNG/maskable install icons by adding Apple touch icon platform verification, offline behavior review, update behavior, installed auth persistence, and logout testing. Impact: mobile trust. Uncertainty/research: current browser/platform behavior must be tested.
 - Typography and FOUT/FOUC: document system-font choice or self-hosted font policy; verify first paint and theme flash. Impact: perceived quality and performance. Uncertainty/research: needs visual QA.

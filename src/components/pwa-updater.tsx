@@ -10,18 +10,18 @@ export function PwaUpdater() {
         const checkUpdate = async () => {
             try {
                 // Fetch the headers of the current page with cache-busting
-                const res = await fetch(window.location.href, { 
-                    method: "HEAD", 
+                const res = await fetch(window.location.href, {
+                    method: "HEAD",
                     cache: "no-store",
                     headers: {
                         'Pragma': 'no-cache',
                         'Cache-Control': 'no-cache'
                     }
                 });
-                
+
                 const currentETag = res.headers.get("ETag");
                 const currentLastModified = res.headers.get("Last-Modified");
-                
+
                 // We use a combination of ETag and Last-Modified to be safe
                 const versionIdentifier = currentETag || currentLastModified;
 
@@ -51,7 +51,7 @@ export function PwaUpdater() {
 
         // Also check periodically (every 10 minutes)
         const interval = setInterval(checkUpdate, 10 * 60 * 1000);
-        
+
         // Initial check on load
         checkUpdate();
 
