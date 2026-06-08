@@ -8,6 +8,7 @@ type QueryResult<T> = {
 
 type Filter =
   | { type: "eq"; column: string; value: unknown }
+  | { type: "neq"; column: string; value: unknown }
   | { type: "ilike"; column: string; value: string }
   | { type: "in"; column: string; values: unknown[] }
   | { type: "is"; column: string; value: unknown }
@@ -208,6 +209,10 @@ function rowMatchesFilter(row: DemoRow, filter: Filter) {
     return row[filter.column] === filter.value;
   }
 
+  if (filter.type === "neq") {
+    return row[filter.column] !== filter.value;
+  }
+
   if (filter.type === "ilike") {
     const pattern = filter.value.toLowerCase().replaceAll("%", "");
     return String(row[filter.column] ?? "").toLowerCase().includes(pattern);
@@ -245,9 +250,118 @@ function parseOrConditions(expression: string) {
     .map((match) => ({ column: match[1], value: match[2] }));
 }
 
+type SelectEmbed = {
+  alias: string;
+  table: string;
+  constraint: string | null;
+  columns: string;
+};
+
+// Split a PostgREST select into top-level parts, keeping embedded resources
+// (which contain parentheses) intact: "a,b,rel:tbl!fk(x,y)" -> ["a","b","rel:tbl!fk(x,y)"].
+function splitSelectParts(select: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let current = "";
+  for (const char of select) {
+    if (char === "(") {
+      depth += 1;
+      current += char;
+    } else if (char === ")") {
+      depth -= 1;
+      current += char;
+    } else if (char === "," && depth === 0) {
+      parts.push(current);
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  parts.push(current);
+  return parts.map((part) => part.trim()).filter(Boolean);
+}
+
+// Separate scalar columns from embedded foreign-table resources so the demo
+// client can emulate Supabase's `relation:table!fkey(cols)` join expansion.
+function parseSelect(select: string | undefined): { columns: string; embeds: SelectEmbed[] } {
+  const normalized = select?.trim();
+  if (!normalized || normalized === "*") {
+    return { columns: "*", embeds: [] };
+  }
+
+  const columnParts: string[] = [];
+  const embeds: SelectEmbed[] = [];
+  for (const part of splitSelectParts(normalized)) {
+    const embedMatch = part.match(/^(?:([a-zA-Z0-9_]+):)?([a-zA-Z0-9_]+)(?:!([a-zA-Z0-9_]+))?\(([\s\S]*)\)$/);
+    if (embedMatch) {
+      const table = embedMatch[2];
+      embeds.push({
+        alias: embedMatch[1] || table,
+        table,
+        constraint: embedMatch[3] || null,
+        columns: embedMatch[4].trim() || "*",
+      });
+    } else {
+      columnParts.push(part);
+    }
+  }
+
+  return { columns: columnParts.length > 0 ? columnParts.join(",") : "*", embeds };
+}
+
+// Derive the local foreign-key column from a constraint hint like
+// "item_suggestions_item_id_fkey" on table "item_suggestions" -> "item_id".
+function embedLocalColumn(embed: SelectEmbed, tableName: string): string {
+  if (embed.constraint) {
+    let column = embed.constraint;
+    if (column.endsWith("_fkey")) column = column.slice(0, -"_fkey".length);
+    const prefix = `${tableName}_`;
+    if (column.startsWith(prefix)) column = column.slice(prefix.length);
+    return column;
+  }
+  return `${embed.alias}_id`;
+}
+
+// Demo mutations live only in memory, so without this they reset on every page
+// refresh. Persist the fixture tables to sessionStorage so demo edits (hiding an
+// item, borrowing, suggestions, ...) survive a reload within the browser session.
+const DEMO_STORAGE_KEY = "bringa-local-demo-tables-v1";
+
+function hasSessionStorage(): boolean {
+  try {
+    return typeof window !== "undefined" && typeof window.sessionStorage !== "undefined";
+  } catch {
+    return false;
+  }
+}
+
+function loadDemoTables(): DemoTables {
+  const fresh = createDemoTables();
+  if (!hasSessionStorage()) return fresh;
+  try {
+    const raw = window.sessionStorage.getItem(DEMO_STORAGE_KEY);
+    if (!raw) return fresh;
+    const parsed = JSON.parse(raw) as Partial<DemoTables>;
+    // Start from a fresh fixture set so any newly added table is never missing.
+    return { ...fresh, ...parsed } as DemoTables;
+  } catch {
+    return fresh;
+  }
+}
+
+function saveDemoTables(tables: DemoTables): void {
+  if (!hasSessionStorage()) return;
+  try {
+    window.sessionStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(tables));
+  } catch {
+    // Best-effort: ignore quota or serialization errors.
+  }
+}
+
 class LocalDemoQueryBuilder {
   private readonly tables: DemoTables;
   private readonly tableName: string;
+  private readonly persist: () => void;
   private columns: string | undefined;
   private countMode: "exact" | null = null;
   private head = false;
@@ -259,9 +373,10 @@ class LocalDemoQueryBuilder {
   private singleMode: "single" | "maybeSingle" | null = null;
   private updateValues: DemoRow | null = null;
 
-  constructor(tables: DemoTables, tableName: string) {
+  constructor(tables: DemoTables, tableName: string, persist: () => void = () => {}) {
     this.tables = tables;
     this.tableName = tableName;
+    this.persist = persist;
   }
 
   select(columns = "*", options: { count?: "exact"; head?: boolean } = {}) {
@@ -273,6 +388,11 @@ class LocalDemoQueryBuilder {
 
   eq(column: string, value: unknown) {
     this.filters.push({ type: "eq", column, value });
+    return this;
+  }
+
+  neq(column: string, value: unknown) {
+    this.filters.push({ type: "neq", column, value });
     return this;
   }
 
@@ -334,6 +454,18 @@ class LocalDemoQueryBuilder {
     return this.execute().then(onfulfilled, onrejected);
   }
 
+  // Expand a single embedded foreign-table resource by matching the local FK
+  // column against the related table's primary key (id). Returns the projected
+  // related row, or null when no match exists (mirrors Supabase's behavior).
+  private resolveEmbed(row: DemoRow, embed: SelectEmbed): DemoRow | null {
+    const localColumn = embedLocalColumn(embed, this.tableName);
+    const localValue = row[localColumn];
+    if (localValue === null || localValue === undefined) return null;
+    const foreignTable = this.tables[embed.table] ?? [];
+    const related = foreignTable.find((candidate) => candidate.id === localValue);
+    return related ? projectRow(related, embed.columns) : null;
+  }
+
   private async execute(): Promise<QueryResult<unknown>> {
     const table = this.tables[this.tableName] ?? [];
     let rows = table.filter((row) => this.filters.every((filter) => rowMatchesFilter(row, filter)));
@@ -342,6 +474,7 @@ class LocalDemoQueryBuilder {
       for (const row of rows) {
         Object.assign(row, this.updateValues, { updated_at: now });
       }
+      this.persist();
       return { data: null, error: null, count: rows.length };
     }
 
@@ -369,7 +502,14 @@ class LocalDemoQueryBuilder {
       return { data: null, error: null, count };
     }
 
-    const projectedRows = rows.map((row) => projectRow(row, this.columns));
+    const { columns, embeds } = parseSelect(this.columns);
+    const projectedRows = rows.map((row) => {
+      const projected = projectRow(row, columns);
+      for (const embed of embeds) {
+        projected[embed.alias] = this.resolveEmbed(row, embed);
+      }
+      return projected;
+    });
 
     if (this.singleMode) {
       if (projectedRows.length === 0 && this.singleMode === "maybeSingle") {
@@ -570,6 +710,113 @@ function buildRpcHandler(tables: DemoTables) {
       return { data: true, error: null };
     }
 
+    if (name === "review_item_suggestion") {
+      const suggestion = tables.item_suggestions.find((row) => row.id === params.suggestion_id_input);
+      if (!suggestion) return { data: false, error: null };
+      Object.assign(suggestion, {
+        status: params.status_input ?? suggestion.status,
+        admin_note: params.admin_note_input ?? suggestion.admin_note,
+        reviewed_at: now,
+        reviewed_by: localDemoUser.id,
+      });
+      return { data: true, error: null };
+    }
+
+    if (name === "apply_item_suggestion") {
+      const suggestion = tables.item_suggestions.find((row) => row.id === params.suggestion_id_input);
+      if (!suggestion) return { data: false, error: null };
+      const item = itemById(tables, suggestion.item_id);
+      if (item) {
+        pushVersion(tables, item, "Applied content suggestion");
+        Object.assign(item, {
+          name: params.name_input ?? item.name,
+          description: params.description_input ?? null,
+          image_url: params.image_url_input ?? item.image_url,
+        });
+      }
+      Object.assign(suggestion, {
+        status: "accepted",
+        admin_note: params.admin_note_input ?? suggestion.admin_note,
+        reviewed_at: now,
+        reviewed_by: localDemoUser.id,
+      });
+      return { data: true, error: null };
+    }
+
+    if (name === "apply_owner_item_suggestion") {
+      const suggestion = tables.item_suggestions.find((row) => row.id === params.suggestion_id_input);
+      if (!suggestion) return { data: false, error: null };
+      const item = itemById(tables, suggestion.item_id);
+      if (item) {
+        pushVersion(tables, item, "Applied owner suggestion");
+        Object.assign(item, {
+          owner_kind: params.owner_kind_input ?? item.owner_kind,
+          owner_profile_id: params.owner_profile_id_input ?? null,
+          owner_label: params.owner_label_input ?? null,
+        });
+      }
+      Object.assign(suggestion, {
+        status: "accepted",
+        admin_note: params.admin_note_input ?? suggestion.admin_note,
+        reviewed_at: now,
+        reviewed_by: localDemoUser.id,
+      });
+      return { data: true, error: null };
+    }
+
+    if (name === "apply_item_image_suggestion") {
+      const suggestion = tables.item_suggestions.find((row) => row.id === params.suggestion_id_input);
+      if (!suggestion) return { data: false, error: null };
+      const item = itemById(tables, suggestion.item_id);
+      if (item) {
+        const isCover = params.is_cover_input !== false;
+        if (isCover) {
+          for (const image of tables.item_images) {
+            if (image.item_id === item.id) image.is_cover = false;
+          }
+          if (params.public_url_input) {
+            Object.assign(item, { image_url: params.public_url_input });
+          }
+        }
+        tables.item_images.push({
+          id: demoId("demo-image"),
+          item_id: item.id,
+          storage_bucket: params.storage_bucket_input ?? "items",
+          storage_path: params.storage_path_input,
+          public_url: params.public_url_input ?? null,
+          thumbnail_storage_path: null,
+          thumbnail_public_url: params.public_url_input ?? null,
+          uploaded_by: localDemoUser.id,
+          caption: params.caption_input ?? null,
+          alt_text: params.alt_text_input ?? item.name,
+          sort_order: 0,
+          is_cover: isCover,
+          moderation_state: "accepted",
+          deleted_at: null,
+          created_at: now,
+        });
+      }
+      Object.assign(suggestion, {
+        status: "accepted",
+        admin_note: params.admin_note_input ?? suggestion.admin_note,
+        reviewed_at: now,
+        reviewed_by: localDemoUser.id,
+      });
+      return { data: true, error: null };
+    }
+
+    if (name === "review_item_flag") {
+      const flag = tables.item_flags.find((row) => row.id === params.flag_id_input);
+      if (!flag) return { data: false, error: null };
+      Object.assign(flag, {
+        status: params.status_input ?? flag.status,
+        admin_note: params.admin_note_input ?? flag.admin_note,
+        reviewed_at: now,
+        reviewed_by: localDemoUser.id,
+      });
+      return { data: true, error: null };
+    }
+
     if (name === "get_my_invite_code") {
       return { data: "LOCAL-DEMO", error: null };
     }
@@ -612,7 +859,9 @@ function buildRpcHandler(tables: DemoTables) {
 }
 
 export function createLocalDemoSupabaseClient() {
-  const tables = createDemoTables();
+  const tables = loadDemoTables();
+  const persist = () => saveDemoTables(tables);
+  const rawRpc = buildRpcHandler(tables);
   const storageUrls = new Map<string, string>();
   const session = {
     access_token: "local-demo-access-token",
@@ -648,9 +897,13 @@ export function createLocalDemoSupabaseClient() {
       },
     },
     from(tableName: string) {
-      return new LocalDemoQueryBuilder(tables, tableName);
+      return new LocalDemoQueryBuilder(tables, tableName, persist);
     },
-    rpc: buildRpcHandler(tables),
+    rpc: async (name: string, params: DemoRow = {}) => {
+      const result = await rawRpc(name, params);
+      persist();
+      return result;
+    },
     storage: {
       from(bucket: string) {
         return {

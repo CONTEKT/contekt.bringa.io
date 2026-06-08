@@ -290,6 +290,12 @@ export default function AdminDashboardPage() {
                                     Moderation Queue
                                 </button>
                             </Link>
+                            <Link href="/admin/hidden-items">
+                                <button className="inline-flex items-center gap-2 rounded-md border bg-card px-4 py-2 text-sm font-medium shadow transition-colors hover:bg-accent">
+                                    <EyeOff className="h-4 w-4" />
+                                    Hidden Items
+                                </button>
+                            </Link>
                             <Link href="/admin/deletion-requests">
                                 <button className="inline-flex items-center gap-2 rounded-md border bg-card px-4 py-2 text-sm font-medium shadow transition-colors hover:bg-accent">
                                     <Trash2 className="h-4 w-4" />
