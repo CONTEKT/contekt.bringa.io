@@ -30,15 +30,15 @@ export default function LoginAuthOptions({
             <Link href="/dashboard">Open local demo</Link>
           </Button>
         )}
-        <GitSignInButton
-          disabled={oauthDisabled}
-          onSignInStart={clearAuthError}
-          onError={() => onAuthError(buildOAuthSignInErrorCopy("GitHub"))}
-        />
         <GoogleSignInButton
           disabled={oauthDisabled}
           onSignInStart={clearAuthError}
           onError={() => onAuthError(buildOAuthSignInErrorCopy("Google"))}
+        />
+        <GitSignInButton
+          disabled={oauthDisabled}
+          onSignInStart={clearAuthError}
+          onError={() => onAuthError(buildOAuthSignInErrorCopy("GitHub"))}
         />
       </div>
 
