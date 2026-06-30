@@ -294,3 +294,7 @@ test("rejects unsafe deployment profile names", () => {
     message: /BRINGA_DEPLOYMENT/,
   });
 });
+
+test("defaults this fork to the contekt deployment profile", () => {
+  assert.equal(resolveDeploymentSlug({}), "contekt.bringa.io");
+});

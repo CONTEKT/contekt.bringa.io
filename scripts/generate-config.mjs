@@ -11,7 +11,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const defaultRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const defaultDeploymentSlug = "app.bringa.io";
+const defaultDeploymentSlug = "contekt.bringa.io";
 
 function getOutputs(root) {
   return [
