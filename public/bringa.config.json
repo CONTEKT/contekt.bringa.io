@@ -1,19 +1,19 @@
 {
   "app": {
-    "name": "bringa.io",
-    "shortName": "bringa",
+    "name": "contekt.bringa.io",
+    "shortName": "contekt.bringa",
     "description": "Open source sharing and borrowing portal for communities.",
     "defaultLocale": "en",
     "locales": [
       "en",
       "de"
     ],
-    "titleTemplate": "%s | bringa.io",
-    "canonicalUrl": "https://app.bringa.io",
+    "titleTemplate": "%s | contekt.bringa.io",
+    "canonicalUrl": "https://contekt.bringa.io",
     "homeHref": "/dashboard"
   },
   "branding": {
-    "logoText": "bringa.io",
+    "logoText": "contekt.bringa.io",
     "logoPath": "/Bringa_logo_web.svg",
     "iconPath": "/Bringa_logo.svg",
     "pwaIcon192Path": "/icon-192.png",
@@ -22,23 +22,23 @@
     "appleTouchIconPath": "/apple-touch-icon.png",
     "themeColor": "#ffffff",
     "backgroundColor": "#ffffff",
-    "bornAndHostedBy": "Born and hosted by bringa.io"
+    "bornAndHostedBy": "Hosted by CONTEKT"
   },
   "operator": {
-    "organizationName": "bringa.io",
-    "defaultOwnerLabel": "bringa.io",
+    "organizationName": "CONTEKT",
+    "defaultOwnerLabel": "CONTEKT",
     "contactEmail": "",
     "privacyEmail": "",
     "jurisdiction": ""
   },
   "repository": {
     "provider": "github",
-    "owner": "bringaio",
-    "name": "app.bringa.io",
-    "url": "https://github.com/bringaio/app.bringa.io",
-    "issuesUrl": "https://github.com/bringaio/app.bringa.io/issues",
+    "owner": "CONTEKT",
+    "name": "contekt.bringa.io",
+    "url": "https://github.com/CONTEKT/contekt.bringa.io",
+    "issuesUrl": "https://github.com/CONTEKT/contekt.bringa.io/issues",
     "discussionsUrl": "",
-    "templateMode": "upstream"
+    "templateMode": "fork"
   },
   "content": {
     "sourcePath": "content/default",
@@ -61,8 +61,8 @@
     "publicDomainIntent": true
   },
   "supabase": {
-    "url": "https://bqotcfejqljfcfjhavwh.supabase.co",
-    "publishableKey": "sb_publishable_LqFtV-ymPHEN3xpwO76TvA_9A9kkTbi",
+    "url": "https://fqtdpqgoeesjhwalkzyw.supabase.co",
+    "publishableKey": "sb_publishable_1giflsUis1kBp8kyZMjjHg_dFhcASvG",
     "authRedirectPath": "/dashboard"
   },
   "development": {

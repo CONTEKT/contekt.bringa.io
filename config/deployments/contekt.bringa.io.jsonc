@@ -3,7 +3,7 @@
   // GitHub secrets, or Supabase function secrets.
   "app": {
     "name": "contekt.bringa.io",
-    "shortName": "contekt",
+    "shortName": "contekt.bringa",
     "titleTemplate": "%s | contekt.bringa.io",
     "canonicalUrl": "https://contekt.bringa.io"
   },
