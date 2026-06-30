@@ -1,0 +1,35 @@
+{
+  // Fork deployment profile. Secrets stay in ignored env files,
+  // GitHub secrets, or Supabase function secrets.
+  "app": {
+    "name": "contekt.bringa.io",
+    "shortName": "contekt",
+    "titleTemplate": "%s | contekt.bringa.io",
+    "canonicalUrl": "https://contekt.bringa.io"
+  },
+  "branding": {
+    "logoText": "contekt.bringa.io",
+    "bornAndHostedBy": "Hosted by CONTEKT"
+  },
+  "operator": {
+    "organizationName": "CONTEKT",
+    "defaultOwnerLabel": "CONTEKT"
+  },
+  "repository": {
+    "provider": "github",
+    "owner": "CONTEKT",
+    "name": "contekt.bringa.io",
+    "url": "https://github.com/CONTEKT/contekt.bringa.io",
+    "issuesUrl": "https://github.com/CONTEKT/contekt.bringa.io/issues",
+    "templateMode": "fork"
+  },
+  "supabase": {
+    // These are public browser settings, not secrets.
+    "url": "https://fqtdpqgoeesjhwalkzyw.supabase.co",
+    "publishableKey": "sb_publishable_1giflsUis1kBp8kyZMjjHg_dFhcASvG",
+    "authRedirectPath": "/dashboard"
+  },
+  "development": {
+    "localDemoMode": true
+  }
+}
